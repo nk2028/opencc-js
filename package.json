@@ -1,0 +1,19 @@
+{
+  "name": "opencc2",
+  "version": "0.0.1",
+  "description": "JavaScript implementation of OpenCC 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgalal/opencc2-js.git"
+  },
+  "author": "sgalal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sgalal/opencc2-js/issues"
+  },
+  "homepage": "https://github.com/sgalal/opencc2-js#readme"
+}
