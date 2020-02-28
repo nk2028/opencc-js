@@ -129,6 +129,7 @@ const OpenCC2 = {
 	},
 
 	/* High-Level functions */
+
 	convertHTML: async (startNode, fromVariant, toVariant, fromLangTag, toLangTag) => {
 		const cc = await OpenCC2.PresetConverter({ fromVariant: fromVariant, toVariant: toVariant });
 		function _inner(currentNode, langMatched) {

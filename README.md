@@ -5,7 +5,7 @@ JavaScript implementation of OpenCC 2
 ## Usage
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc2@0.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc2@0.1.2"></script>
 ```
 
 ## API Examples
@@ -44,7 +44,7 @@ Input:
 <html lang="zh-HK">
 <head>
 <meta charset="utf-8"/>
-<script src="https://cdn.jsdelivr.net/npm/opencc2@0.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc2@0.1.2"></script>
 <script>
 window.addEventListener('DOMContentLoaded', async () => {
   await OpenCC2.convertHTML(document.documentElement, 'hk', 'cn', 'zh-HK', 'zh-CN');
