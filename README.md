@@ -20,6 +20,10 @@ JavaScript implementation of OpenCC 2
 // output: 政府初步倾向试验为绿色专线小巴设充电装置
 ```
 
+Possible values are: `cn`, `hk`, `tw` and `t`.
+
+`t` stands for Traditional Chinese (OpenCC 2 standard).
+
 ### CustomConverter
 
 ```javascript
@@ -28,15 +32,3 @@ const cc = OpenCC2.CustomConverter(convertTable);
 console.log(cc.convert('飲食法吃出漂亮血脂成績單'));
 // output: 飲食灋喫出漂亮血脂成績單
 ```
-
-## API
-
-`async OpenCC2.PresetConverter(config)`:
-
-`config` is a JavaScript Object which contains `from_variant` and `to_variant`.
-
-Possible values are: `cn`, `hk`, `tw` and `t`. `t` stands for Traditional Chinese (OpenCC 2 standard).
-
-`OpenCC2.CustomConverter(convertTable)`:
-
-See examples.
