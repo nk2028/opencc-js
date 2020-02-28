@@ -126,8 +126,30 @@ const OpenCC2 = {
 		for (const [k, v] of Object.entries(dict))
 			OpenCC2._addWord(t, k, v);
 		return { convert: s => OpenCC2._convert(t, s) };
+	},
+
+	/* High-Level functions */
+	convertHTML: async (startNode, fromVariant, toVariant, fromLangTag, toLangTag) => {
+		const cc = await OpenCC2.PresetConverter({ fromVariant: fromVariant, toVariant: toVariant });
+		function _inner(currentNode, langMatched) {
+			if (currentNode.lang == fromLangTag) {
+				langMatched = true;
+				currentNode.lang = toLangTag;
+			} else if (currentNode.lang && currentNode.lang.length) {
+				langMatched = false;
+			}
+			for (const node of currentNode.childNodes)
+				if (node.nodeType == Node.TEXT_NODE && langMatched)
+					node.nodeValue = cc.convert(node.nodeValue);
+				else
+					_inner(node, langMatched);
+		}
+		_inner(startNode, false);  // Start recursion from root
 	}
 }
+
+// OpenCC2.convertHTML(document.documentElement, 'hk', 'cn', 'zh-HK', 'zh-CN');
+// OpenCC2.convertHTML(document.documentElement, 'hk', 'cn', 'zh-Hant', 'zh-Hans');
 
 /* function _test() {
 	const t = OpenCC2._makeEmptyTrie();
