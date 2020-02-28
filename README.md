@@ -85,9 +85,9 @@ Explanation:
 OpenCC2.convertHTML(document.documentElement, 'hk', 'cn', 'zh-HK', 'zh-CN');
 ```
 
-第一個參數為要應用的節點。該函數會遞歸地遍歷該節點與其子節點。`document.documentElement` 是文檔的根節點，即轉換整個頁面。
+第一個參數為要應用的節點。該函數會遞歸地遍歷該節點與其子節點。`document.documentElement` 表示文檔的根節點，即轉換整個頁面。
 
-第二個參數為 `fromVariant`，第三個參數為 `toVariant`，參數的取值同上。
+第二個參數為 `fromVariant`，第三個參數為 `toVariant`，參數的取值如上所述。
 
 第四個參數為原 lang 標籤。僅當節點的 lang 與之相等時纔會觸發轉換。
 
