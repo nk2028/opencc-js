@@ -103,20 +103,29 @@ const OpenCC2 = {
 
 	/* Converter */
 
-	Converter: {
-		create: async config => {
-			const dict_from = config.from_variant == 't' ? null : await OpenCC2._load_dict(config.from_variant, 'from'),
-				dict_to = config.to_variant == 't' ? null : await OpenCC2._load_dict(config.to_variant, 'to');
-			return {
-				convert: s => {
-					if (config.from_variant != 't')
-						s = OpenCC2._convert(dict_from, s);
-					if (config.to_variant != 't')
-						s = OpenCC2._convert(dict_to, s);
-					return s;
-				}
+	PresetConverter: async config => {
+		config = config || {};
+		let dictFrom, dictTo;
+		if (config.fromVariant != 't')
+			dictFrom = await OpenCC2._load_dict(config.fromVariant, 'from');
+		if (config.toVariant != 't')
+			dictTo = await OpenCC2._load_dict(config.toVariant, 'to');
+		return {
+			convert: s => {
+				if (config.fromVariant != 't')
+					s = OpenCC2._convert(dictFrom, s);
+				if (config.toVariant != 't')
+					s = OpenCC2._convert(dictTo, s);
+				return s;
 			}
-		}
+		};
+	},
+
+	CustomConverter: dict => {
+		const t = OpenCC2._makeEmptyTrie();
+		for (const [k, v] of Object.entries(dict))
+			OpenCC2._addWord(t, k, v);
+		return { convert: s => OpenCC2._convert(t, s) };
 	}
 }
 
