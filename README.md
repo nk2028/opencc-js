@@ -32,3 +32,9 @@ const cc = OpenCC2.CustomConverter(convertTable);
 console.log(cc.convert('飲食法吃出漂亮血脂成績單'));
 // output: 飲食灋喫出漂亮血脂成績單
 ```
+
+## License
+
+Source code (in this project) is distributed under MIT License.
+
+Dictionary data is located at [sgalal/opencc-data](https://github.com/sgalal/opencc-data), which follows the Apache 2.0 License.
