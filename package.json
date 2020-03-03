@@ -1,19 +1,19 @@
 {
-  "name": "opencc2",
-  "version": "0.1.2",
-  "description": "JavaScript implementation of OpenCC 2",
+  "name": "opencc-js",
+  "version": "0.0.1",
+  "description": "JavaScript implementation of OpenCC",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sgalal/opencc2-js.git"
+    "url": "git+https://github.com/sgalal/opencc-js.git"
   },
   "author": "sgalal",
-  "license": "MIT",
+  "license": null,
   "bugs": {
-    "url": "https://github.com/sgalal/opencc2-js/issues"
+    "url": "https://github.com/sgalal/opencc-js/issues"
   },
-  "homepage": "https://github.com/sgalal/opencc2-js#readme"
+  "homepage": "https://github.com/sgalal/opencc-js#readme"
 }
