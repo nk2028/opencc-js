@@ -5,7 +5,7 @@ JavaScript implementation of OpenCC
 ## Usage
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.0.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.0.2"></script>
 ```
 
 ## API Examples
