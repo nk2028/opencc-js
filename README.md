@@ -1,5 +1,7 @@
 # opencc-js [![JSDelivr badge](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
+N.B.: This project is **NOT** ready for production!
+
 JavaScript implementation of OpenCC
 
 ## Usage
