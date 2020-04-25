@@ -1,16 +1,16 @@
 {
   "name": "opencc-js",
-  "version": "0.0.2",
-  "description": "JavaScript implementation of OpenCC",
+  "version": "0.1.0",
+  "description": "Pure JavaScript implementation of OpenCC",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sgalal/opencc-js.git"
+    "url": "git+https://github.com/ngkhyen2028/opencc-js.git"
   },
-  "author": "sgalal",
+  "author": "The Ngioxkhyen 2028 Project",
   "keywords": [
     "opencc",
     "Chinese",
@@ -25,7 +25,7 @@
   ],
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/sgalal/opencc-js/issues"
+    "url": "https://github.com/ngkhyen2028/opencc-js/issues"
   },
-  "homepage": "https://github.com/sgalal/opencc-js#readme"
+  "homepage": "https://github.com/ngkhyen2028/opencc-js#readme"
 }
