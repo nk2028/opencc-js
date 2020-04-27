@@ -29,8 +29,9 @@ Pure JavaScript implementation of OpenCC | 開放中文轉換 JavaScript 實現
 - `tw`: Traditional Chinese (Taiwan)
 - `twp`: Traditional Chinese (Taiwan, with phrases)
 - `cn`: Simplified Chinese (Mainland China)
+- `jp`: Japanese _Shinjitai_
 
-Currently Hong Kong phrases are not supported, so there is no `hkp` currently.
+Currently Hong Kong phrases are not supported, so there is no `hkp`.
 
 ### 自訂轉換器 `CustomConverter`
 
