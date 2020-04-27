@@ -1,10 +1,10 @@
 {
   "name": "opencc-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pure JavaScript implementation of OpenCC",
-  "main": "index.js",
+  "main": "opencc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/ngkhyen2028/opencc-js/issues"
   },
-  "homepage": "https://github.com/ngkhyen2028/opencc-js#readme"
+  "homepage": "https://github.com/ngkhyen2028/opencc-js#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
 }

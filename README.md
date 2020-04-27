@@ -2,17 +2,17 @@
 
 N.B.: This project is **NOT** ready for production!
 
-JavaScript implementation of OpenCC
+Pure JavaScript implementation of OpenCC | 開放中文轉換 JavaScript 實現
 
 ## Usage
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.1.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.1.1"></script>
 ```
 
-## API Examples
+## Examples
 
-### `PresetConverter`
+### 預設轉換器 `PresetConverter`
 
 ```javascript
 (async () => {
@@ -22,11 +22,17 @@ JavaScript implementation of OpenCC
 // output: 政府初步倾向试验为绿色专线小巴设充电装置
 ```
 
-Possible values are: `cn`, `hk`, `tw` and `t`.
+其中，`fromVariant` 與 `toVariant` 兩個字段爲必填項，可能的取值如下：
 
-`t` stands for Traditional Chinese (OpenCC standard).
+- `t`: Traditional Chinese (OpenCC Standard)
+- `hk`: Traditional Chinese (Hong Kong)
+- `tw`: Traditional Chinese (Taiwan)
+- `twp`: Traditional Chinese (Taiwan, with phrases)
+- `cn`: Simplified Chinese (Mainland China)
 
-### `CustomConverter`
+Currently Hong Kong phrases are not supported, so there is no `hkp` currently.
+
+### 自訂轉換器 `CustomConverter`
 
 ```javascript
 const convertTable = { '法': '灋', '吃': '喫', '口吃': '口吃', '一口吃個大胖子': '一口喫個大胖子' };
@@ -34,6 +40,8 @@ const cc = OpenCC.CustomConverter(convertTable);
 console.log(cc.convert('飲食法吃出漂亮血脂成績單'));
 // output: 飲食灋喫出漂亮血脂成績單
 ```
+
+### DOM 操作
 
 TODO: 加入操作 DOM 的 API。
 

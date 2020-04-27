@@ -1,5 +1,8 @@
 'use strict';
 
+if (typeof window === 'undefined')
+	var fetch = require('node-fetch');
+
 const OpenCC = {
 	/* Trie */
 
@@ -44,13 +47,13 @@ const OpenCC = {
 	/* Load dict */
 
 	_load_dict: async (s, type) => {
-		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@latest/data/';
+		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@0.0.4/data/';
 
 		const DICT_FROM = { 'cn': ['STCharacters', 'STPhrases']
 			, 'hk': ['HKVariantsRev', 'HKVariantsRevPhrases']
 			, 'tw': ['TWVariantsRev', 'TWVariantsRevPhrases']
 			, 'twp': ['TWVariantsRev', 'TWVariantsRevPhrases', 'TWPhrasesRev']
-			, 'jp': ['JPVariantsRev']
+			, 'jp': ['JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases']
 			},
 			DICT_TO = { 'cn': ['TSCharacters', 'TSPhrases']
 			, 'hk': ['HKVariants', 'HKVariantsPhrases']
@@ -129,24 +132,4 @@ const OpenCC = {
 	}
 }
 
-/* function _test() {
-	const t = OpenCC._makeEmptyTrie();
-	OpenCC._addWord(t, 'c', 'aaa');
-	OpenCC._addWord(t, 'd', 'bbb');
-	OpenCC._addWord(t, 'da', 'ccc');
-	console.log(OpenCC._longestPrefix(t, 'c'), ['c', 'aaa']);
-	console.log(OpenCC._longestPrefix(t, 'cc'), ['c', 'aaa']);
-	console.log(OpenCC._longestPrefix(t, 'dccc'), ['d', 'bbb']);
-	console.log(OpenCC._longestPrefix(t, 'dacc'), ['da', 'ccc']);
-}
-
-_test();
-
-function _test2() {
-	const t = OpenCC._makeEmptyTrie();
-	OpenCC._addWord(t, '𦫖', 'aaa');
-	OpenCC._addWord(t, '的𫟃', 'bbb');
-	console.assert(OpenCC._convert(t, '𦫖1的𫟃𩇩c') == 'aaa1bbb𩇩c');
-}
-
-_test2(); */
+try { module.exports = exports = OpenCC; } catch (e) {}
