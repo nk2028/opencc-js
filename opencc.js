@@ -116,9 +116,9 @@ const OpenCC = {
 		return res.join('');
 	},
 
-	/* Converter */
+	/* Converters */
 
-	Converter: async (fromVariant, toVariant) => {
+	Converter: async function Converter(fromVariant, toVariant) {
 		let dictFrom, dictTo;
 		if (fromVariant != 't')
 			dictFrom = await OpenCC._load_dict(fromVariant, 'from');
@@ -133,32 +133,93 @@ const OpenCC = {
 			};
 	},
 
-	CustomConverter: dict => {
+	CustomConverter: function CustomConverter(dict) {
 		const t = OpenCC._makeEmptyTrie();
 		for (const [k, v] of Object.entries(dict))
 			OpenCC._addWord(t, k, v);
 		return s => OpenCC._convert(t, s);
+	},
+
+	HTMLConverter: function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
+		function convert() {
+			function _inner(currentNode, langMatched) {
+				if (currentNode.lang == fromLangTag) {
+					langMatched = true;
+					currentNode.shouldChangeLang = true;  // 記住 lang 屬性被修改了，以便恢復
+					currentNode.lang = toLangTag;
+				} else if (currentNode.lang && currentNode.lang.length) {
+					langMatched = false;
+				}
+
+				if (langMatched) {
+					/* Do not convert these elements */
+					if (currentNode.tagName == 'SCRIPT')
+						return;
+					else if (currentNode.tagName == 'STYLE')
+						return;
+
+					/* 處理特殊屬性 */
+					else if (currentNode.tagName == 'META' && currentNode.name == 'description') {
+						if (currentNode.originalContent === undefined)
+							currentNode.originalContent = currentNode.content;
+						currentNode.content = convertFunc(currentNode.originalContent);
+					} else if (currentNode.tagName == 'META' && currentNode.name == 'keywords') {
+						if (currentNode.originalContent === undefined)
+							currentNode.originalContent = currentNode.content;
+						currentNode.content = convertFunc(currentNode.originalContent);
+					} else if (currentNode.tagName == 'IMG') {
+						if (currentNode.originalAlt === undefined)
+							currentNode.originalAlt = currentNode.alt;
+						currentNode.alt = convertFunc(currentNode.originalAlt);
+					} else if (currentNode.tagName == 'INPUT' && currentNode.type == 'button'){
+						if (currentNode.originalValue === undefined)
+							currentNode.originalValue = currentNode.value;
+						currentNode.value = convertFunc(currentNode.originalValue);
+					}
+				}
+
+				for (const node of currentNode.childNodes)
+					if (node.nodeType == Node.TEXT_NODE && langMatched) {
+						if (node.originalString === undefined)
+							node.originalString = node.nodeValue;  // 存儲原始字符串，以便恢復
+						node.nodeValue = convertFunc(node.originalString);
+					} else
+						_inner(node, langMatched);
+			}
+			_inner(startNode, false);
+		}
+
+		function restore() {
+			function _inner(currentNode) {
+				if (currentNode.shouldChangeLang)
+					currentNode.lang = fromLangTag;
+
+				if (currentNode.originalString !== undefined)
+					currentNode.nodeValue = currentNode.originalString;
+
+				/* 處理特殊屬性 */
+				if (currentNode.tagName == 'META' && currentNode.name == 'description') {
+					if (currentNode.originalContent !== undefined)
+						currentNode.content = currentNode.originalContent;
+				} else if (currentNode.tagName == 'META' && currentNode.name == 'keywords') {
+					if (currentNode.originalContent !== undefined)
+						currentNode.content = currentNode.originalContent;
+				} else if (currentNode.tagName == 'IMG') {
+					if (currentNode.originalAlt !== undefined)
+						currentNode.alt = currentNode.originalAlt;
+				} else if (currentNode.tagName == 'INPUT' && currentNode.type == 'button'){
+					if (currentNode.originalValue !== undefined)
+						currentNode.value = currentNode.originalValue;
+				}
+
+				for (const node of currentNode.childNodes)
+					_inner(node);
+			}
+			_inner(startNode);
+		}
+
+		return { convert: convert, restore: restore };
 	}
 }
-
-/* const HTMLConverter = {
-	convertHTML: async (startNode, fromLangTag, toLangTag) => {
-		const cc = await OpenCC.PresetConverter({ fromVariant: fromVariant, toVariant: toVariant });
-		function _inner(currentNode, langMatched) {
-			if (currentNode.lang == fromLangTag) {
-				langMatched = true;
-				currentNode.lang = toLangTag;
-			} else if (currentNode.lang && currentNode.lang.length) {
-				langMatched = false;
-			}
-			for (const node of currentNode.childNodes)
-				if (node.nodeType == Node.TEXT_NODE && langMatched)
-					node.nodeValue = cc.convert(node.nodeValue);
-				else
-					_inner(node, langMatched);
-		}
-		_inner(startNode, false);  // Start recursion from root
-	}
-} */
 
 try { module.exports = exports = OpenCC; } catch (e) {}

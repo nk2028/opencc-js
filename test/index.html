@@ -1,1 +1,42 @@
-<script src="../opencc.js"></script>
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <title>opencc-js 測試頁面</title>
+  <meta charset="utf-8"/>
+  <meta name="description" content="測試 JavaScript 簡繁轉換"/>
+  <meta name="keywords" content="中文轉換, 測試"/>
+  <script src="../opencc.js"></script>
+  <script>
+    let HTMLConvertHandler;
+    async function start加載() {
+      const convert = await OpenCC.Converter('hk', 'cn');
+      const startNode = document.documentElement;
+      HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN');
+      output2.innerText = '加載完成';
+    }
+    async function start轉換() {
+      HTMLConvertHandler.convert();
+    }
+    async function start恢復() {
+      HTMLConvertHandler.restore();
+    }
+    function alert繁體() {
+      output.innerText = '繁體';
+    }
+  </script>
+</head>
+<body>
+  <h1><span lang="en-HK">opencc-js</span> 測試頁面</h1>
+  <p>此處應該轉為簡體，<span>測試遞歸轉換</span>，標題也應該轉換</p>
+  <p><img alt="此處應該轉為簡體" src="https://example.com/404.img"/></p>
+  <p><input type="button" onclick="alert繁體(); return false" value="點擊後應該出現繁體，不應轉換"/> <span id="output"></span></p>
+  <p lang="zh-TW">臺灣文本不用轉換</p>
+  <hr/>
+  <p>
+    <input type="button" onclick="start加載(); return false" value="開始加載"/>
+    <input type="button" onclick="start轉換(); return false" value="開始轉換"/>
+    <input type="button" onclick="start恢復(); return false" value="開始恢復"/>
+  </p>
+  <p id="output2"></p>
+</body>
+</html>
