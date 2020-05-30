@@ -1,16 +1,16 @@
 {
   "name": "opencc-js",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Pure JavaScript implementation of OpenCC",
   "main": "opencc.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test/main.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ngkhyen2028/opencc-js.git"
+    "url": "git+https://github.com/nk2028/opencc-js.git"
   },
-  "author": "The Ngioxkhyen 2028 Project",
+  "author": "Ngiox Khyen 2028 Project",
   "keywords": [
     "opencc",
     "Chinese",
@@ -23,11 +23,11 @@
     "traditional-chinese",
     "simplified-chinese"
   ],
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ngkhyen2028/opencc-js/issues"
+    "url": "https://github.com/nk2028/opencc-js/issues"
   },
-  "homepage": "https://github.com/ngkhyen2028/opencc-js#readme",
+  "homepage": "https://github.com/nk2028/opencc-js#readme",
   "dependencies": {
     "node-fetch": "^2.6.0"
   }

@@ -1,6 +1,6 @@
 'use strict';
 
-const OpenCC = require('./opencc');
+const OpenCC = require('../opencc');
 
 function assert(v) {
 	if (v !== true)
@@ -35,16 +35,16 @@ function test2() {
 /* Test character conversion */
 
 async function test3() {
-	const cc = await OpenCC.PresetConverter({ fromVariant: 'hk', toVariant: 'cn' });
-	const converted = cc.convert('政府初步傾向試驗為綠色專線小巴設充電裝置');
+	const convert = await OpenCC.Converter('hk', 'cn');
+	const converted = convert('政府初步傾向試驗為綠色專線小巴設充電裝置');
 	assert(converted == '政府初步倾向试验为绿色专线小巴设充电装置');
 }
 
 /* Test word conversion */
 
 async function test4() {
-	const cc = await OpenCC.PresetConverter({ fromVariant: 'cn', toVariant: 'twp' });
-	const converted = cc.convert('方便面');
+	const convert = await OpenCC.Converter('cn', 'twp');
+	const converted = convert('方便面');
 	assert(converted == '泡麵');
 }
 

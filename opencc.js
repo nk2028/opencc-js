@@ -6,10 +6,22 @@ if (typeof window === 'undefined')
 const OpenCC = {
 	/* Trie */
 
+	/* We represent a trie with a list of one or two elements.
+	  The first element is a dictionary, which contains the characters
+	  after this character.
+	  The second element is the value of the current character. If
+	  there is no value for the current character, the list will only
+	  contain one element, and this element does not exists.
+	*/
 	_makeEmptyTrie: () => {
 		return [{} /* child nodes */ /* , v */];
 	},
 
+	/* Add a word to a trie
+	  t: tree
+	  s: string
+	  v: value
+	*/
 	_addWord: (t, s, v) => {
 		for (const c of s) {
 			const nodes = t[0];
@@ -47,25 +59,25 @@ const OpenCC = {
 	/* Load dict */
 
 	_load_dict: async (s, type) => {
-		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@0.0.4/data/';
+		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.1/data/';
 
-		const DICT_FROM = { 'cn': ['STCharacters', 'STPhrases']
-			, 'hk': ['HKVariantsRev', 'HKVariantsRevPhrases']
-			, 'tw': ['TWVariantsRev', 'TWVariantsRevPhrases']
-			, 'twp': ['TWVariantsRev', 'TWVariantsRevPhrases', 'TWPhrasesRev']
-			, 'jp': ['JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases']
+		const DICT_FROM = { "cn": ["STCharacters", "STPhrases"]
+			, "hk": ["HKVariantsRev", "HKVariantsRevPhrases"]
+			, "tw": ["TWVariantsRev", "TWVariantsRevPhrases"]
+			, "twp": ["TWVariantsRev", "TWVariantsRevPhrases", "TWPhrasesRev"]
+			, "jp": ["JPVariantsRev", "JPShinjitaiCharacters", "JPShinjitaiPhrases"]
 			},
-			DICT_TO = { 'cn': ['TSCharacters', 'TSPhrases']
-			, 'hk': ['HKVariants', 'HKVariantsPhrases']
-			, 'tw': ['TWVariants']
-			, 'twp': ['TWVariants', 'TWPhrasesIT', 'TWPhrasesName', 'TWPhrasesOther']
-			, 'jp': ['JPVariants']
+			DICT_TO = { "cn": ["TSCharacters", "TSPhrases"]
+			, "hk": ["HKVariants"]
+			, "tw": ["TWVariants"]
+			, "twp": ["TWVariants", "TWPhrasesIT", "TWPhrasesName", "TWPhrasesOther"]
+			, "jp": ["JPVariants"]
 			};
 
 		async function getDictText(url) {
 			const response = await fetch(DICT_ROOT + url + '.txt');
-			const mytext = await response.text();
-			return mytext;
+			const text = await response.text();
+			return text;
 		}
 
 		let DICTS;
@@ -106,30 +118,47 @@ const OpenCC = {
 
 	/* Converter */
 
-	PresetConverter: async config => {
-		config = config || {};
+	Converter: async (fromVariant, toVariant) => {
 		let dictFrom, dictTo;
-		if (config.fromVariant != 't')
-			dictFrom = await OpenCC._load_dict(config.fromVariant, 'from');
-		if (config.toVariant != 't')
-			dictTo = await OpenCC._load_dict(config.toVariant, 'to');
-		return {
-			convert: s => {
-				if (config.fromVariant != 't')
+		if (fromVariant != 't')
+			dictFrom = await OpenCC._load_dict(fromVariant, 'from');
+		if (toVariant != 't')
+			dictTo = await OpenCC._load_dict(toVariant, 'to');
+		return s => {
+				if (fromVariant != 't')
 					s = OpenCC._convert(dictFrom, s);
-				if (config.toVariant != 't')
+				if (toVariant != 't')
 					s = OpenCC._convert(dictTo, s);
 				return s;
-			}
-		};
+			};
 	},
 
 	CustomConverter: dict => {
 		const t = OpenCC._makeEmptyTrie();
 		for (const [k, v] of Object.entries(dict))
 			OpenCC._addWord(t, k, v);
-		return { convert: s => OpenCC._convert(t, s) };
+		return s => OpenCC._convert(t, s);
 	}
 }
+
+/* const HTMLConverter = {
+	convertHTML: async (startNode, fromLangTag, toLangTag) => {
+		const cc = await OpenCC.PresetConverter({ fromVariant: fromVariant, toVariant: toVariant });
+		function _inner(currentNode, langMatched) {
+			if (currentNode.lang == fromLangTag) {
+				langMatched = true;
+				currentNode.lang = toLangTag;
+			} else if (currentNode.lang && currentNode.lang.length) {
+				langMatched = false;
+			}
+			for (const node of currentNode.childNodes)
+				if (node.nodeType == Node.TEXT_NODE && langMatched)
+					node.nodeValue = cc.convert(node.nodeValue);
+				else
+					_inner(node, langMatched);
+		}
+		_inner(startNode, false);  // Start recursion from root
+	}
+} */
 
 try { module.exports = exports = OpenCC; } catch (e) {}
