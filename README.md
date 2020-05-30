@@ -1,6 +1,6 @@
-# opencc-js [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+# opencc-js ![](https://github.com/nk2028/opencc-js/workflows/Node.js%20CI/badge.svg?branch=master) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
-開放中文轉換 JavaScript 實現
+Pure JavaScript implementation of OpenCC 開放中文轉換 JavaScript 實現
 
 ## 用法
 
