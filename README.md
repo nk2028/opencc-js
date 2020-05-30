@@ -1,4 +1,4 @@
-# opencc-js ![](https://github.com/nk2028/opencc-js/workflows/Node.js%20CI/badge.svg?branch=master) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+# opencc-js [![](https://github.com/nk2028/opencc-js/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/nk2028/opencc-js/actions?query=workflow%3A%22Node.js+CI%22) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
 Pure JavaScript implementation of OpenCC | 開放中文轉換 JavaScript 實現
 
