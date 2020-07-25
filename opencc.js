@@ -1,7 +1,10 @@
 'use strict';
 
-if (typeof window === 'undefined')
-	var fetch = require('node-fetch');
+if (typeof window === 'undefined') {
+	var fs = require('fs');
+	var util = require('util');
+	var readFilePromise = util.promisify(fs.readFile);
+}
 
 const OpenCC = {
 	/* Trie */
@@ -74,11 +77,19 @@ const OpenCC = {
 			, "jp": ["JPVariants"]
 			};
 
+		async function getDictTextNode(url) {
+		    const pathName = require.resolve('opencc-data/data/' + url + '.txt');
+		    const response = await readFilePromise(pathName);
+		    return response.toString();
+		}
+
 		async function getDictText(url) {
 			const response = await fetch(DICT_ROOT + url + '.txt');
 			const text = await response.text();
 			return text;
 		}
+
+		const getDict = (typeof window === 'undefined') ? getDictTextNode : getDictText;
 
 		let DICTS;
 		if (type == 'from')
@@ -87,7 +98,7 @@ const OpenCC = {
 			DICTS = DICT_TO[s];
 		const t = OpenCC._makeEmptyTrie();
 		for (const DICT of DICTS) {
-			const txt = await getDictText(DICT);
+			const txt = await getDict(DICT);
 			const lines = txt.split('\n');
 			for (const line of lines) {
 				if (line && !line.startsWith('#')) {

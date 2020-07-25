@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/nk2028/opencc-js#readme",
   "dependencies": {
-    "node-fetch": "^2.6.0"
+    "opencc-data": "^1.0.3"
   }
 }
