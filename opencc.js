@@ -9,54 +9,40 @@ if (typeof window === 'undefined') {
 const OpenCC = {
 	/* Trie */
 
-	/* We represent a trie with a list of one or two elements.
-	  The first element is a dictionary, which contains the characters
-	  after this character.
-	  The second element is the value of the current character. If
-	  there is no value for the current character, the list will only
-	  contain one element, and this element does not exists.
+	/*
+	  Trie 的每個節點為一個 Map 物件
+	  如果 key 是 codePoint，則 value 為子節點（也是一個 Map）
+	  如果 key 是 ''，則 value 為替換的字詞
 	*/
 	_makeEmptyTrie: () => {
-		return [{} /* child nodes */ /* , v */];
+		return new Map();
 	},
 
-	/* Add a word to a trie
-	  t: tree
-	  s: string
-	  v: value
-	*/
+	/**
+	 * 將一組資料加入字典樹
+	 * 
+	 * @param {Map Object} t 字典樹
+	 * @param {String} s 來源字串
+	 * @param {String} v 目的字串
+	 */
 	_addWord: (t, s, v) => {
-		for (const c of s) {
-			const nodes = t[0];
-			if (!(c in nodes)) {
-				nodes[c] = OpenCC._makeEmptyTrie();
+		let n=s.length,
+			i=0;
+		for(i=0;i<n;) {
+			let c=s.codePointAt(i);
+			i+=c>0xffff?2:1;
+			let m=t.get(c);
+			if(m===undefined) {
+				m=new Map();
+				t.set(c, m);
 			}
-			t = nodes[c];
+			t=m;
 		}
-		t.push(v);
+		t.set('', v);
 	},
 
 	_hasValue: t => {
-		return t.length == 2;
-	},
-
-	_longestPrefix: (t, s) => {
-		const res = [];
-		let cur = [], target;
-		for (const c of s) {
-			cur.push(c);
-			const nodes = t[0];
-			if (!(c in nodes))
-				break;
-			t = nodes[c];
-			if (OpenCC._hasValue(t)) {
-				target = t[1];
-				res.push(...cur);
-				cur = [];
-			}
-		}
-		if (res.length)
-			return [res.join(''), target];  // k, v
+		return t.get('') !== undefined;
 	},
 
 	/* Load dict */
@@ -110,21 +96,50 @@ const OpenCC = {
 		return t;
 	},
 
+	/**
+	 * 使用字典樹轉換一段文字
+	 * 
+	 * @param {Map Object} t 字典樹
+	 * @param {String} s 要被轉換的文字
+	 * @returns {String} 轉換後的字串
+	 */
 	_convert: (t, s) => {
-		const res = [];
-		while (s.length) {
-			const prefix = OpenCC._longestPrefix(t, s);
-			if (prefix) {
-				const [k, v] = prefix;
-				res.push(v);
-				s = s.slice(k.length);
-			} else {
-				const k = s[Symbol.iterator]().next().value;  // Unicode-aware version of s[0]
-				res.push(k);
-				s = s.slice(k.length);
+		let n=s.length,
+			arr=[],orig_i=null;
+		for(let i=0;i<n;) {
+			let m=t, k=0, v=null, x=0;
+			for(let j=i;j<n;) {
+				x=s.codePointAt(j);
+				j+=x>0xffff?2:1;
+				let tmp=m.get(x);
+				if(tmp===undefined) {
+					break;
+				}
+				m=tmp;
+				tmp=m.get('');
+				if(tmp!==undefined) {
+					k=j;
+					v=tmp;
+				}
+			}
+			if(k>0) { //有替代
+				if(orig_i!==null) {
+					arr.push(s.slice(orig_i, i));
+					orig_i=null;
+				}
+				arr.push(v);
+				i=k;
+			} else { //無替代
+				if(orig_i===null) {
+					orig_i=i;
+				}
+				i+=s.codePointAt(i)>0xffff?2:1;
 			}
 		}
-		return res.join('');
+		if(orig_i!==null) {
+			arr.push(s.slice(orig_i, n));
+		}
+		return arr.join('');
 	},
 
 	/* Converters */
