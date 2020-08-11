@@ -50,7 +50,7 @@ async function test4() {
 
 (async () => {
 	try {
-		test1();
+		//test1();  // _longestPrefix 已刪除
 		test2();
 		await test3();
 		await test4();
