@@ -7,25 +7,9 @@ function assert(v) {
 		throw v;
 }
 
-/* Test basic function */
-
-function test1() {
-	const compareResult = (a, b) => a[0] === b[0] && a[1] === b[1];
-
-	const t = OpenCC._makeEmptyTrie();
-	OpenCC._addWord(t, '作', 'zuo4');
-	OpenCC._addWord(t, '作坊', 'zuofang');
-	OpenCC._addWord(t, '作死', 'zuo1si3');
-	OpenCC._addWord(t, '作死死', 'zuosi3xx');
-	assert(compareResult(OpenCC._longestPrefix(t, '作死死活'), ['作死死', 'zuosi3xx']));
-	assert(compareResult(OpenCC._longestPrefix(t, '作死'), ['作死', 'zuo1si3']));
-	assert(compareResult(OpenCC._longestPrefix(t, '作動'), ['作', 'zuo4']));
-	assert(compareResult(OpenCC._longestPrefix(t, '作'), ['作', 'zuo4']));
-}
-
 /* Test Unicode support */
 
-function test2() {
+function test1() {
 	const t = OpenCC._makeEmptyTrie();
 	OpenCC._addWord(t, '𦫖', 'aaa');
 	OpenCC._addWord(t, '的𫟃', 'bbb');
@@ -34,7 +18,7 @@ function test2() {
 
 /* Test character conversion */
 
-async function test3() {
+async function test2() {
 	const convert = await OpenCC.Converter('hk', 'cn');
 	const converted = convert('政府初步傾向試驗為綠色專線小巴設充電裝置');
 	assert(converted == '政府初步倾向试验为绿色专线小巴设充电装置');
@@ -42,7 +26,7 @@ async function test3() {
 
 /* Test word conversion */
 
-async function test4() {
+async function test3() {
 	const convert = await OpenCC.Converter('cn', 'twp');
 	const converted = convert('方便面');
 	assert(converted == '泡麵');
@@ -50,10 +34,9 @@ async function test4() {
 
 (async () => {
 	try {
-		//test1();  // _longestPrefix 已刪除
-		test2();
+		test1();
+		await test2();
 		await test3();
-		await test4();
 	} catch (e) {
 		console.error(e.stack);
 	}
