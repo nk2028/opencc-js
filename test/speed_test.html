@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="Zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>速度測試</title>
+</head>
+<body>
+    <h1>測試 v0.2.2 與 v0.3.0 的效能</h1>
+    <div id='loading'>
+        Opencc 載入中
+    </div>
+    <div id='ready' style='display:none'>
+        <h2>上傳測試檔</h2>
+        <p>請選擇文字檔後，點選測試<br>（測試 cn => twp）</p>
+        <input id='fileInput' type="file">
+        <input id='test' type="button" value="測試">
+        <h2>測試結果</h2>
+        <pre id='log'></pre>
+    </div>
+    <script>
+    function loadOpenCC(name, url) {
+        return fetch(url).then(r=>r.text()).then((t)=>{
+            let s=document.createElement('script');
+            s.innerHTML=`const ${name}=(()=>{
+                ${t};
+                return OpenCC;
+            })();`;
+            document.body.appendChild(s);
+        });
+    }
+
+    let testData='';
+    let logEle=document.querySelector('#log');
+    Promise.all([
+        loadOpenCC('opencc_0_3_0', 'https://cdn.jsdelivr.net/npm/opencc-js@0.3.0'),
+        loadOpenCC('opencc_0_2_2', 'https://cdn.jsdelivr.net/npm/opencc-js@0.2.2')
+    ]).then(()=>{
+        let fInp=document.querySelector('#fileInput');
+        fInp.addEventListener('change', saveTestData);
+        document.querySelector('#test').addEventListener('click', test);
+        document.querySelector('#loading').style.display='none';
+        document.querySelector('#ready').style.display='block';
+    });
+
+    function saveTestData(evt) {
+        let frd=new FileReader();
+        frd.onload=()=>{
+            testData=frd.result;
+        }
+        frd.readAsText(evt.target.files[0]);
+    }
+
+    async function test() {
+        let conv_orig=await opencc_0_2_2.Converter('cn', 'twp');
+        let conv_new=await opencc_0_3_0.Converter('cn', 'twp');
+        let costs=[conv_orig, conv_new].map((conv)=>{
+            let t=Date.now();
+            let txt=conv(testData);
+            return {
+                cost:Date.now()-t,
+                txt:txt
+            };
+        });
+        logEle.textContent=[
+            `檔案共 ${testData.length} 字`,
+            `原本(v0.2.2): ${costs[0].cost} ms`,
+            `後來(v0.3.0): ${costs[1].cost} ms`,
+            `時間花費是原本的 ${Math.round(costs[1].cost*100/costs[0].cost)} %`,
+            `輸出比對：${costs[0].txt===costs[1].txt?'相同':'不同'}`
+        ].join('\n');
+    }
+    </script>
+</body>
+</html>
