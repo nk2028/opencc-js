@@ -48,7 +48,7 @@ const OpenCC = {
 	/* Load dict */
 
 	_load_dict: async (s, type) => {
-		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.1/data/';
+		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.3/data/';
 
 		const DICT_FROM = { "cn": ["STCharacters", "STPhrases"]
 			, "hk": ["HKVariantsRev", "HKVariantsRevPhrases"]
