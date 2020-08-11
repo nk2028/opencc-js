@@ -14,7 +14,7 @@ const OpenCC = {
 	  如果 key 是 codePoint，則 value 為子節點（也是一個 Map）
 	  如果 key 是 ''，則 value 為替換的字詞
 	*/
-	_makeEmptyTrie: () => {
+	_makeEmptyTrie() {
 		return new Map();
 	},
 
@@ -23,9 +23,9 @@ const OpenCC = {
 	 * 
 	 * @param {Map Object} t 字典樹
 	 * @param {String} s 來源字串
-	 * @param {String} v 目的字串
+	 * @param {String} v 替換的字詞
 	 */
-	_addWord: (t, s, v) => {
+	_addWord(t, s, v) {
 		let n=s.length,
 			i=0;
 		for(i=0;i<n;) {
@@ -41,13 +41,9 @@ const OpenCC = {
 		t.set('', v);
 	},
 
-	_hasValue: t => {
-		return t.get('') !== undefined;
-	},
-
 	/* Load dict */
 
-	_load_dict: async (s, type) => {
+	async _load_dict(s, type) {
 		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.3/data/';
 
 		const DICT_FROM = { "cn": ["STCharacters", "STPhrases"]
@@ -82,14 +78,14 @@ const OpenCC = {
 			DICTS = DICT_FROM[s];
 		else if (type == 'to')
 			DICTS = DICT_TO[s];
-		const t = OpenCC._makeEmptyTrie();
+		const t = this._makeEmptyTrie();
 		for (const DICT of DICTS) {
 			const txt = await getDict(DICT);
 			const lines = txt.split('\n');
 			for (const line of lines) {
 				if (line && !line.startsWith('#')) {
 					const [l, r] = line.split('\t');
-					OpenCC._addWord(t, l, r.split(' ')[0]);  // 若有多個候選，只選擇第一個
+					this._addWord(t, l, r.split(' ')[0]);  // 若有多個候選，只選擇第一個
 				}
 			}
 		}
@@ -103,7 +99,7 @@ const OpenCC = {
 	 * @param {String} s 要被轉換的文字
 	 * @returns {String} 轉換後的字串
 	 */
-	_convert: (t, s) => {
+	_convert(t, s) {
 		let n=s.length,
 			arr=[],orig_i=null;
 		for(let i=0;i<n;) {
@@ -144,29 +140,29 @@ const OpenCC = {
 
 	/* Converters */
 
-	Converter: async function Converter(fromVariant, toVariant) {
+	async Converter(fromVariant, toVariant) {
 		let dictFrom, dictTo;
 		if (fromVariant != 't')
-			dictFrom = await OpenCC._load_dict(fromVariant, 'from');
+			dictFrom = await this._load_dict(fromVariant, 'from');
 		if (toVariant != 't')
-			dictTo = await OpenCC._load_dict(toVariant, 'to');
+			dictTo = await this._load_dict(toVariant, 'to');
 		return s => {
 				if (fromVariant != 't')
-					s = OpenCC._convert(dictFrom, s);
+					s = this._convert(dictFrom, s);
 				if (toVariant != 't')
-					s = OpenCC._convert(dictTo, s);
+					s = this._convert(dictTo, s);
 				return s;
 			};
 	},
 
-	CustomConverter: function CustomConverter(dict) {
-		const t = OpenCC._makeEmptyTrie();
+	CustomConverter(dict) {
+		const t = this._makeEmptyTrie();
 		for (const [k, v] of Object.entries(dict))
-			OpenCC._addWord(t, k, v);
-		return s => OpenCC._convert(t, s);
+			this._addWord(t, k, v);
+		return s => this._convert(t, s);
 	},
 
-	HTMLConverter: function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
+	HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
 		function convert() {
 			function _inner(currentNode, langMatched) {
 				if (currentNode.lang == fromLangTag) {
@@ -207,7 +203,7 @@ const OpenCC = {
 				for (const node of currentNode.childNodes)
 					if (node.nodeType == Node.TEXT_NODE && langMatched) {
 						if (node.originalString === undefined)
-							node.originalString = node.nodeValue;  // 存儲原始字符串，以便恢復
+							node.originalString = node.nodeValue;  // 存儲原始字串，以便恢復
 						node.nodeValue = convertFunc(node.originalString);
 					} else
 						_inner(node, langMatched);
