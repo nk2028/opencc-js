@@ -16,7 +16,7 @@ In HTML file:
 Or in Node.js:
 
 ```javascript
-const OpenCC = require('opencc');
+const OpenCC = require('opencc-js');
 ```
 
 ## 使用<br/>Usage
