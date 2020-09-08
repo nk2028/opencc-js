@@ -6,7 +6,7 @@
     <title>速度測試</title>
 </head>
 <body>
-    <h1>測試 v0.2.2 與 v0.3.0 的效能</h1>
+    <h1>測試 v0.3.1 與 當前版本 的效能</h1>
     <div id='loading'>
         Opencc 載入中
     </div>
@@ -33,8 +33,8 @@
     let testData='';
     let logEle=document.querySelector('#log');
     Promise.all([
-        loadOpenCC('opencc_0_3_0', 'https://cdn.jsdelivr.net/npm/opencc-js@0.3.0'),
-        loadOpenCC('opencc_0_2_2', 'https://cdn.jsdelivr.net/npm/opencc-js@0.2.2')
+        loadOpenCC('opencc_master', '../src/main.js'),
+        loadOpenCC('opencc_0_3_1', 'https://cdn.jsdelivr.net/npm/opencc-js@0.3.1')
     ]).then(()=>{
         let fInp=document.querySelector('#fileInput');
         fInp.addEventListener('change', saveTestData);
@@ -52,8 +52,8 @@
     }
 
     async function test() {
-        let conv_orig=await opencc_0_2_2.Converter('cn', 'twp');
-        let conv_new=await opencc_0_3_0.Converter('cn', 'twp');
+        let conv_orig=await opencc_0_3_1.Converter('cn', 'twp');
+        let conv_new=await opencc_master.Converter('cn', 'twp');
         let costs=[conv_orig, conv_new].map((conv)=>{
             let t=Date.now();
             let txt=conv(testData);
@@ -64,8 +64,8 @@
         });
         logEle.textContent=[
             `檔案共 ${testData.length} 字`,
-            `原本(v0.2.2): ${costs[0].cost} ms`,
-            `後來(v0.3.0): ${costs[1].cost} ms`,
+            `原本(v0.3.1): ${costs[0].cost} ms`,
+            `後來(master): ${costs[1].cost} ms`,
             `時間花費是原本的 ${Math.round(costs[1].cost*100/costs[0].cost)} %`,
             `輸出比對：${costs[0].txt===costs[1].txt?'相同':'不同'}`
         ].join('\n');

@@ -1,43 +1,25 @@
 'use strict';
 
-const OpenCC = require('../opencc');
+const chai = require('chai');
+const should = chai.should();
+const OpenCC = require('../src/main.js');
 
-function assert(v) {
-	if (v !== true)
-		throw v;
-}
-
-/* Test Unicode support */
-
-function test1() {
-	const t = OpenCC._makeEmptyTrie();
-	OpenCC._addWord(t, '𦫖', 'aaa');
+(function test1() {
+	const t = new Map();
+	OpenCC._addWord(t, '𦫖𩇩', 'aaa');
 	OpenCC._addWord(t, '的𫟃', 'bbb');
-	assert(OpenCC._convert(t, '𦫖1的𫟃𩇩c') == 'aaa1bbb𩇩c');
-}
+	OpenCC._convert(t, '𦫖𩇩𭞂的𫟃').should.equal('aaa𭞂bbb');
+	OpenCC._convert(t, '𦫖𭞂𩇩的𫟃').should.equal('𦫖𭞂𩇩bbb');
+})();
 
-/* Test character conversion */
+(function test2() {
+	OpenCC.Converter('hk', 'cn')
+	.then(convert => convert('政府初步傾向試驗為綠色專線小巴設充電裝置'))
+	.then(converted => converted.should.equal('政府初步倾向试验为绿色专线小巴设充电装置'));
+})();
 
-async function test2() {
-	const convert = await OpenCC.Converter('hk', 'cn');
-	const converted = convert('政府初步傾向試驗為綠色專線小巴設充電裝置');
-	assert(converted == '政府初步倾向试验为绿色专线小巴设充电装置');
-}
-
-/* Test word conversion */
-
-async function test3() {
-	const convert = await OpenCC.Converter('cn', 'twp');
-	const converted = convert('方便面');
-	assert(converted == '泡麵');
-}
-
-(async () => {
-	try {
-		test1();
-		await test2();
-		await test3();
-	} catch (e) {
-		console.error(e.stack);
-	}
+(function test3() {
+	OpenCC.Converter('cn', 'twp')
+	.then(convert => convert('方便面'))
+	.then(converted => converted.should.equal('泡麵'));
 })();

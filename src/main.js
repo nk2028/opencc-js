@@ -6,18 +6,13 @@ if (typeof window === 'undefined') {
 	var readFilePromise = util.promisify(fs.readFile);
 }
 
+/* 使用 Map 實作 Trie 樹
+	Trie 的每個節點為一個 Map 物件
+	key 為 code point，value 為子節點（也是一個 Map）。
+	如果 Map 物件有 __trie_val 屬性，則該屬性為值字串，代表替換的字詞。
+*/
+
 const OpenCC = {
-	/* Trie */
-
-	/*
-	  Trie 的每個節點為一個 Map 物件
-	  如果 key 是 codePoint，則 value 為子節點（也是一個 Map）
-	  如果 key 是 ''，則 value 為替換的字詞
-	*/
-	_makeEmptyTrie() {
-		return new Map();
-	},
-
 	/**
 	 * 將一組資料加入字典樹
 	 * 
@@ -26,38 +21,30 @@ const OpenCC = {
 	 * @param {String} v 替換的字詞
 	 */
 	_addWord(t, s, v) {
-		let n=s.length,
-			i=0;
-		for(i=0;i<n;) {
-			let c=s.codePointAt(i);
-			i+=c>0xffff?2:1;
-			let m=t.get(c);
-			if(m===undefined) {
-				m=new Map();
-				t.set(c, m);
-			}
-			t=m;
-		}
-		t.set('', v);
+        for (const c of s) {
+            const cp = c.codePointAt(0);
+            if (!t.has(cp)) {
+                t.set(cp, new Map())
+            }
+            t = t.get(cp);
+        }
+        t.__trie_val = v;
 	},
 
 	/* Load dict */
 
 	async _load_dict(s, type) {
-		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.3/data/';
-
-		const DICT_FROM = { "cn": ["STCharacters", "STPhrases"]
-			, "hk": ["HKVariantsRev", "HKVariantsRevPhrases"]
-			, "tw": ["TWVariantsRev", "TWVariantsRevPhrases"]
-			, "twp": ["TWVariantsRev", "TWVariantsRevPhrases", "TWPhrasesRev"]
-			, "jp": ["JPVariantsRev", "JPShinjitaiCharacters", "JPShinjitaiPhrases"]
-			},
-			DICT_TO = { "cn": ["TSCharacters", "TSPhrases"]
-			, "hk": ["HKVariants"]
-			, "tw": ["TWVariants"]
-			, "twp": ["TWVariants", "TWPhrasesIT", "TWPhrasesName", "TWPhrasesOther"]
-			, "jp": ["JPVariants"]
-			};
+		const DICT_ROOT = 'https://cdn.jsdelivr.net/npm/opencc-data@1.0.3/data/',
+			DICT_FROM = {"cn": ["STCharacters", "STPhrases"],
+			"hk": ["HKVariantsRev", "HKVariantsRevPhrases"],
+			"tw": ["TWVariantsRev", "TWVariantsRevPhrases"],
+			"twp": ["TWVariantsRev", "TWVariantsRevPhrases", "TWPhrasesRev"],
+			"jp": ["JPVariantsRev", "JPShinjitaiCharacters", "JPShinjitaiPhrases"]},
+			DICT_TO = {"cn": ["TSCharacters", "TSPhrases"],
+			"hk": ["HKVariants"],
+			"tw": ["TWVariants"],
+			"twp": ["TWVariants", "TWPhrasesIT", "TWPhrasesName", "TWPhrasesOther"],
+			"jp": ["JPVariants"]};
 
 		async function getDictTextNode(url) {
 		    const pathName = require.resolve('opencc-data/data/' + url + '.txt');
@@ -78,7 +65,7 @@ const OpenCC = {
 			DICTS = DICT_FROM[s];
 		else if (type == 'to')
 			DICTS = DICT_TO[s];
-		const t = this._makeEmptyTrie();
+		const t = new Map();
 		for (const DICT of DICTS) {
 			const txt = await getDict(DICT);
 			const lines = txt.split('\n');
@@ -100,39 +87,41 @@ const OpenCC = {
 	 * @returns {String} 轉換後的字串
 	 */
 	_convert(t, s) {
-		let n=s.length,
-			arr=[],orig_i=null;
-		for(let i=0;i<n;) {
-			let m=t, k=0, v=null, x=0;
-			for(let j=i;j<n;) {
-				x=s.codePointAt(j);
-				j+=x>0xffff?2:1;
-				let tmp=m.get(x);
-				if(tmp===undefined) {
+		const n = s.length, arr = [];
+		let orig_i;
+		for (let i = 0; i < n;) {
+			let t_curr = t, k = 0, v;
+			for (let j = i; j < n;) {
+				const x = s.codePointAt(j);
+				j += x > 0xffff ? 2 : 1;
+
+				const t_next = t_curr.get(x);
+				if (typeof t_next === 'undefined') {
 					break;
 				}
-				m=tmp;
-				tmp=m.get('');
-				if(tmp!==undefined) {
-					k=j;
-					v=tmp;
+				t_curr = t_next;
+
+				const v_curr = t_curr.__trie_val;
+				if (typeof v_curr !== 'undefined') {
+					k = j;
+					v = v_curr;
 				}
 			}
-			if(k>0) { //有替代
-				if(orig_i!==null) {
+			if (k > 0) {  //有替代
+				if (orig_i !== null) {
 					arr.push(s.slice(orig_i, i));
-					orig_i=null;
+					orig_i = null;
 				}
 				arr.push(v);
-				i=k;
-			} else { //無替代
-				if(orig_i===null) {
-					orig_i=i;
+				i = k;
+			} else {  //無替代
+				if (orig_i === null) {
+					orig_i = i;
 				}
-				i+=s.codePointAt(i)>0xffff?2:1;
+				i += s.codePointAt(i) > 0xffff ? 2 : 1;
 			}
 		}
-		if(orig_i!==null) {
+		if (orig_i !== null) {
 			arr.push(s.slice(orig_i, n));
 		}
 		return arr.join('');
@@ -156,7 +145,7 @@ const OpenCC = {
 	},
 
 	CustomConverter(dict) {
-		const t = this._makeEmptyTrie();
+		const t = new Map();
 		for (const [k, v] of Object.entries(dict))
 			this._addWord(t, k, v);
 		return s => this._convert(t, s);
