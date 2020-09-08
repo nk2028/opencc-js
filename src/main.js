@@ -21,14 +21,14 @@ const OpenCC = {
 	 * @param {String} v 替換的字詞
 	 */
 	_addWord(t, s, v) {
-        for (const c of s) {
-            const cp = c.codePointAt(0);
-            if (!t.has(cp)) {
-                t.set(cp, new Map())
-            }
-            t = t.get(cp);
-        }
-        t.__trie_val = v;
+		for (const c of s) {
+			const cp = c.codePointAt(0);
+			if (!t.has(cp)) {
+				t.set(cp, new Map())
+			}
+			t = t.get(cp);
+		}
+		t.__trie_val = v;
 	},
 
 	/* Load dict */
@@ -47,9 +47,9 @@ const OpenCC = {
 			"jp": ["JPVariants"]};
 
 		async function getDictTextNode(url) {
-		    const pathName = require.resolve('opencc-data/data/' + url + '.txt');
-		    const response = await readFilePromise(pathName);
-		    return response.toString();
+			const pathName = require.resolve('opencc-data/data/' + url + '.txt');
+			const response = await readFilePromise(pathName);
+			return response.toString();
 		}
 
 		async function getDictText(url) {

@@ -1,57 +1,55 @@
 # opencc-js [![](https://github.com/nk2028/opencc-js/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/nk2028/opencc-js/actions?query=workflow%3A%22Node.js+CI%22) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
-[English](README-en.md)
+Pure JavaScript implementation of OpenCC
 
-開放中文轉換 JavaScript 實現
+## Import
 
-## 引入
-
-在 HTML 中引入：
+In HTML file:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.2"></script>
 ```
 
-或在 Node.js 中引入：
+Or in Node.js:
 
 ```javascript
 const OpenCC = require('opencc-js');
 ```
 
-## 使用
+## Usage
 
 ```javascript
-OpenCC.Converter('hk', 'cn')  // 香港繁體轉簡體
+OpenCC.Converter('hk', 'cn')  // Traditional Chinese (Hong Kong) to Simplified Chinese
 .then(convert => convert('漢字，簡體字'))
 .then(converted => console.log(converted));  // output: 汉字，简体字
 ```
 
-引數 1 為源變體類型，引數 2 為目標變體類型。兩個引數的可能取值如下：
+The first argument is the source type, the second argument is the destination type. Possible values are:
 
-- OpenCC 繁體：`t`
-- 台灣繁體：`tw`
-- 台灣繁體，台灣用詞：`twp`
-- 香港繁體：`hk`
-- 大陸簡體：`cn`
-- 日本新字體：`jp`
+- Trad (OpenCC)：`t`
+- Trad (Taiwan)：`tw`
+- Trad (Taiwan, with Taiwan phrases)：`twp`
+- Trad (Hong Kong)：`hk`
+- Simp (Mainland China)：`cn`
+- Japanese _Shinjitai_：`jp`
 
-香港繁體暫不支援用詞轉換。
+Trad (Hong Kong, with Hong Kong phrases) is currently not supported.
 
-## 自訂轉換器
+## Custom Converter
 
 ```javascript
 const convert = OpenCC.CustomConverter({ '香蕉': '🍌️', '蘋果': '🍎️', '梨': '🍐️' });
 console.log(convert('香蕉蘋果梨'));  // output: 🍌️🍎️🍐️
 ```
 
-## DOM 操作
+## DOM operation
 
 ```javascript
 (async () => {
     const convert = await OpenCC.Converter('hk', 'cn');
     const startNode = document.documentElement;  // 轉換整個頁面
     const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN');  // 將所有 zh-HK 標籤轉為 zh-CN 標籤
-    HTMLConvertHandler.convert();  // 開始轉換
-    HTMLConvertHandler.restore();  // 回到原貌
+    HTMLConvertHandler.convert();  // Start conversion
+    HTMLConvertHandler.restore();  // Restore
 })()
 ```

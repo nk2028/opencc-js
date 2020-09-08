@@ -23,3 +23,8 @@ const OpenCC = require('../src/main.js');
 	.then(convert => convert('方便面'))
 	.then(converted => converted.should.equal('泡麵'));
 })();
+
+(function test4() {
+	const convert = OpenCC.CustomConverter({ '香蕉': '🍌️', '蘋果': '🍎️', '梨': '🍐️' });
+	convert('香蕉蘋果梨').should.equal('🍌️🍎️🍐️');
+})();
