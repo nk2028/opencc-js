@@ -9,7 +9,7 @@ Pure JavaScript implementation of OpenCC<br/>
 In HTML file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.1"></script>
 ```
 
 或在 Node.js 中引入：<br/>
