@@ -22,8 +22,7 @@ const OpenCC = require('opencc-js');
 
 ```javascript
 OpenCC.Converter('hk', 'cn')  // 香港繁體轉簡體
-.then(convert => convert('漢字，簡體字'))
-.then(converted => console.log(converted));  // output: 汉字，简体字
+.then(convert => console.log(convert('漢字，簡體字')));  // output: 汉字，简体字
 ```
 
 引數 1 為源變體類型，引數 2 為目標變體類型。兩個引數的可能取值如下：

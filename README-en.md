@@ -19,18 +19,18 @@ const OpenCC = require('opencc-js');
 ## Usage
 
 ```javascript
+
 OpenCC.Converter('hk', 'cn')  // Traditional Chinese (Hong Kong) to Simplified Chinese
-.then(convert => convert('漢字，簡體字'))
-.then(converted => console.log(converted));  // output: 汉字，简体字
+.then(convert => console.log(convert('漢字，簡體字')));  // output: 汉字，简体字
 ```
 
 The first argument is the source type, the second argument is the destination type. Possible values are:
 
-- Trad (OpenCC)：`t`
-- Trad (Taiwan)：`tw`
-- Trad (Taiwan, with Taiwan phrases)：`twp`
-- Trad (Hong Kong)：`hk`
-- Simp (Mainland China)：`cn`
+- Traditional Chinese (OpenCC)：`t`
+- Traditional Chinese (Taiwan)：`tw`
+- Traditional Chinese (Taiwan, with Taiwan phrases)：`twp`
+- Traditional Chinese (Hong Kong)：`hk`
+- Simplified Chinese (Mainland China)：`cn`
 - Japanese _Shinjitai_：`jp`
 
 Trad (Hong Kong, with Hong Kong phrases) is currently not supported.

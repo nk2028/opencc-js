@@ -14,14 +14,12 @@ const OpenCC = require('../src/main.js');
 
 (function test2() {
 	OpenCC.Converter('hk', 'cn')
-	.then(convert => convert('政府初步傾向試驗為綠色專線小巴設充電裝置'))
-	.then(converted => converted.should.equal('政府初步倾向试验为绿色专线小巴设充电装置'));
+	.then(convert => convert('政府初步傾向試驗為綠色專線小巴設充電裝置').should.equal('政府初步倾向试验为绿色专线小巴设充电装置'));
 })();
 
 (function test3() {
 	OpenCC.Converter('cn', 'twp')
-	.then(convert => convert('方便面'))
-	.then(converted => converted.should.equal('泡麵'));
+	.then(convert => convert('方便面').should.equal('泡麵'));
 })();
 
 (function test4() {
