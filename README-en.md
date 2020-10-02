@@ -1,4 +1,4 @@
-# opencc-js [![](https://github.com/nk2028/opencc-js/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/nk2028/opencc-js/actions?query=workflow%3A%22Node.js+CI%22) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+# opencc-js [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
 Pure JavaScript implementation of OpenCC
 
@@ -47,8 +47,8 @@ console.log(convert('香蕉蘋果梨'));  // output: 🍌️🍎️🍐️
 ```javascript
 (async () => {
     const convert = await OpenCC.Converter('hk', 'cn');
-    const startNode = document.documentElement;  // 轉換整個頁面
-    const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN');  // 將所有 zh-HK 標籤轉為 zh-CN 標籤
+    const startNode = document.documentElement;  // Convert the whole page
+    const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN');  // Convert all zh-HK to zh-CN
     HTMLConvertHandler.convert();  // Start conversion
     HTMLConvertHandler.restore();  // Restore
 })()

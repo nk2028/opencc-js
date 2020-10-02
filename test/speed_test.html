@@ -33,7 +33,7 @@
     let testData='';
     let logEle=document.querySelector('#log');
     Promise.all([
-        loadOpenCC('opencc_master', '../src/main.js'),
+        loadOpenCC('opencc_main', '../src/main.js'),
         loadOpenCC('opencc_0_3_1', 'https://cdn.jsdelivr.net/npm/opencc-js@0.3.1')
     ]).then(()=>{
         let fInp=document.querySelector('#fileInput');
@@ -53,7 +53,7 @@
 
     async function test() {
         let conv_orig=await opencc_0_3_1.Converter('cn', 'twp');
-        let conv_new=await opencc_master.Converter('cn', 'twp');
+        let conv_new=await opencc_main.Converter('cn', 'twp');
         let costs=[conv_orig, conv_new].map((conv)=>{
             let t=Date.now();
             let txt=conv(testData);
@@ -65,7 +65,7 @@
         logEle.textContent=[
             `檔案共 ${testData.length} 字`,
             `原本(v0.3.1): ${costs[0].cost} ms`,
-            `後來(master): ${costs[1].cost} ms`,
+            `後來(main): ${costs[1].cost} ms`,
             `時間花費是原本的 ${Math.round(costs[1].cost*100/costs[0].cost)} %`,
             `輸出比對：${costs[0].txt===costs[1].txt?'相同':'不同'}`
         ].join('\n');
