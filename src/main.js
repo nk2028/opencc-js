@@ -15,7 +15,7 @@ if (typeof window === 'undefined') {
 const OpenCC = {
 	/**
 	 * 將一組資料加入字典樹
-	 * 
+	 *
 	 * @param {Map Object} t 字典樹
 	 * @param {String} s 來源字串
 	 * @param {String} v 替換的字詞
@@ -61,10 +61,11 @@ const OpenCC = {
 		const getDict = (typeof window === 'undefined') ? getDictTextNode : getDictText;
 
 		let DICTS;
-		if (type == 'from')
+		if (type === 'from') {
 			DICTS = DICT_FROM[s];
-		else if (type == 'to')
+		} else if (type === 'to') {
 			DICTS = DICT_TO[s];
+		}
 		const t = new Map();
 		for (const DICT of DICTS) {
 			const txt = await getDict(DICT);
@@ -81,7 +82,7 @@ const OpenCC = {
 
 	/**
 	 * 使用字典樹轉換一段文字
-	 * 
+	 *
 	 * @param {Map Object} t 字典樹
 	 * @param {String} s 要被轉換的文字
 	 * @returns {String} 轉換後的字串
@@ -131,30 +132,35 @@ const OpenCC = {
 
 	async Converter(fromVariant, toVariant) {
 		let dictFrom, dictTo;
-		if (fromVariant != 't')
+		if (fromVariant !== 't') {
 			dictFrom = await this._load_dict(fromVariant, 'from');
-		if (toVariant != 't')
+		}
+		if (toVariant !== 't') {
 			dictTo = await this._load_dict(toVariant, 'to');
-		return s => {
-				if (fromVariant != 't')
-					s = this._convert(dictFrom, s);
-				if (toVariant != 't')
-					s = this._convert(dictTo, s);
-				return s;
-			};
+		}
+		return (s) => {
+			if (fromVariant !== 't') {
+				s = this._convert(dictFrom, s);
+			}
+			if (toVariant !== 't') {
+				s = this._convert(dictTo, s);
+			}
+			return s;
+		};
 	},
 
 	CustomConverter(dict) {
 		const t = new Map();
-		for (const [k, v] of Object.entries(dict))
+		for (const [k, v] of Object.entries(dict)) {
 			this._addWord(t, k, v);
-		return s => this._convert(t, s);
+		}
+		return (s) => this._convert(t, s);
 	},
 
 	HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
 		function convert() {
 			function _inner(currentNode, langMatched) {
-				if (currentNode.lang == fromLangTag) {
+				if (currentNode.lang === fromLangTag) {
 					langMatched = true;
 					currentNode.shouldChangeLang = true;  // 記住 lang 屬性被修改了，以便恢復
 					currentNode.lang = toLangTag;
@@ -164,67 +170,79 @@ const OpenCC = {
 
 				if (langMatched) {
 					/* Do not convert these elements */
-					if (currentNode.tagName == 'SCRIPT')
-						return;
-					else if (currentNode.tagName == 'STYLE')
-						return;
+					if (currentNode.tagName === 'SCRIPT') return;
+					if (currentNode.tagName === 'STYLE') return;
 
 					/* 處理特殊屬性 */
-					else if (currentNode.tagName == 'META' && currentNode.name == 'description') {
-						if (currentNode.originalContent === undefined)
+					else if (currentNode.tagName === 'META' && currentNode.name === 'description') {
+						if (currentNode.originalContent === undefined) {
 							currentNode.originalContent = currentNode.content;
+						}
 						currentNode.content = convertFunc(currentNode.originalContent);
-					} else if (currentNode.tagName == 'META' && currentNode.name == 'keywords') {
-						if (currentNode.originalContent === undefined)
+					} else if (currentNode.tagName === 'META' && currentNode.name === 'keywords') {
+						if (currentNode.originalContent === undefined) {
 							currentNode.originalContent = currentNode.content;
+						}
 						currentNode.content = convertFunc(currentNode.originalContent);
-					} else if (currentNode.tagName == 'IMG') {
-						if (currentNode.originalAlt === undefined)
+					} else if (currentNode.tagName === 'IMG') {
+						if (currentNode.originalAlt === undefined) {
 							currentNode.originalAlt = currentNode.alt;
+						}
 						currentNode.alt = convertFunc(currentNode.originalAlt);
-					} else if (currentNode.tagName == 'INPUT' && currentNode.type == 'button'){
-						if (currentNode.originalValue === undefined)
+					} else if (currentNode.tagName === 'INPUT' && currentNode.type === 'button') {
+						if (currentNode.originalValue === undefined) {
 							currentNode.originalValue = currentNode.value;
+						}
 						currentNode.value = convertFunc(currentNode.originalValue);
 					}
 				}
 
-				for (const node of currentNode.childNodes)
-					if (node.nodeType == Node.TEXT_NODE && langMatched) {
-						if (node.originalString === undefined)
+				for (const node of currentNode.childNodes) {
+					if (node.nodeType === Node.TEXT_NODE && langMatched) {
+						if (node.originalString === undefined) {
 							node.originalString = node.nodeValue;  // 存儲原始字串，以便恢復
+						}
 						node.nodeValue = convertFunc(node.originalString);
-					} else
+					} else {
 						_inner(node, langMatched);
+					}
+				}
 			}
 			_inner(startNode, false);
 		}
 
 		function restore() {
 			function _inner(currentNode) {
-				if (currentNode.shouldChangeLang)
+				if (currentNode.shouldChangeLang) {
 					currentNode.lang = fromLangTag;
-
-				if (currentNode.originalString !== undefined)
-					currentNode.nodeValue = currentNode.originalString;
-
-				/* 處理特殊屬性 */
-				if (currentNode.tagName == 'META' && currentNode.name == 'description') {
-					if (currentNode.originalContent !== undefined)
-						currentNode.content = currentNode.originalContent;
-				} else if (currentNode.tagName == 'META' && currentNode.name == 'keywords') {
-					if (currentNode.originalContent !== undefined)
-						currentNode.content = currentNode.originalContent;
-				} else if (currentNode.tagName == 'IMG') {
-					if (currentNode.originalAlt !== undefined)
-						currentNode.alt = currentNode.originalAlt;
-				} else if (currentNode.tagName == 'INPUT' && currentNode.type == 'button'){
-					if (currentNode.originalValue !== undefined)
-						currentNode.value = currentNode.originalValue;
 				}
 
-				for (const node of currentNode.childNodes)
+				if (currentNode.originalString !== undefined) {
+					currentNode.nodeValue = currentNode.originalString;
+				}
+
+				/* 處理特殊屬性 */
+				if (currentNode.tagName === 'META' && currentNode.name === 'description') {
+					if (currentNode.originalContent !== undefined) {
+						currentNode.content = currentNode.originalContent;
+					}
+				} else if (currentNode.tagName === 'META' && currentNode.name === 'keywords') {
+					if (currentNode.originalContent !== undefined) {
+						currentNode.content = currentNode.originalContent;
+					}
+				} else if (currentNode.tagName === 'IMG') {
+					if (currentNode.originalAlt !== undefined) {
+						currentNode.alt = currentNode.originalAlt;
+					}
+				} else if (currentNode.tagName === 'INPUT' && currentNode.type === 'button'){
+					if (currentNode.originalValue !== undefined) {
+						currentNode.value = currentNode.originalValue;
+					}
+				}
+
+				for (const node of currentNode.childNodes) {
 					_inner(node);
+				}
 			}
 			_inner(startNode);
 		}
