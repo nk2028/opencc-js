@@ -9,7 +9,7 @@
 在 HTML 中引入：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.5"></script>
 ```
 
 或在 Node.js 中引入：

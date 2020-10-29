@@ -240,7 +240,7 @@ const OpenCC = {
 					if (currentNode.originalAlt !== undefined) {
 						currentNode.alt = currentNode.originalAlt;
 					}
-				} else if (currentNode.tagName === 'INPUT' && currentNode.type === 'button'){
+				} else if (currentNode.tagName === 'INPUT' && currentNode.type === 'button') {
 					if (currentNode.originalValue !== undefined) {
 						currentNode.value = currentNode.originalValue;
 					}

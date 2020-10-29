@@ -1,6 +1,6 @@
 {
   "name": "opencc-js",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Pure JavaScript implementation of OpenCC",
   "main": "src/main.js",
   "scripts": {
