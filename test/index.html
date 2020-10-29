@@ -14,6 +14,9 @@
   <p><img alt="此處應該轉換為簡體" src="https://example.com/some/path/404.jpg"/></p>
   <p><input type="button" onclick="alert繁體(); return false" value="點擊後應該出現繁體，不應轉換。"/> <span id="output"></span></p>
   <p lang="zh-TW">這句話為 zh-TW，lang 不匹配，不用轉換為簡體</p>
+  <p lang="zh-HK" class="ignore-opencc">這個元素的 class list 包含 ignore-opencc，不用轉換為簡體，且 lang 的值應該不變。
+    <span lang="zh-HK">內部的 span 也不需要轉換為簡體</span>。
+  </p>
   <hr/>
   <p>
     <input type="button" onclick="start加載(); return false" value="開始加載"/>

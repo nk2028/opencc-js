@@ -160,6 +160,9 @@ const OpenCC = {
 	HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
 		function convert() {
 			function _inner(currentNode, langMatched) {
+				/* class list 包含 ignore-opencc 的元素會跳過後續的轉換 */
+				if (currentNode.nodeType === Node.ELEMENT_NODE && currentNode.classList.contains('ignore-opencc')) return;
+
 				if (currentNode.lang === fromLangTag) {
 					langMatched = true;
 					currentNode.shouldChangeLang = true;  // 記住 lang 屬性被修改了，以便恢復
@@ -213,6 +216,9 @@ const OpenCC = {
 
 		function restore() {
 			function _inner(currentNode) {
+				/* class list 包含 ignore-opencc 的元素會跳過後續的轉換 */
+				if (currentNode.nodeType === Node.ELEMENT_NODE && currentNode.classList.contains('ignore-opencc')) return;
+
 				if (currentNode.shouldChangeLang) {
 					currentNode.lang = fromLangTag;
 				}

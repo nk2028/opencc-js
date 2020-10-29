@@ -53,3 +53,5 @@ console.log(convert('香蕉蘋果梨'));  // output: 🍌️🍎️🍐️
     HTMLConvertHandler.restore();  // Restore
 })()
 ```
+
+The conversion is skipped if the class list of a node contains `ignore-opencc`. All child nodes of the node will not be converted.
