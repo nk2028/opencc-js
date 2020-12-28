@@ -1,6 +1,8 @@
 'use strict';
 
-if (typeof window === 'undefined') {
+const ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'function';
+
+if (ENVIRONMENT_IS_NODE) {
 	var fs = require('fs');
 	var util = require('util');
 	var readFilePromise = util.promisify(fs.readFile);
@@ -58,7 +60,7 @@ const OpenCC = {
 			return text;
 		}
 
-		const getDict = (typeof window === 'undefined') ? getDictTextNode : getDictText;
+		const getDict = ENVIRONMENT_IS_NODE ? getDictTextNode : getDictText;
 
 		let DICTS;
 		if (type === 'from') {
