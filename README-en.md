@@ -7,7 +7,7 @@ Pure JavaScript implementation of OpenCC
 In HTML file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.5"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.6"></script>
 ```
 
 Or in Node.js:
