@@ -2,9 +2,15 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches-ignore:
+      - gh-pages
+    paths-ignore:
+      - '*.md'
   pull_request:
-    branches: [ main ]
+    branches-ignore:
+      - gh-pages
+    paths-ignore:
+      - '*.md'
 
 jobs:
   build:
