@@ -1,8 +1,8 @@
 {
   "name": "opencc-js",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Pure JavaScript implementation of OpenCC",
-  "main": "src/main.js",
+  "main": "bundle.js",
   "scripts": {
     "bundle": "rollup -c",
     "lint": "eslint src/*.js",
