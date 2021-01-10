@@ -6,7 +6,8 @@
   "scripts": {
     "bundle": "rollup -c",
     "lint": "eslint src/*.js",
-    "test": "node test/main.js"
+    "test": "node test/main.js",
+    "speedtest": "node test/speed.js"
   },
   "repository": {
     "type": "git",

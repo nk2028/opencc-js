@@ -4,11 +4,17 @@ export { default as Trie } from './trie';
 
 const ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'function';
 
+/* eslint-disable */
+
 if (ENVIRONMENT_IS_NODE) {
   var fs = require('fs');
   var util = require('util');
   var readFilePromise = util.promisify(fs.readFile);
 }
+
+/* eslint-enable */
+
+/* eslint-disable block-scoped-var */
 
 const DICT_FROM = {
   cn: ['STCharacters', 'STPhrases'],
@@ -47,12 +53,10 @@ async function loadDict(s, type) {
   } else if (type === 'to') {
     dicts = DICT_TO[s];
   }
+  const dictTexts = await Promise.all(dicts.map(getDict));
   const t = new Trie();
-  const { length: dictLen } = dicts;
-  for (let i = 0; i < dictLen; i += 1) {
-    const dict = dicts[i];
-    const txt = await getDict(dict);
-    const lines = txt.split('\n');
+  for (const dictText of dictTexts) {
+    const lines = dictText.split('\n');
     for (const line of lines) {
       if (line && !line.startsWith('#')) {
         const [l, r] = line.split('\t');
@@ -103,7 +107,7 @@ export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
         if (currentNode.tagName === 'STYLE') return;
 
         /* 處理特殊屬性 */
-        else if (currentNode.tagName === 'META' && currentNode.name === 'description') {
+        if (currentNode.tagName === 'META' && currentNode.name === 'description') {
           if (currentNode.originalContent == null) {
             currentNode.originalContent = currentNode.content;
           }

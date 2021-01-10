@@ -1,13 +1,17 @@
 /**
- * 使用 Map 實作 Trie 樹
- * Trie 的每個節點為一個 Map 物件
- * key 為 code point，value 為子節點（也是一個 Map）。
- * 如果 Map 物件有 trie_val 屬性，則該屬性為值字串，代表替換的字詞。
+ * Trie 樹。
  */
 export default class Trie {
+  // 使用 Map 實作 Trie 樹
+  // Trie 的每個節點為一個 Map 物件
+  // key 為 code point，value 為子節點（也是一個 Map）。
+  // 如果 Map 物件有 trie_val 屬性，則該屬性為值字串，代表替換的字詞。
+
   constructor() {
     this.map = new Map();
   }
+
+  /* eslint-disable */
 
   /**
    * 將一組資料加入字典樹

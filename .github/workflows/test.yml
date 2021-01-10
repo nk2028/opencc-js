@@ -31,4 +31,6 @@ jobs:
     - name: Speed Test
       run: |
         test/prepare.sh
-        node test/speed.js
+        npm run speedtest
+    - name: Lint
+      run: npm run lint
