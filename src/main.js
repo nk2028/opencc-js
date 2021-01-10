@@ -33,7 +33,7 @@ async function getDictTextNode(url) {
 }
 
 async function getDictText(url) {
-  const response = await fetch(`https://cdn.jsdelivr.net/npm/opencc-data@1.0.3/data/${url}.txt`);
+  const response = await fetch(`https://cdn.jsdelivr.net/npm/opencc-data@1.0.5/data/${url}.txt`);
   const text = await response.text();
   return text;
 }
