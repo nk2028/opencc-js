@@ -22,7 +22,7 @@ jobs:
         node-version: 14.x
     - name: Install bundler
       run: npm install -g rollup
-    - name: Install Dependencies
+    - name: Install dependencies
       run: npm ci
     - name: Bundle
       run: npm run bundle
