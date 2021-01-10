@@ -4,6 +4,8 @@
   "description": "Pure JavaScript implementation of OpenCC",
   "main": "src/main.js",
   "scripts": {
+    "bundle": "rollup -c",
+    "lint": "eslint src/*.js",
     "test": "node test/main.js"
   },
   "repository": {
@@ -32,6 +34,9 @@
     "opencc-data": "^1.0.5"
   },
   "devDependencies": {
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "eslint": "^7.17.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   }
 }
