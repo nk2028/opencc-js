@@ -50,13 +50,13 @@ console.log(convert('香蕉 蘋果 梨'));
 ## DOM operation
 
 ```javascript
-(async () => {
+((async () => {
   const convert = await OpenCC.Converter('hk', 'cn');
   const startNode = document.documentElement; // Convert the whole page
   const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN'); // Convert all zh-HK to zh-CN
   HTMLConvertHandler.convert(); // Start conversion
   HTMLConvertHandler.restore(); // Restore
-}());
+})());
 ```
 
 The conversion is skipped if the class list of a node contains `ignore-opencc`. All child nodes of the node will not be converted.

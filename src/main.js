@@ -67,6 +67,20 @@ async function loadDict(s, type) {
   return t;
 }
 
+/**
+ * 取得預設轉換器。
+ *
+ * 兩個引數的可能取值如下：
+ *
+ * - OpenCC 繁體：`t`
+ * - 台灣繁體：`tw`
+ * - 台灣繁體，台灣用詞：`twp`
+ * - 香港繁體：`hk`
+ * - 大陸簡體：`cn`
+ * - 日本新字體：`jp`
+ * @param {string} fromVariant 源中文變體類型
+ * @param {string} toVariant 目標中文變體類型
+ */
 export async function Converter(fromVariant, toVariant) {
   const dictFrom = fromVariant === 't' ? null : await loadDict(fromVariant, 'from');
   const dictTo = toVariant === 't' ? null : await loadDict(toVariant, 'to');
@@ -78,12 +92,23 @@ export async function Converter(fromVariant, toVariant) {
   };
 }
 
+/**
+ * 取得自訂轉換器。
+ * @param {Object} dict 自訂轉換詞典
+ */
 export function CustomConverter(dict) {
   const t = new Trie();
   Object.entries(dict).forEach(([k, v]) => {
     t.addWord(k, v);
   });
-  return (s) => t.convert(s);
+  /**
+   * 執行轉換的函式。
+   * @param {string} s 要轉換的字串
+   */
+  function convert(s) {
+    return t.convert(s);
+  }
+  return convert;
 }
 
 export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {

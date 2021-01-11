@@ -14,10 +14,9 @@ export default class Trie {
   /* eslint-disable */
 
   /**
-   * 將一組資料加入字典樹
-   *
-   * @param {String} s 來源字串
-   * @param {String} v 替換的字詞
+   * 將一項資料加入字典樹
+   * @param {string} s 要匹配的字串
+   * @param {string} v 若匹配成功，則替換為此字串
    */
   addWord(s, v) {
     let { map } = this;
@@ -35,6 +34,10 @@ export default class Trie {
     map.trie_val = v;
   }
 
+  /**
+   * 根據字典樹中的資料轉換字串。
+   * @param {string} s 要轉換的字串
+   */
   convert(s) {
     const t = this.map;
     const n = s.length, arr = [];

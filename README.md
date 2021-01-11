@@ -52,13 +52,13 @@ console.log(convert('香蕉 蘋果 梨'));
 ## DOM 操作
 
 ```javascript
-(async () => {
+((async () => {
   const convert = await OpenCC.Converter('hk', 'cn');
   const startNode = document.documentElement; // 轉換整個頁面
   const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN'); // 將所有 zh-HK 標籤轉為 zh-CN 標籤
   HTMLConvertHandler.convert(); // 開始轉換
   HTMLConvertHandler.restore(); // 回到原貌
-}());
+})());
 ```
 
 class list 包含 `ignore-opencc` 的元素會跳過後續的轉換，該節點的所有子節點都不會被轉換。
