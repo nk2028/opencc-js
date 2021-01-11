@@ -14,6 +14,10 @@
 
 或在 Node.js 中引入：
 
+```sh
+npm install opencc-js
+```
+
 ```javascript
 const OpenCC = require('opencc-js');
 ```

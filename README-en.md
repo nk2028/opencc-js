@@ -12,6 +12,10 @@ In HTML:
 
 Or in Node.js:
 
+```sh
+npm install opencc-js
+```
+
 ```javascript
 const OpenCC = require('opencc-js');
 ```
