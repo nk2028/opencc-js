@@ -20,10 +20,17 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 14.x
-    - run: npm ci
+    - name: Install bundler
+      run: npm install -g rollup
+    - name: Install dependencies
+      run: npm ci
+    - name: Bundle
+      run: npm run bundle
     - name: Test
       run: npm test
     - name: Speed Test
       run: |
         test/prepare.sh
-        node test/speed.js
+        npm run speedtest
+    - name: Lint
+      run: npm run lint

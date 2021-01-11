@@ -9,7 +9,7 @@
 在 HTML 中引入：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@0.3.7"></script>
 ```
 
 或在 Node.js 中引入：
@@ -39,20 +39,26 @@ OpenCC.Converter('hk', 'cn')  // 香港繁體轉簡體
 ## 自訂轉換器
 
 ```javascript
-const convert = OpenCC.CustomConverter({ '香蕉': '🍌️', '蘋果': '🍎️', '梨': '🍐️' });
-console.log(convert('香蕉蘋果梨'));  // output: 🍌️🍎️🍐️
+const dict = {
+  '香蕉': 'banana',
+  '蘋果': 'apple',
+  '梨': 'pear',
+};
+const convert = OpenCC.CustomConverter(dict);
+console.log(convert('香蕉 蘋果 梨'));
+// outputs: banana apple pear
 ```
 
 ## DOM 操作
 
 ```javascript
-(async () => {
-    const convert = await OpenCC.Converter('hk', 'cn');
-    const startNode = document.documentElement;  // 轉換整個頁面
-    const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN');  // 將所有 zh-HK 標籤轉為 zh-CN 標籤
-    HTMLConvertHandler.convert();  // 開始轉換
-    HTMLConvertHandler.restore();  // 回到原貌
-})()
+((async () => {
+  const convert = await OpenCC.Converter('hk', 'cn');
+  const startNode = document.documentElement; // 轉換整個頁面
+  const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN'); // 將所有 zh-HK 標籤轉為 zh-CN 標籤
+  HTMLConvertHandler.convert(); // 開始轉換
+  HTMLConvertHandler.restore(); // 回到原貌
+})());
 ```
 
 class list 包含 `ignore-opencc` 的元素會跳過後續的轉換，該節點的所有子節點都不會被轉換。

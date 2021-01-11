@@ -1,5 +1,5 @@
 const fs = require('fs');
-const OpenCC = require('../src/main.js');
+const OpenCC = require('../bundle');
 
 const text = fs.readFileSync('test/神雕侠侣.txt', { encoding: 'utf8' }) + fs.readFileSync('test/天龙八部.txt', { encoding: 'utf8' });
 const len = [...text].length;
