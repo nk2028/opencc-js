@@ -17,8 +17,8 @@ jobs:
       run: npm install -g rollup
     - name: Install dependencies
       run: npm ci
-    - name: Bundle
-      run: npm run bundle
+    - name: Build & Test
+      run: ./build.sh
     - name: Publish
       run: npm publish
       env:

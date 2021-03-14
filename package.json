@@ -1,13 +1,13 @@
 {
   "name": "opencc-js",
-  "version": "0.3.7",
-  "description": "Pure JavaScript implementation of OpenCC",
+  "version": "1.0.0",
+  "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
   "main": "bundle.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nk2028/opencc-js.git"
   },
-  "author": "Ngiox Khyen 2028 Project",
+  "author": "The nk2028 Project",
   "keywords": [
     "opencc",
     "Chinese",
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/nk2028/opencc-js#readme",
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "opencc-data": "^1.0.6"
   }
 }

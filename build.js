@@ -2,15 +2,17 @@ const fs = require('fs');
 
 function loadFile(fileName) {
   return fs
-  .readFileSync(`node_modules/opencc-data/data/${fileName}.txt`, { encoding: 'utf-8' })
+  .readFileSync(`node_modules/opencc-data/data/${fileName}.txt`, {
+    encoding: 'utf-8'
+  })
   .trimEnd()
   .split('\n')
   .map((line) => {
     const [k, vs] = line.split('\t');
-    const v = vs.split(' ')[0];
+    const v = vs.split(' ')[0]; // only select the first candidate, the subsequent candidates are ignored
     return [k, v];
   })
-  .filter(([k, v]) => k !== v) // 若有多個候選，只選擇第一個
+  .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
   .map(([k, v]) => k + ' ' + v)
   .join('\n');
 }
