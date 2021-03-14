@@ -1,5 +1,8 @@
 node_modules
 
+/data*.js
+/full.js
+
 /test/神雕侠侣.txt
 /test/天龙八部.txt
 

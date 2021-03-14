@@ -1,5 +1,5 @@
 export default {
-  input: 'src/main.js',
+  input: 'full.js',
   output: {
     file: 'bundle.js',
     format: 'umd',

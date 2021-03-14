@@ -1,0 +1,5 @@
+/.github
+/build.js
+/build.sh
+/rollup.config.js
+/test

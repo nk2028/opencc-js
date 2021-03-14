@@ -3,12 +3,6 @@
   "version": "0.3.7",
   "description": "Pure JavaScript implementation of OpenCC",
   "main": "bundle.js",
-  "scripts": {
-    "bundle": "rollup -c",
-    "lint": "eslint src/*.js",
-    "test": "node test/main.js",
-    "speedtest": "node test/speed.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nk2028/opencc-js.git"
@@ -31,13 +25,8 @@
     "url": "https://github.com/nk2028/opencc-js/issues"
   },
   "homepage": "https://github.com/nk2028/opencc-js#readme",
-  "dependencies": {
-    "opencc-data": "^1.0.5"
-  },
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^7.17.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "opencc-data": "^1.0.6"
   }
 }

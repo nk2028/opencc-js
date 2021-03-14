@@ -1,22 +1,4 @@
-import Trie from './trie';
-
-export { default as Trie } from './trie';
-
-const ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'function';
-
-/* eslint-disable */
-
-if (ENVIRONMENT_IS_NODE) {
-  var fs = require('fs');
-  var util = require('util');
-  var readFilePromise = util.promisify(fs.readFile);
-}
-
-/* eslint-enable */
-
-/* eslint-disable block-scoped-var */
-
-const DICT_FROM = {
+const variants2standard = {
   cn: ['STCharacters', 'STPhrases'],
   hk: ['HKVariantsRev', 'HKVariantsRevPhrases'],
   tw: ['TWVariantsRev', 'TWVariantsRevPhrases'],
@@ -24,7 +6,7 @@ const DICT_FROM = {
   jp: ['JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases'],
 };
 
-const DICT_TO = {
+const standard2variants = {
   cn: ['TSCharacters', 'TSPhrases'],
   hk: ['HKVariants'],
   tw: ['TWVariants'],
@@ -32,79 +14,118 @@ const DICT_TO = {
   jp: ['JPVariants'],
 };
 
-async function getDictTextNode(url) {
-  const pathName = require.resolve(`opencc-data/data/${url}.txt`);
-  const response = await readFilePromise(pathName);
-  return response.toString();
-}
+/**
+ * Trie 樹。
+ */
+export class Trie {
+  // 使用 Map 實作 Trie 樹
+  // Trie 的每個節點為一個 Map 物件
+  // key 為 code point，value 為子節點（也是一個 Map）。
+  // 如果 Map 物件有 trie_val 屬性，則該屬性為值字串，代表替換的字詞。
 
-async function getDictText(url) {
-  const response = await fetch(`https://cdn.jsdelivr.net/npm/opencc-data@1.0.5/data/${url}.txt`);
-  const text = await response.text();
-  return text;
-}
-
-const getDict = ENVIRONMENT_IS_NODE ? getDictTextNode : getDictText;
-
-async function loadDict(s, type) {
-  let dicts;
-  if (type === 'from') {
-    dicts = DICT_FROM[s];
-  } else if (type === 'to') {
-    dicts = DICT_TO[s];
+  constructor() {
+    this.map = new Map();
   }
-  const dictTexts = await Promise.all(dicts.map(getDict));
-  const t = new Trie();
-  for (const dictText of dictTexts) {
-    const lines = dictText.split('\n');
-    for (const line of lines) {
-      if (line && !line.startsWith('#')) {
-        const [l, r] = line.split('\t');
-        t.addWord(l, r.split(' ')[0]); // 若有多個候選，只選擇第一個
+
+  /**
+   * 將一項資料加入字典樹
+   * @param {string} s 要匹配的字串
+   * @param {string} v 若匹配成功，則替換為此字串
+   */
+  addWord(s, v) {
+    let { map } = this;
+    for (const c of s) {
+      const cp = c.codePointAt(0);
+      const nextMap = map.get(cp);
+      if (nextMap == null) {
+        const tmp = new Map();
+        map.set(cp, tmp);
+        map = tmp;
+      } else {
+        map = nextMap;
       }
+    }
+    map.trie_val = v;
+  }
+
+  /**
+   * 根據字典樹中的資料轉換字串。
+   * @param {string} s 要轉換的字串
+   */
+  convert(s) {
+    const t = this.map;
+    const n = s.length, arr = [];
+    let orig_i;
+    for (let i = 0; i < n;) {
+      let t_curr = t, k = 0, v;
+      for (let j = i; j < n;) {
+        const x = s.codePointAt(j);
+        j += x > 0xffff ? 2 : 1;
+
+        const t_next = t_curr.get(x);
+        if (typeof t_next === 'undefined') {
+          break;
+        }
+        t_curr = t_next;
+
+        const v_curr = t_curr.trie_val;
+        if (typeof v_curr !== 'undefined') {
+          k = j;
+          v = v_curr;
+        }
+      }
+      if (k > 0) { //有替代
+        if (orig_i !== null) {
+          arr.push(s.slice(orig_i, i));
+          orig_i = null;
+        }
+        arr.push(v);
+        i = k;
+      } else { //無替代
+        if (orig_i === null) {
+          orig_i = i;
+        }
+        i += s.codePointAt(i) > 0xffff ? 2 : 1;
+      }
+    }
+    if (orig_i !== null) {
+      arr.push(s.slice(orig_i, n));
+    }
+    return arr.join('');
+  }
+}
+
+function getDict(dictName) {
+  return OpenCCJSData[dictName];
+}
+
+function loadDict(s, type) {
+  const t = new Trie();
+  for (const dictName of (type === 'from' ? variants2standard : standard2variants)[s]) {
+    for (const line of getDict(dictName).split('\n')) {
+      const [l, r] = line.split(' ');
+      t.addWord(l, r);
     }
   }
   return t;
 }
 
-/**
- * 取得預設轉換器。
- *
- * 兩個引數的可能取值如下：
- *
- * - OpenCC 繁體：`t`
- * - 台灣繁體：`tw`
- * - 台灣繁體，台灣用詞：`twp`
- * - 香港繁體：`hk`
- * - 大陸簡體：`cn`
- * - 日本新字體：`jp`
- * @param {string} fromVariant 源中文變體類型
- * @param {string} toVariant 目標中文變體類型
- */
-export async function Converter(fromVariant, toVariant) {
-  const dictFrom = fromVariant === 't' ? null : await loadDict(fromVariant, 'from');
-  const dictTo = toVariant === 't' ? null : await loadDict(toVariant, 'to');
+export function Converter(fromVariant, toVariant) {
   return (s) => {
     let res = s;
-    if (fromVariant !== 't') res = dictFrom.convert(res);
-    if (toVariant !== 't') res = dictTo.convert(res);
+    if (fromVariant !== 't') res = loadDict(fromVariant, 'from').convert(res);
+    if (toVariant !== 't') res = loadDict(toVariant, 'to').convert(res);
     return res;
   };
 }
 
-/**
- * 取得自訂轉換器。
- * @param {Object} dict 自訂轉換詞典
- */
+
 export function CustomConverter(dict) {
   const t = new Trie();
-  Object.entries(dict).forEach(([k, v]) => {
+  dict.forEach(([k, v]) => {
     t.addWord(k, v);
   });
-  /**
-   * 執行轉換的函式。
-   * @param {string} s 要轉換的字串
-   */
+
   function convert(s) {
     return t.convert(s);
   }
