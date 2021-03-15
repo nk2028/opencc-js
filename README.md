@@ -4,7 +4,7 @@
 
 ## 載入
 
-**在 **HTML 中載入**
+**在 HTML 中載入**
 
 ```html
 <!-- 下面一條必須載入 -->
@@ -34,7 +34,7 @@ const OpenCC = require('opencc-js');
 **基本用法**
 
 ```javascript
-const converter = OpenCC.Converter('hk', 'cn'); // 香港繁體轉簡體，取值見下
+const converter = OpenCC.Converter({ from: 'hk', to: 'cn' }); // 將繁體中文（香港）轉換為簡體中文（中國大陸）
 console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 ```
 
@@ -58,11 +58,11 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 **DOM 操作**
 
 ```javascript
-const converter = OpenCC.Converter('hk', 'cn');
-const startNode = document.documentElement; // 轉換整個頁面
+const converter = OpenCC.Converter({ from: 'hk', to: 'cn' }); // 將繁體中文（香港）轉換為簡體中文（中國大陸）
+const startNode = document.documentElement; // 設定轉換起點為根節點，即轉換整個頁面
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, startNode, 'zh-HK', 'zh-CN'); // 將所有 zh-HK 標籤轉為 zh-CN 標籤
 HTMLConvertHandler.convert(); // 開始轉換
-HTMLConvertHandler.restore(); // 回到原貌
+HTMLConvertHandler.restore(); // 復原
 ```
 
 class list 包含 `ignore-opencc` 的標籤不會被轉換（包括所有子節點）。

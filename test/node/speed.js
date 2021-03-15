@@ -9,7 +9,7 @@ const loopTimes = 20;
 
 const startTime = Date.now();
 
-const converter = OpenCC.Converter('cn', 'hk');
+const converter = OpenCC.Converter({ from: 'cn', to: 'hk' });
 for (let i = 0; i < loopTimes; i += 1) {
   converter(text);
 }

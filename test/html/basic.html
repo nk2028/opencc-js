@@ -7,7 +7,7 @@
     <script src="src/data.t2cn.js"></script>
     <script src="src/main.js"></script>
     <script>
-      const converter = Converter('tw', 'cn');
+      const converter = Converter({ from: 'tw', to: 'cn' });
       const startNode = document.documentElement;
       const HTMLConvertHandler = HTMLConverter(converter, startNode, 'zh-TW', 'zh-CN');
     </script>

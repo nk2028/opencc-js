@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build & Test
-      run: ./build.sh
+      run: ./buildAndTest.sh
     - name: Publish
       run: npm publish
       env:

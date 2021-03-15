@@ -110,11 +110,13 @@ function loadDict(s, type) {
   return t;
 }
 
-export function Converter(fromVariant, toVariant) {
+export function Converter(options) {
+  if (options.from == null) throw new Error('Please provide the `from` option');
+  if (options.to == null) throw new Error('Please provide the `to` option');
   return (s) => {
     let res = s;
-    if (fromVariant !== 't') res = loadDict(fromVariant, 'from').convert(res);
-    if (toVariant !== 't') res = loadDict(toVariant, 'to').convert(res);
+    if (options.from !== 't') res = loadDict(options.from, 'from').convert(res);
+    if (options.to !== 't') res = loadDict(options.to, 'to').convert(res);
     return res;
   };
 }
@@ -133,7 +135,6 @@ export function CustomConverter(dict) {
 }
 
 export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
-  /* eslint-disable no-param-reassign */
   function convert() {
     function inner(currentNode, langMatched) {
       /* class list 包含 ignore-opencc 的元素會跳過後續的轉換 */

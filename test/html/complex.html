@@ -9,7 +9,7 @@
     <script src="../../data.t2cn.js"></script>
     <script src="../../bundle.js"></script>
     <script>
-      const converter = OpenCC.Converter('hk', 'cn');
+      const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
       const startNode = document.documentElement;
       const HTMLConvertHandler = OpenCC.HTMLConverter(converter, startNode, 'zh-HK', 'zh-CN');
     </script>

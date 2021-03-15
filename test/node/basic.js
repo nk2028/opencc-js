@@ -24,12 +24,12 @@ chai.should();
 }());
 
 (function test3() {
-  const converter = OpenCC.Converter('hk', 'cn');
+  const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
   converter('政府初步傾向試驗為綠色專線小巴設充電裝置').should.equal('政府初步倾向试验为绿色专线小巴设充电装置');
 }());
 
 (function test4() {
-  const converter = OpenCC.Converter('cn', 'twp');
+  const converter = OpenCC.Converter({ from: 'cn', to: 'twp' });
   converter('方便面').should.equal('泡麵');
 }());
 
