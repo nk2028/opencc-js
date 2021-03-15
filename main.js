@@ -110,31 +110,61 @@ function loadDict(s, type) {
   return t;
 }
 
+/**
+ * Create a preset OpenCC converter.
+ * @param {{from: string, to: string}} options Conversion options.
+ * @returns The converter that performs the conversion.
+ */
 export function Converter(options) {
   if (options.from == null) throw new Error('Please provide the `from` option');
   if (options.to == null) throw new Error('Please provide the `to` option');
-  return (s) => {
+  /**
+   * The converter that performs the conversion.
+   * @param {string} s The string to be converted.
+   * @returns {string} The converted string.
+   */
+  function convert(s) {
     let res = s;
     if (options.from !== 't') res = loadDict(options.from, 'from').convert(res);
     if (options.to !== 't') res = loadDict(options.to, 'to').convert(res);
     return res;
-  };
+  }
+  return convert;
 }
 
-
+/**
+ * Create a custom converter.
+ * @param {string[][]} dict The dictionary to be used for conversion.
+ * @returns The converter that performs the conversion.
+ */
 export function CustomConverter(dict) {
   const t = new Trie();
   dict.forEach(([k, v]) => {
     t.addWord(k, v);
   });
-
+  /**
+   * The converter that performs the conversion.
+   * @param {string} s The string to be converted.
+   * @returns {string} The converted string.
+   */
   function convert(s) {
     return t.convert(s);
   }
   return convert;
 }
 
-export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
+/**
+ * Create a HTML page converter.
+ * @param {(s: string) => string} converter The converter that performs the conversion.
+ * @param {HTMLElement} rootNode The root node for recursive conversions.
+ * @param {string} fromLangTag The lang tag to be converted.
+ * @param {string} toLangTag The lang tag of the conversion result.
+ * @returns The HTML page converter.
+ */
+export function HTMLConverter(converter, rootNode, fromLangTag, toLangTag) {
+  /**
+   * Perform the conversion on the page.
+   */
   function convert() {
     function inner(currentNode, langMatched) {
       /* class list 包含 ignore-opencc 的元素會跳過後續的轉換 */
@@ -158,22 +188,22 @@ export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
           if (currentNode.originalContent == null) {
             currentNode.originalContent = currentNode.content;
           }
-          currentNode.content = convertFunc(currentNode.originalContent);
+          currentNode.content = converter(currentNode.originalContent);
         } else if (currentNode.tagName === 'META' && currentNode.name === 'keywords') {
           if (currentNode.originalContent == null) {
             currentNode.originalContent = currentNode.content;
           }
-          currentNode.content = convertFunc(currentNode.originalContent);
+          currentNode.content = converter(currentNode.originalContent);
         } else if (currentNode.tagName === 'IMG') {
           if (currentNode.originalAlt == null) {
             currentNode.originalAlt = currentNode.alt;
           }
-          currentNode.alt = convertFunc(currentNode.originalAlt);
+          currentNode.alt = converter(currentNode.originalAlt);
         } else if (currentNode.tagName === 'INPUT' && currentNode.type === 'button') {
           if (currentNode.originalValue == null) {
             currentNode.originalValue = currentNode.value;
           }
-          currentNode.value = convertFunc(currentNode.originalValue);
+          currentNode.value = converter(currentNode.originalValue);
         }
       }
 
@@ -182,15 +212,18 @@ export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
           if (node.originalString == null) {
             node.originalString = node.nodeValue; // 存儲原始字串，以便恢復
           }
-          node.nodeValue = convertFunc(node.originalString);
+          node.nodeValue = converter(node.originalString);
         } else {
           inner(node, langMatched);
         }
       }
     }
-    inner(startNode, false);
+    inner(rootNode, false);
   }
 
+  /**
+   * Restore the page to the state before the conversion.
+   */
   function restore() {
     function inner(currentNode) {
       /* class list 包含 ignore-opencc 的元素會跳過後續的轉換 */
@@ -227,7 +260,7 @@ export function HTMLConverter(convertFunc, startNode, fromLangTag, toLangTag) {
         inner(node);
       }
     }
-    inner(startNode);
+    inner(rootNode);
   }
 
   return { convert, restore };

@@ -3,13 +3,13 @@
   <head>
     <title>北風和太陽</title>
     <meta charset="utf-8" />
-    <script src="src/data.js"></script>
-    <script src="src/data.t2cn.js"></script>
-    <script src="src/main.js"></script>
+    <script src="../../data.js"></script>
+    <script src="../../data.t2cn.js"></script>
+    <script src="../../bundle-browser.js"></script>
     <script>
-      const converter = Converter({ from: 'tw', to: 'cn' });
-      const startNode = document.documentElement;
-      const HTMLConvertHandler = HTMLConverter(converter, startNode, 'zh-TW', 'zh-CN');
+      const converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+      const rootNode = document.documentElement;
+      const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-TW', 'zh-CN');
     </script>
   </head>
   <body>

@@ -7,11 +7,11 @@
     <meta name="keywords" content="OpenCC, 中文轉換, 簡繁轉換, 測試" />
     <script src="../../data.js"></script>
     <script src="../../data.t2cn.js"></script>
-    <script src="../../bundle.js"></script>
+    <script src="../../bundle-browser.js"></script>
     <script>
       const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
-      const startNode = document.documentElement;
-      const HTMLConvertHandler = OpenCC.HTMLConverter(converter, startNode, 'zh-HK', 'zh-CN');
+      const rootNode = document.documentElement;
+      const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
     </script>
   </head>
   <body>

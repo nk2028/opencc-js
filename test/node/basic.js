@@ -1,5 +1,5 @@
 const chai = require('chai');
-const OpenCC = require('../../bundle');
+const OpenCC = require('../../bundle-node');
 
 chai.should();
 

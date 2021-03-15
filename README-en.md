@@ -56,8 +56,8 @@ console.log(convert('香蕉 蘋果 梨'));
 ```javascript
 ((async () => {
   const convert = await OpenCC.Converter('hk', 'cn');
-  const startNode = document.documentElement; // Convert the whole page
-  const HTMLConvertHandler = OpenCC.HTMLConverter(convert, startNode, 'zh-HK', 'zh-CN'); // Convert all zh-HK to zh-CN
+  const rootNode = document.documentElement; // Convert the whole page
+  const HTMLConvertHandler = OpenCC.HTMLConverter(convert, rootNode, 'zh-HK', 'zh-CN'); // Convert all zh-HK to zh-CN
   HTMLConvertHandler.convert(); // Start conversion
   HTMLConvertHandler.restore(); // Restore
 })());

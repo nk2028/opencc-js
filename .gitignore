@@ -6,4 +6,5 @@ node_modules
 /test/神雕侠侣.txt
 /test/天龙八部.txt
 
-/bundle.js
+/bundle-browser.js
+/bundle-node.js
