@@ -1,25 +1,27 @@
 # opencc-js [![](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
-開放中文轉換 JavaScript 版
+The JavaScript version of Open Chinese Convert (OpenCC)
 
-## 載入
+[繁體中文（臺灣）](README-zh-TW.md) - [简体中文（中国大陆）](README-zh-CN.md)
 
-**在 HTML 中載入**
+## Import
 
-依次載入以下四個 `script` 標籤：
+**Import opencc-js in HTML**
+
+Load the following four `script` tags in sequence:
 
 ```html
-<!-- 下面一條必須載入 -->
+<!-- The following one is required -->
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.min.js"></script>
-<!-- 不需要簡轉繁時，可刪除下面一條，以加快載入 -->
+<!-- The following one can be removed for speed if you do not need to convert from Simplified Chinese to Traditional Chinese -->
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.cn2t.min.js"></script>
-<!-- 不需要繁轉簡時，可刪除下面一條，以加快載入 -->
+<!-- The following one can be removed for speed if you do not need to convert from Traditional Chinese to Simplified Chinese -->
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.t2cn.min.js"></script>
-<!-- 下面一條必須載入 -->
+<!-- The following one is required -->
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/bundle-broswer.min.js"></script>
 ```
 
-**或在 Node.js 中載入**
+**Import opencc-js in Node.js**
 
 ```sh
 npm install opencc-js
@@ -29,12 +31,12 @@ npm install opencc-js
 const OpenCC = require('opencc-js');
 ```
 
-## 使用
+## Usage
 
-**基本用法**
+**Basic usage**
 
 ```javascript
-// 將繁體中文（香港）轉換為簡體中文（中國大陸）
+// Convert Traditional Chinese (Hong Kong) to Simplified Chinese (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 ```
@@ -44,8 +46,9 @@ console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 - `twp`: Traditional Chinese (Taiwan, with phrase conversion)
 - `hk`: Traditional Chinese (Hong Kong)
 - `jp`: Japanese Shinjitai
+- `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
 
-**自訂轉換器**
+**Custom Converter**
 
 ```javascript
 const converter = OpenCC.CustomConverter([
@@ -56,19 +59,19 @@ const converter = OpenCC.CustomConverter([
 console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 ```
 
-**DOM 操作**
+**DOM operations**
 
 ```javascript
-// 將繁體中文（香港）轉換為簡體中文（中國大陸）
+// Convert Traditional Chinese (Hong Kong) to Simplified Chinese (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
-// 設定轉換起點為根節點，即轉換整個頁面
+// Set the conversion starting point to the root node, i.e. convert the whole page
 const rootNode = document.documentElement;
-// 將所有 zh-HK 標籤轉為 zh-CN 標籤
+// Convert all zh-HK tags to zh-CN tags
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-// 開始轉換
+// Start conversion
 HTMLConvertHandler.convert();
-// 復原
+// Restore
 HTMLConvertHandler.restore();
 ```
 
-class list 包含 `ignore-opencc` 的標籤不會被轉換（包括該標籤的所有子節點）。
+All the tags which contains `ignore-opencc` in the class list will not be converted (including all sub-nodes of the tags).
