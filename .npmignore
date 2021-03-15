@@ -2,4 +2,5 @@
 /build.js
 /buildAndTest.sh
 /rollup.config.js
+/full.js
 /test

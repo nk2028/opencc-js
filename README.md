@@ -12,13 +12,13 @@ Load the following four `script` tags in sequence:
 
 ```html
 <!-- The following one is required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>
 <!-- The following one can be removed for speed if you do not need to convert from Simplified Chinese to Traditional Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.cn2t.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>
 <!-- The following one can be removed for speed if you do not need to convert from Traditional Chinese to Simplified Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.t2cn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>
 <!-- The following one is required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/bundle-broswer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>
 ```
 
 **Import opencc-js in Node.js**

@@ -102,7 +102,7 @@ function getDict(dictName) {
 function loadDict(s, type) {
   const t = new Trie();
   for (const dictName of (type === 'from' ? variants2standard : standard2variants)[s]) {
-    for (const line of getDict(dictName).split('\n')) {
+    for (const line of getDict(dictName).split('|')) {
       const [l, r] = line.split(' ');
       t.addWord(l, r);
     }

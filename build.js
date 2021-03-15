@@ -14,7 +14,7 @@ function loadFile(fileName) {
   })
   .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
   .map(([k, v]) => k + ' ' + v)
-  .join('\n');
+  .join('|');
 }
 
 // Build data.js
@@ -41,7 +41,7 @@ const fileList = [
 arr.push('const OpenCCJSData = {};\n');
 
 for (const fileName of fileList) {
-  arr.push(`OpenCCJSData.${fileName} = \`${loadFile(fileName)}\`;\n`);
+  arr.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
 }
 
 fs.writeFileSync('data.js', arr.join('\n'));
@@ -51,7 +51,7 @@ fs.writeFileSync('data.js', arr.join('\n'));
 const arr2 = [];
 
 for (const fileName of ['STCharacters', 'STPhrases']) {
-  arr2.push(`OpenCCJSData.${fileName} = \`${loadFile(fileName)}\`;\n`);
+  arr2.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
 }
 
 fs.writeFileSync('data.cn2t.js', arr2.join('\n'));
@@ -61,7 +61,7 @@ fs.writeFileSync('data.cn2t.js', arr2.join('\n'));
 const arr3 = [];
 
 for (const fileName of ['TSCharacters', 'TSPhrases']) {
-  arr3.push(`OpenCCJSData.${fileName} = \`${loadFile(fileName)}\`;\n`);
+  arr3.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
 }
 
-fs.writeFileSync('data.t2cn.js', arr3.join(''));
+fs.writeFileSync('data.t2cn.js', arr3.join('\n'));

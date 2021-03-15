@@ -10,13 +10,13 @@
 
 ```html
 <!-- 下面一条必须加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>
 <!-- 不需要简转繁时，可删除下面一条，以加快加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.cn2t.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>
 <!-- 不需要繁转简时，可删除下面一条，以加快加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/data.t2cn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>
 <!-- 下面一条必须加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.0/bundle-broswer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>
 ```
 
 **在 Node.js 中加载**
