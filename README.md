@@ -1,8 +1,8 @@
-# opencc-js [![](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+# opencc-js [![](https://badge.fury.io/js/opencc-js.svg)](https://www.npmjs.com/package/opencc-js) [![](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
 
 The JavaScript version of Open Chinese Convert (OpenCC)
 
-[繁體中文（臺灣）](README-zh-TW.md) - [简体中文（中国大陆）](README-zh-CN.md)
+[繁體版](README-zh-TW.md) - [简体版](README-zh-CN.md)
 
 ## Import
 
