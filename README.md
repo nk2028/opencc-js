@@ -11,14 +11,10 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Load the following four `script` tags in sequence:
 
 ```html
-<!-- The following one is required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>
-<!-- The following one can be removed for speed if you do not need to convert from Simplified Chinese to Traditional Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>
-<!-- The following one can be removed for speed if you do not need to convert from Traditional Chinese to Simplified Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>
-<!-- The following one is required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>            <!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>       <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>       <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>  <!-- Required -->
 ```
 
 **Import opencc-js in Node.js**
@@ -62,16 +58,14 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 **DOM operations**
 
 ```javascript
-// Convert Traditional Chinese (Hong Kong) to Simplified Chinese (Mainland China)
+// Set Chinese convert from Traditional (Hong Kong) to Simplified (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 // Set the conversion starting point to the root node, i.e. convert the whole page
 const rootNode = document.documentElement;
 // Convert all zh-HK tags to zh-CN tags
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-// Start conversion
-HTMLConvertHandler.convert();
-// Restore
-HTMLConvertHandler.restore();
+HTMLConvertHandler.convert();  // Start conversion
+HTMLConvertHandler.restore();  // Restore
 ```
 
 All the tags which contains `ignore-opencc` in the class list will not be converted (including all sub-nodes of the tags).
