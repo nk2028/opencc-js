@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <title>北風和太陽</title>
+    <meta charset="utf-8" />
+    <script src="../../data.js"></script>
+    <script src="../../data.t2cn.js"></script>
+    <script src="../../bundle-browser.js"></script>
+    <script>
+      const converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+      const rootNode = document.documentElement;
+      const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-TW', 'zh-CN');
+    </script>
+  </head>
+  <body>
+    <h1>北風和太陽</h1>
+    <p>有一天，北風和太陽比賽，看看誰的本事大。這時候，有一個人在路上走，他的身上穿著一件大衣。</p>
+    <p>北風對太陽說：「我們來比一比，看誰能把他的大衣脫下來。」</p>
+    <p>於是，北風就用力吹！那個人一邊走一邊說：「好冷啊！」，他把大衣拉得更緊。北風吹累了，他對太陽說：「你來試試吧！」</p>
+    <p>太陽從雲裡出來，溫和的陽光照在那個人身上，他走了一會兒，覺得有點兒熱了，沒多久，就開始流汗了。於是，他自己就把大衣脫了下來。</p>
+    <p>北風說：「太陽，還是你的本事大。」</p>
+    <p>
+      <input type="button" onclick="HTMLConvertHandler.convert()" value="轉為簡體" />
+      <input type="button" onclick="HTMLConvertHandler.restore()" value="恢復為簡體" />
+    </p>
+  </body>
+</html>

@@ -24,13 +24,5 @@ jobs:
       run: npm install -g rollup
     - name: Install dependencies
       run: npm ci
-    - name: Bundle
-      run: npm run bundle
-    - name: Test
-      run: npm test
-    - name: Speed Test
-      run: |
-        test/prepare.sh
-        npm run speedtest
-    - name: Lint
-      run: npm run lint
+    - name: Build & Test
+      run: ./buildAndTest.sh

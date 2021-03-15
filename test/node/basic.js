@@ -1,7 +1,5 @@
-'use strict';
-
 const chai = require('chai');
-const OpenCC = require('../bundle');
+const OpenCC = require('../../bundle-node');
 
 chai.should();
 
@@ -26,18 +24,20 @@ chai.should();
 }());
 
 (function test3() {
-  OpenCC.Converter('hk', 'cn')
-  .then(convert => convert('政府初步傾向試驗為綠色專線小巴設充電裝置')
-  .should.equal('政府初步倾向试验为绿色专线小巴设充电装置'));
+  const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
+  converter('政府初步傾向試驗為綠色專線小巴設充電裝置').should.equal('政府初步倾向试验为绿色专线小巴设充电装置');
 }());
 
 (function test4() {
-  OpenCC.Converter('cn', 'twp')
-  .then(convert => convert('方便面')
-  .should.equal('泡麵'));
+  const converter = OpenCC.Converter({ from: 'cn', to: 'twp' });
+  converter('方便面').should.equal('泡麵');
 }());
 
 (function test5() {
-  const convert = OpenCC.CustomConverter({ '香蕉': '🍌️', '蘋果': '🍎️', '梨': '🍐️' });
-  convert('香蕉蘋果梨').should.equal('🍌️🍎️🍐️');
+  const converter = OpenCC.CustomConverter([
+    ['香蕉', '🍌️'],
+    ['蘋果', '🍎️'],
+    ['梨', '🍐️'],
+  ]);
+  converter('香蕉蘋果梨').should.equal('🍌️🍎️🍐️');
 })();

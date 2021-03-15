@@ -1,19 +1,13 @@
 {
   "name": "opencc-js",
-  "version": "0.3.7",
-  "description": "Pure JavaScript implementation of OpenCC",
-  "main": "bundle.js",
-  "scripts": {
-    "bundle": "rollup -c",
-    "lint": "eslint src/*.js",
-    "test": "node test/main.js",
-    "speedtest": "node test/speed.js"
-  },
+  "version": "1.0.0",
+  "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
+  "main": "bundle-node.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nk2028/opencc-js.git"
   },
-  "author": "Ngiox Khyen 2028 Project",
+  "author": "The nk2028 Project",
   "keywords": [
     "opencc",
     "Chinese",
@@ -31,13 +25,8 @@
     "url": "https://github.com/nk2028/opencc-js/issues"
   },
   "homepage": "https://github.com/nk2028/opencc-js#readme",
-  "dependencies": {
-    "opencc-data": "^1.0.5"
-  },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "eslint": "^7.17.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "chai": "^4.3.4",
+    "opencc-data": "^1.0.6"
   }
 }
