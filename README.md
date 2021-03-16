@@ -8,7 +8,7 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 
 **Import opencc-js in HTML**
 
-Load the following four `script` tags in sequence:
+Load the following four `script` in sequence:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>            <!-- Required -->
@@ -66,7 +66,7 @@ HTML attribute `lang='*'` defines the targets.
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 // Set the conversion starting point to the root node, i.e. convert the whole page
 const rootNode = document.documentElement;
-// Convert all zh-HK tags to zh-CN tags
+// Convert all zh-HK attributes to zh-CN
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
 HTMLConvertHandler.convert();  // Convert  -> 汉语
 HTMLConvertHandler.restore();  // Restore  -> 漢語
