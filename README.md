@@ -57,6 +57,10 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **DOM operations**
 
+```html
+<span lang="zh-HK">繁體中文</span>
+```
+
 ```javascript
 // Set Chinese convert from Traditional (Hong Kong) to Simplified (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
