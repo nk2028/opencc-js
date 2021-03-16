@@ -55,6 +55,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **DOM 操作**
 
+HTML屬性`lang='*'`定義了目標。 
 ```html
 <span lang="zh-HK">漢語</span>
 ```
