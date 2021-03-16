@@ -61,6 +61,10 @@ HTML attribute `lang='*'` defines the targets.
 <span lang="zh-HK">漢語</span>
 ```
 
+```html
+<span lang="zh-HK">漢語</span>
+```
+
 ```javascript
 // Set Chinese convert from Traditional (Hong Kong) to Simplified (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
