@@ -56,7 +56,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 **DOM 操作**
 
 ```html
-<span lang="zh-HK">繁體中文</span>
+<span lang="zh-HK">漢語</span>
 ```
 
 ```javascript
@@ -66,10 +66,8 @@ const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 const rootNode = document.documentElement;
 // 将所有 zh-HK 标签转为 zh-CN 标签
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-// 开始转换
-HTMLConvertHandler.convert();
-// 复原
-HTMLConvertHandler.restore();
+HTMLConvertHandler.convert();// 开始转换  -> 汉语 
+HTMLConvertHandler.restore();// 复原     -> 漢語
 ```
 
 class list 包含 `ignore-opencc` 的标签不会被转换（包括该标签的所有子节点）。

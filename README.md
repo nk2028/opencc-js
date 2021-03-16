@@ -58,7 +58,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 **DOM operations**
 
 ```html
-<span lang="zh-HK">繁體中文</span>
+<span lang="zh-HK">漢語</span>
 ```
 
 ```javascript
@@ -68,8 +68,8 @@ const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 const rootNode = document.documentElement;
 // Convert all zh-HK tags to zh-CN tags
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-HTMLConvertHandler.convert();  // Start conversion
-HTMLConvertHandler.restore();  // Restore
+HTMLConvertHandler.convert();  // Convert  -> 汉语
+HTMLConvertHandler.restore();  // Restore  -> 漢語
 ```
 
 All the tags which contains `ignore-opencc` in the class list will not be converted (including all sub-nodes of the tags).
