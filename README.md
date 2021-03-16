@@ -8,7 +8,7 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 
 **Import opencc-js in HTML**
 
-Load the following four `script` tags in sequence:
+Load the following four `script` in sequence:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>            <!-- Required -->
@@ -39,7 +39,7 @@ console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 
 - `cn`: Simplified Chinese (Mainland China)
 - `tw`: Traditional Chinese (Taiwan)
-  - `twp`: Traditional Chinese (Taiwan, with phrase conversion)
+  - `twp`: with phrase conversion
 - `hk`: Traditional Chinese (Hong Kong)
 - `jp`: Japanese Shinjitai
 - `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
@@ -56,7 +56,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 ```
 
 **DOM operations**
-
+HTML attribute `lang='*'` defines the targets.
 ```html
 <span lang="zh-HK">漢語</span>
 ```
@@ -66,7 +66,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 // Set the conversion starting point to the root node, i.e. convert the whole page
 const rootNode = document.documentElement;
-// Convert all zh-HK tags to zh-CN tags
+// Convert all zh-HK attributes to zh-CN
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
 HTMLConvertHandler.convert();  // Convert  -> 汉语
 HTMLConvertHandler.restore();  // Restore  -> 漢語
