@@ -9,14 +9,10 @@
 依次加载以下四个 `script` 标签：
 
 ```html
-<!-- 下面一条必须加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>
-<!-- 不需要简转繁时，可删除下面一条，以加快加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>
-<!-- 不需要繁转简时，可删除下面一条，以加快加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>
-<!-- 下面一条必须加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>        <!-- 必须加载 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>    <!-- 需要简转繁时 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>    <!-- 需要繁转简时 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script><!-- 必须加载 -->
 ```
 
 **在 Node.js 中加载**
@@ -41,7 +37,7 @@ console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 
 - `cn`: 简体中文（中国大陆）
 - `tw`: 繁体中文（台湾）
-- `twp`: 繁体中文（台湾，且转换词汇）
+  - `twp`: 繁体中文（台湾，且转换词汇）
 - `hk`: 繁体中文（香港）
 - `jp`: 日本新字体
 - `t`: 繁体中文（OpenCC 标准。除非你知道自己在做什么，否则请勿使用）
@@ -59,6 +55,10 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **DOM 操作**
 
+```html
+<span lang="zh-HK">漢語</span>
+```
+
 ```javascript
 // 将繁体中文（香港）转换为简体中文（中国大陆）
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
@@ -66,10 +66,8 @@ const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 const rootNode = document.documentElement;
 // 将所有 zh-HK 标签转为 zh-CN 标签
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-// 开始转换
-HTMLConvertHandler.convert();
-// 复原
-HTMLConvertHandler.restore();
+HTMLConvertHandler.convert();// 开始转换  -> 汉语 
+HTMLConvertHandler.restore();// 复原     -> 漢語
 ```
 
 class list 包含 `ignore-opencc` 的标签不会被转换（包括该标签的所有子节点）。
