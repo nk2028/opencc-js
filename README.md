@@ -39,7 +39,7 @@ console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 
 - `cn`: Simplified Chinese (Mainland China)
 - `tw`: Traditional Chinese (Taiwan)
-- `twp`: Traditional Chinese (Taiwan, with phrase conversion)
+  - `twp`: Traditional Chinese (Taiwan, with phrase conversion)
 - `hk`: Traditional Chinese (Hong Kong)
 - `jp`: Japanese Shinjitai
 - `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
