@@ -66,7 +66,7 @@ HTML attribute `lang='*'` defines the targets.
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 // Set the conversion starting point to the root node, i.e. convert the whole page
 const rootNode = document.documentElement;
-// Convert all zh-HK attributes to zh-CN
+// Convert all elements with attributes lang='zh-HK'. Change attribute value to lang='zh-CN'
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
 HTMLConvertHandler.convert();  // Convert  -> 汉语
 HTMLConvertHandler.restore();  // Restore  -> 漢語
