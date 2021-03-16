@@ -37,7 +37,7 @@ console.log(converter('漢字，簡體字')); // output: 汉字，简体字
 
 - `cn`: 簡體中文（中國大陸）
 - `tw`: 繁體中文（臺灣）
-  - `twp`: 繁體中文（臺灣，且轉換詞彙）
+  - `twp`: 且轉換詞彙
 - `hk`: 繁體中文（香港）
 - `jp`: 日本新字體
 - `t`: 繁體中文（OpenCC 標準。除非你知道自己在做什麼，否則請勿使用）
@@ -55,6 +55,7 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **DOM 操作**
 
+HTML屬性`lang='*'`定義了目標。 
 ```html
 <span lang="zh-HK">漢語</span>
 ```
