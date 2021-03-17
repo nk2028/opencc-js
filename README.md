@@ -11,10 +11,10 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Load the following four `script` in sequence:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>            <!-- Required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>       <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>       <!-- For Traditional Chinese to Simplified Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script>  <!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>          <!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script><!-- Required -->
 ```
 
 **Import opencc-js in Node.js**
@@ -34,12 +34,12 @@ const OpenCC = require('opencc-js');
 ```javascript
 // Convert Traditional Chinese (Hong Kong) to Simplified Chinese (Mainland China)
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
-console.log(converter('漢字，簡體字')); // output: 汉字，简体字
+console.log(converter('漢語')); // output: 汉语
 ```
 
 - `cn`: Simplified Chinese (Mainland China)
 - `tw`: Traditional Chinese (Taiwan)
-  - `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
+    - `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
 - `hk`: Traditional Chinese (Hong Kong)
 - `jp`: Japanese Shinjitai
 - `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
@@ -56,7 +56,9 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 ```
 
 **DOM operations**
+
 HTML attribute `lang='*'` defines the targets.
+
 ```html
 <span lang="zh-HK">漢語</span>
 ```
@@ -68,8 +70,8 @@ const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 const rootNode = document.documentElement;
 // Convert all elements with attributes lang='zh-HK'. Change attribute value to lang='zh-CN'
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-HTMLConvertHandler.convert();  // Convert  -> 汉语
-HTMLConvertHandler.restore();  // Restore  -> 漢語
+HTMLConvertHandler.convert(); // Convert  -> 汉语
+HTMLConvertHandler.restore(); // Restore  -> 漢語
 ```
 
 All the tags which contains `ignore-opencc` in the class list will not be converted (including all sub-nodes of the tags).

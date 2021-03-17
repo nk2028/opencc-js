@@ -32,12 +32,12 @@ const OpenCC = require('opencc-js');
 ```javascript
 // 將繁體中文（香港）轉換為簡體中文（中國大陸）
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
-console.log(converter('漢字，簡體字')); // output: 汉字，简体字
+console.log(converter('漢語')); // output: 汉语
 ```
 
 - `cn`: 簡體中文（中國大陸）
 - `tw`: 繁體中文（臺灣）
-  - `twp`: 且轉換詞彙（例如：自行車 -> 腳踏車）
+    - `twp`: 且轉換詞彙（例如：自行車 -> 腳踏車）
 - `hk`: 繁體中文（香港）
 - `jp`: 日本新字體
 - `t`: 繁體中文（OpenCC 標準。除非你知道自己在做什麼，否則請勿使用）
@@ -55,10 +55,12 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **DOM 操作**
 
-HTML屬性`lang='*'`定義了目標。 
+HTML 屬性 `lang='*'` 定義了目標。 
+
 ```html
 <span lang="zh-HK">漢語</span>
 ```
+
 ```javascript
 // 將繁體中文（香港）轉換為簡體中文（中國大陸）
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
@@ -67,7 +69,7 @@ const rootNode = document.documentElement;
 // 將所有 zh-HK 標籤轉為 zh-CN 標籤
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
 HTMLConvertHandler.convert(); // 開始轉換  -> 汉语 
-HTMLConvertHandler.restore(); // 復原     -> 漢語
+HTMLConvertHandler.restore(); // 復原      -> 漢語
 ```
 
 class list 包含 `ignore-opencc` 的標籤不會被轉換（包括該標籤的所有子節點）。
