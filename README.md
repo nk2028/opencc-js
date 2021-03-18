@@ -6,9 +6,9 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 
 ## Import
 
-**Import opencc-js in HTML**
+**Import opencc-js in HTML page**
 
-Load the following four `script` in sequence:
+Import in HTML pages:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>          <!-- Required -->
@@ -17,7 +17,7 @@ Load the following four `script` in sequence:
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script><!-- Required -->
 ```
 
-**Import opencc-js in Node.js**
+**Import opencc-js in Node.js script**
 
 ```sh
 npm install opencc-js
@@ -36,13 +36,6 @@ const OpenCC = require('opencc-js');
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 console.log(converter('漢語')); // output: 汉语
 ```
-
-- `cn`: Simplified Chinese (Mainland China)
-- `tw`: Traditional Chinese (Taiwan)
-    - `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
-- `hk`: Traditional Chinese (Hong Kong)
-- `jp`: Japanese Shinjitai
-- `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
 
 **Custom Converter**
 
@@ -74,4 +67,21 @@ HTMLConvertHandler.convert(); // Convert  -> 汉语
 HTMLConvertHandler.restore(); // Restore  -> 漢語
 ```
 
-All the tags which contains `ignore-opencc` in the class list will not be converted (including all sub-nodes of the tags).
+## API
+* `.Converter({})`: declare the converter's direction via locals.
+  * default: `{ from: 'tw', to: 'cn' }`
+  * syntax : `{ from: local1, to: local2 }`
+* locals: letter codes defining a writing local tradition, occasionally its idiomatic habits.
+  * `cn`: Simplified Chinese (Mainland China)
+  * `tw`: Traditional Chinese (Taiwan)
+    * `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
+  * `hk`: Traditional Chinese (Hong Kong)
+  * `jp`: Japanese Shinjitai
+  * `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
+* `.CustomConverter([])` : defines custom dictionary.
+  * default: `[]`
+  * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
+* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to converts all HTML elements text content from a starting root node and down, into the target local. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values.
+* `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`). 
+  * syntax convention: [IETF languages codes](https://www.w3.org/International/articles/bcp47/#macro), mainly `zh-TW`, `zh-HK`, `zh-CN`, `zh-SG`,…
+* `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted. 
