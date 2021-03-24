@@ -11,10 +11,10 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Import in HTML pages:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.min.js"></script>          <!-- Required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.cn2t.min.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/data.t2cn.min.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.1/bundle-browser.min.js"></script><!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.min.js"></script>          <!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.cn2t.min.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.t2cn.min.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/bundle-browser.min.js"></script><!-- Required -->
 ```
 
 **Import opencc-js in Node.js script**
