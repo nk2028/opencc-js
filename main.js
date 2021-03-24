@@ -118,6 +118,8 @@ function loadDict(s, type) {
 export function Converter(options) {
   if (options.from == null) throw new Error('Please provide the `from` option');
   if (options.to == null) throw new Error('Please provide the `to` option');
+  const dictFrom = loadDict(options.from, 'from');
+  const dictTo = loadDict(options.to, 'to');
   /**
    * The converter that performs the conversion.
    * @param {string} s The string to be converted.
@@ -125,8 +127,8 @@ export function Converter(options) {
    */
   function convert(s) {
     let res = s;
-    if (options.from !== 't') res = loadDict(options.from, 'from').convert(res);
-    if (options.to !== 't') res = loadDict(options.to, 'to').convert(res);
+    if (options.from !== 't') res = dictFrom.convert(res);
+    if (options.to !== 't') res = dictTo.convert(res);
     return res;
   }
   return convert;
