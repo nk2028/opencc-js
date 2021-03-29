@@ -9,10 +9,10 @@
 依次加载以下四个 `script` 标签：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.min.js"></script>          <!-- 必须加载 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.cn2t.min.js"></script>     <!-- 需要简转繁时 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/data.t2cn.min.js"></script>     <!-- 需要繁转简时 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.2/bundle-browser.min.js"></script><!-- 必须加载 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.min.js"></script>          <!-- 必须加载 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.cn2t.min.js"></script>     <!-- 需要简转繁时 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.t2cn.min.js"></script>     <!-- 需要繁转简时 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/bundle-browser.min.js"></script><!-- 必须加载 -->
 ```
 
 **在 Node.js 中加载**

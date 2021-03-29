@@ -29,11 +29,16 @@ chai.should();
 }());
 
 (function test4() {
+  const converter = OpenCC.Converter({ from: 't', to: 'cn' });
+  converter('漢語').should.equal('汉语');
+}());
+
+(function test5() {
   const converter = OpenCC.Converter({ from: 'cn', to: 'twp' });
   converter('方便面').should.equal('泡麵');
 }());
 
-(function test5() {
+(function test6() {
   const converter = OpenCC.CustomConverter([
     ['香蕉', '🍌️'],
     ['蘋果', '🍎️'],

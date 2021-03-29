@@ -1,6 +1,6 @@
 {
   "name": "opencc-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
   "main": "bundle-node.js",
   "repository": {

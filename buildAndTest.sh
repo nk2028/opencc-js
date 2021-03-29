@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Build
 
 node build.js
