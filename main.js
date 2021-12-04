@@ -52,7 +52,7 @@ export class Trie {
    * 根據字典樹中的資料轉換字串。
    * @param {string} s 要轉換的字串
    */
-  convert(s) {
+  convert(s = '') {
     const t = this.map;
     const n = s.length, arr = [];
     let orig_i;
