@@ -9,10 +9,10 @@
 依次載入以下四個 `script` 標籤：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.min.js"></script>          <!-- 必須載入 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.cn2t.min.js"></script>     <!-- 需要簡轉繁時 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/data.t2cn.min.js"></script>     <!-- 需要繁轉簡時 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.3/bundle-browser.min.js"></script><!-- 必須載入 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.min.js"></script>          <!-- 必須載入 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.cn2t.min.js"></script>     <!-- 需要簡轉繁時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.t2cn.min.js"></script>     <!-- 需要繁轉簡時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/bundle-browser.min.js"></script><!-- 必須載入 -->
 ```
 
 **在 Node.js 中載入**
