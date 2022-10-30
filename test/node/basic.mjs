@@ -1,5 +1,5 @@
 import chai from 'chai';
-import * as OpenCC from 'opencc-js';
+import * as OpenCC from 'opencc-js/core';
 import * as loc from 'opencc-js/preset';
 
 const Converter = OpenCC.ConverterBuilder(loc);

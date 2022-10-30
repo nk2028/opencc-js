@@ -5,10 +5,7 @@
   "main": "./dist/umd/full.js",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/esm/core.js",
-      "require": "./dist/umd/full.js"
-    },
+    ".": "./dist/umd/full.js",
     "./preset": "./dist/esm/preset/full.js",
     "./*": "./dist/esm/*.js"
   },
