@@ -2,7 +2,20 @@
   "name": "opencc-js",
   "version": "1.0.4",
   "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
-  "main": "bundle-node.js",
+  "main": "./dist/umd/full.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/core.js",
+      "require": "./dist/umd/full.js"
+    },
+    "./preset": "./dist/esm/preset/full.js",
+    "./*": "./dist/esm/*.js"
+  },
+  "scripts": {
+    "build": "node build.js && rollup -c",
+    "test": "node test/node/basic.mjs && node test/node/basic.cjs"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nk2028/opencc-js.git"

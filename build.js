@@ -1,67 +1,97 @@
-const fs = require('fs');
+import fs from 'fs';
+import { variants2standard, standard2variants, presets } from './src/data-config.js';
+import { fileURLToPath } from 'url';
+
+function getAbsPath(relativePath) {
+  return fileURLToPath(new URL(relativePath, import.meta.url));
+}
+
+const fileContentCache = {};
 
 function loadFile(fileName) {
-  return fs
-  .readFileSync(`node_modules/opencc-data/data/${fileName}.txt`, {
-    encoding: 'utf-8'
-  })
-  .trimEnd()
-  .split('\n')
-  .map((line) => {
-    const [k, vs] = line.split('\t');
-    const v = vs.split(' ')[0]; // only select the first candidate, the subsequent candidates are ignored
-    return [k, v];
-  })
-  .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
-  .map(([k, v]) => k + ' ' + v)
-  .join('|');
+  if (!fileContentCache[fileName]) {
+    fileContentCache[fileName] = fs
+      .readFileSync(`node_modules/opencc-data/data/${fileName}.txt`, {
+        encoding: 'utf-8'
+      })
+      .trimEnd()
+      .split('\n')
+      .map((line) => {
+        const [k, vs] = line.split('\t');
+        const v = vs.split(' ')[0]; // only select the first candidate, the subsequent candidates are ignored
+        return [k, v];
+      })
+      .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
+      .map(([k, v]) => k + ' ' + v)
+      .join('|');
+    const outputFile = getAbsPath(`./dist/esm/dict/${fileName}.js`);
+    const outputCode = `export default "${fileContentCache[fileName]}";\n`;
+    fs.writeFileSync(outputFile, outputCode);
+  }
+  return fileContentCache[fileName];
 }
 
-// Build data.js
+function getPresetCode(cfg) {
+  const code = { import: [], from: [], to: [] };
+  ['from', 'to'].forEach(type => {
+    cfg[type].forEach(loc => {
+      code.import.push(`import ${type}_${loc} from "../${type}/${loc}.js";`);
+      code[type].push(`${loc}: ${type}_${loc}`);
+    });
+  });
+  return `${code.import.join('\n')}
 
-const arr = [];
+const fromDicts = {
+    ${code.from.join(',\n    ')}
+};
 
-const fileList = [
-  'HKVariants',
-  'HKVariantsRev',
-  'HKVariantsRevPhrases',
-  'JPShinjitaiCharacters',
-  'JPShinjitaiPhrases',
-  'JPVariants',
-  'JPVariantsRev',
-  'TWPhrasesIT',
-  'TWPhrasesName',
-  'TWPhrasesOther',
-  'TWPhrasesRev',
-  'TWVariants',
-  'TWVariantsRev',
-  'TWVariantsRevPhrases',
-];
+const toDicts = {
+    ${code.to.join(',\n    ')}
+};
 
-arr.push('const OpenCCJSData = {};\n');
-
-for (const fileName of fileList) {
-  arr.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
+export {fromDicts as from, toDicts as to};`;
 }
 
-fs.writeFileSync('data.js', arr.join('\n'));
+// create directories if not exists.
+['from', 'to', 'dict', 'preset'].forEach(d => {
+  const dirpath = getAbsPath(`./dist/esm/${d}`);
+  if (!fs.existsSync(dirpath)) {
+    fs.mkdirSync(dirpath, { recursive: true });
+  }
+});
 
-// Build data.cn2t.js
+// update dict/*, from/*, to/*
+['from', 'to'].forEach(type => {
+  const localeCollection = type === 'from' ? variants2standard : standard2variants;
+  for (const locale in localeCollection) {
+    const outputFile = getAbsPath(`./dist/esm/${type}/${locale}.js`);
+    const outputCode = [];
+    localeCollection[locale].forEach(dictName => {
+      outputCode.push(`import ${dictName} from '../dict/${dictName}.js';`);
+      loadFile(dictName);
+    });
+    outputCode.push(`\nexport default [${localeCollection[locale].join(', ')}];`);
+    fs.writeFileSync(outputFile, outputCode.join('\n'));
+  }
+});
 
-const arr2 = [];
+// update from/index.js to/index.js
+['from', 'to'].forEach(type => {
+  const localeCollection = type === 'from' ? variants2standard : standard2variants;
+  const locales = Object.keys(localeCollection);
+  const code = locales.map(loc => `import ${loc} from "./${loc}.js";`);
+  code.push('');
+  code.push(`export { ${locales.join(', ')} }`);
+  fs.writeFileSync(getAbsPath(`./dist/esm/${type}/index.js`), code.join('\n'));
+});
 
-for (const fileName of ['STCharacters', 'STPhrases']) {
-  arr2.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
-}
+// update presets
+presets.forEach(o => {
+  fs.writeFileSync(
+    getAbsPath(`./dist/esm/preset/${o.filename}.js`),
+    getPresetCode(o)
+  );
+});
 
-fs.writeFileSync('data.cn2t.js', arr2.join('\n'));
-
-// Build data.t2cn.js
-
-const arr3 = [];
-
-for (const fileName of ['TSCharacters', 'TSPhrases']) {
-  arr3.push(`OpenCCJSData.${fileName} = "${loadFile(fileName)}";\n`);
-}
-
-fs.writeFileSync('data.t2cn.js', arr3.join('\n'));
+// copy src/core.js to dist/core.js
+fs.copyFileSync('src/main.js', 'dist/esm/core.js');

@@ -1,23 +1,24 @@
-const variants2standard = {
-  cn: ['STCharacters', 'STPhrases'],
-  hk: ['HKVariantsRev', 'HKVariantsRevPhrases'],
-  tw: ['TWVariantsRev', 'TWVariantsRevPhrases'],
-  twp: ['TWVariantsRev', 'TWVariantsRevPhrases', 'TWPhrasesRev'],
-  jp: ['JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases'],
-};
+/**
+ * 字典，範例："a alpha|b beta" 或 [["a", "alpha"], ["b", "beta"]]
+ * @typedef {string|string[][]} DictLike
+ */
 
-const standard2variants = {
-  cn: ['TSCharacters', 'TSPhrases'],
-  hk: ['HKVariants'],
-  tw: ['TWVariants'],
-  twp: ['TWVariants', 'TWPhrasesIT', 'TWPhrasesName', 'TWPhrasesOther'],
-  jp: ['JPVariants'],
-};
+/**
+ * 字典群組
+ * @typedef {DictLike[]} DictGroup
+ */
+
+/**
+ * 地區設定資料
+ * @typedef {object} LocalePreset
+ * @property {object.<string, DictGroup>} from
+ * @property {object.<string, DictGroup>} to
+ */
 
 /**
  * Trie 樹。
  */
-export class Trie {
+ export class Trie {
   // 使用 Map 實作 Trie 樹
   // Trie 的每個節點為一個 Map 物件
   // key 為 code point，value 為子節點（也是一個 Map）。
@@ -46,6 +47,35 @@ export class Trie {
       }
     }
     map.trie_val = v;
+  }
+
+  /**
+     * 讀取字典資料
+     * @param {DictLike} d 字典
+     */
+  loadDict(d) {
+    if (typeof d === 'string') {
+      d = d.split('|');
+      for (const line of d) {
+        const [l, r] = line.split(' ');
+        this.addWord(l, r);
+      }
+    } else {
+      for (let arr of d) {
+        const [l, r] = arr;
+        this.addWord(l, r);
+      }
+    }
+  }
+
+  /**
+   * 讀取多個字典資料
+   * @param {DictLike[]} arr 字典
+   */
+  loadDictGroup(arr) {
+    arr.forEach(d => {
+      this.loadDict(d);
+    });
   }
 
   /**
@@ -95,43 +125,48 @@ export class Trie {
   }
 }
 
-function getDict(dictName) {
-  return OpenCCJSData[dictName];
-}
-
-function loadDict(s, type) {
-  const t = new Trie();
-  for (const dictName of (type === 'from' ? variants2standard : standard2variants)[s]) {
-    for (const line of getDict(dictName).split('|')) {
-      const [l, r] = line.split(' ');
-      t.addWord(l, r);
-    }
-  }
-  return t;
-}
-
 /**
- * Create a preset OpenCC converter.
- * @param {{from: string, to: string}} options Conversion options.
+ * Create a OpenCC converter
+ * @param  {...DictGroup} dictGroup
  * @returns The converter that performs the conversion.
  */
-export function Converter(options) {
-  if (options.from == null) throw new Error('Please provide the `from` option');
-  if (options.to == null) throw new Error('Please provide the `to` option');
-  const dictFrom = options.from === 't' ? null : loadDict(options.from, 'from');
-  const dictTo = options.to === 't' ? null : loadDict(options.to, 'to');
+export function ConverterFactory(...dictGroups) {
+  const trieArr = dictGroups.map(grp => {
+    const t = new Trie();
+    t.loadDictGroup(grp);
+    return t;
+  });
   /**
    * The converter that performs the conversion.
    * @param {string} s The string to be converted.
    * @returns {string} The converted string.
    */
   function convert(s) {
-    let res = s;
-    if (options.from !== 't') res = dictFrom.convert(res);
-    if (options.to !== 't') res = dictTo.convert(res);
-    return res;
+    return trieArr.reduce((res, t) => {
+      return t.convert(res);
+    }, s);
   }
   return convert;
+}
+
+/**
+ * Build Converter function with locale data
+ * @param {LocalePreset} localePreset 
+ * @returns Converter function
+ */
+export function ConverterBuilder(localePreset) {
+  return function Converter(options) {
+    let dictGroups = [];
+    ['from', 'to'].forEach(type => {
+      if (typeof options[type] !== 'string') {
+        throw new Error('Please provide the `' + type + '` option');
+      }
+      if (options[type] !== 't') {
+        dictGroups.push(localePreset[type][options[type]]);
+      }
+    });
+    return ConverterFactory.apply(null, dictGroups);
+  }
 }
 
 /**
@@ -140,19 +175,7 @@ export function Converter(options) {
  * @returns The converter that performs the conversion.
  */
 export function CustomConverter(dict) {
-  const t = new Trie();
-  dict.forEach(([k, v]) => {
-    t.addWord(k, v);
-  });
-  /**
-   * The converter that performs the conversion.
-   * @param {string} s The string to be converted.
-   * @returns {string} The converted string.
-   */
-  function convert(s) {
-    return t.convert(s);
-  }
-  return convert;
+  return ConverterFactory([dict]);
 }
 
 /**
