@@ -5,9 +5,14 @@
   "main": "./dist/umd/full.js",
   "type": "module",
   "exports": {
-    ".": "./dist/umd/full.js",
-    "./preset": "./dist/esm/preset/full.js",
-    "./*": "./dist/esm/*.js"
+    ".": {
+      "import": "./dist/esm/full.js",
+      "require": "./dist/umd/full.js"
+    },
+    "./cn2t": "./dist/esm/cn2t.js",
+    "./t2cn": "./dist/esm/t2cn.js",
+    "./preset": "./dist/esm-lib/preset/full.js",
+    "./*": "./dist/esm-lib/*.js"
   },
   "scripts": {
     "build": "node build.js && rollup -c",

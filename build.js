@@ -24,7 +24,7 @@ function loadFile(fileName) {
       .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
       .map(([k, v]) => k + ' ' + v)
       .join('|');
-    const outputFile = getAbsPath(`./dist/esm/dict/${fileName}.js`);
+    const outputFile = getAbsPath(`./dist/esm-lib/dict/${fileName}.js`);
     const outputCode = `export default "${fileContentCache[fileName]}";\n`;
     fs.writeFileSync(outputFile, outputCode);
   }
@@ -54,7 +54,7 @@ export {fromDicts as from, toDicts as to};`;
 
 // create directories if not exists.
 ['from', 'to', 'dict', 'preset'].forEach(d => {
-  const dirpath = getAbsPath(`./dist/esm/${d}`);
+  const dirpath = getAbsPath(`./dist/esm-lib/${d}`);
   if (!fs.existsSync(dirpath)) {
     fs.mkdirSync(dirpath, { recursive: true });
   }
@@ -64,7 +64,7 @@ export {fromDicts as from, toDicts as to};`;
 ['from', 'to'].forEach(type => {
   const localeCollection = type === 'from' ? variants2standard : standard2variants;
   for (const locale in localeCollection) {
-    const outputFile = getAbsPath(`./dist/esm/${type}/${locale}.js`);
+    const outputFile = getAbsPath(`./dist/esm-lib/${type}/${locale}.js`);
     const outputCode = [];
     localeCollection[locale].forEach(dictName => {
       outputCode.push(`import ${dictName} from '../dict/${dictName}.js';`);
@@ -82,16 +82,16 @@ export {fromDicts as from, toDicts as to};`;
   const code = locales.map(loc => `import ${loc} from "./${loc}.js";`);
   code.push('');
   code.push(`export { ${locales.join(', ')} }`);
-  fs.writeFileSync(getAbsPath(`./dist/esm/${type}/index.js`), code.join('\n'));
+  fs.writeFileSync(getAbsPath(`./dist/esm-lib/${type}/index.js`), code.join('\n'));
 });
 
 // update presets
 presets.forEach(o => {
   fs.writeFileSync(
-    getAbsPath(`./dist/esm/preset/${o.filename}.js`),
+    getAbsPath(`./dist/esm-lib/preset/${o.filename}.js`),
     getPresetCode(o)
   );
 });
 
 // copy src/core.js to dist/core.js
-fs.copyFileSync('src/main.js', 'dist/esm/core.js');
+fs.copyFileSync('src/main.js', 'dist/esm-lib/core.js');
