@@ -102,9 +102,9 @@ const customDict = [
   ['’', '』'],
 ];
 const converter = OpenCC.ConverterFactory(
-  OpenCC.Locale.from.cn, //Simplified Chinese (Mainland China) => OpenCC standard
-  OpenCC.Locale.to.tw,   //OpenCC standard => Traditional Chinese (Taiwan)
-  [customDict]           //Traditional Chinese (Taiwan) => custom words
+  OpenCC.Locale.from.cn, // Simplified Chinese (Mainland China) => OpenCC standard
+  OpenCC.Locale.to.tw,   // OpenCC standard => Traditional Chinese (Taiwan)
+  [customDict]           // Traditional Chinese (Taiwan) => custom words
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -144,9 +144,9 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
   * default: `[]`
   * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
 * `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to converts all HTML elements text content from a starting root node and down, into the target local. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values.
-* `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`). 
+* `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`).
   * syntax convention: [IETF languages codes](https://www.w3.org/International/articles/bcp47/#macro), mainly `zh-TW`, `zh-HK`, `zh-CN`, `zh-SG`,…
-* `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted. 
+* `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted.
 
 ## Bundle optimization
 
@@ -154,8 +154,8 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 * Using `ConverterFactory` instead of `Converter`.
 
 ```javascript
-import * as OpenCC from 'opencc-js/core'; //primary code
-import * as Locale from 'opencc-js/preset'; //dictionary
+import * as OpenCC from 'opencc-js/core'; // primary code
+import * as Locale from 'opencc-js/preset'; // dictionary
 
 const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
 console.log(converter('漢語'));

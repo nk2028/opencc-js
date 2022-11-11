@@ -18,9 +18,9 @@
 
 ```html
 <script type="module">
-  import * as OpenCC from './dist/esm/full.js'; //完全版
-  import * as OpenCC from './dist/esm/cn2t.js'; //只需要簡轉繁
-  import * as OpenCC from './dist/esm/t2cn.js'; //只需要繁轉簡
+  import * as OpenCC from './dist/esm/full.js'; // 完全版
+  import * as OpenCC from './dist/esm/cn2t.js'; // 只需要簡轉繁
+  import * as OpenCC from './dist/esm/t2cn.js'; // 只需要繁轉簡
 </script>
 ```
 
@@ -90,8 +90,8 @@ const customDict = [
   ['’', '』'],
 ];
 const converter = OpenCC.ConverterFactory(
-  OpenCC.Locale.from.cn,                   //中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw.concat([customDict]) //OpenCC 標準 => 臺灣+自訂
+  OpenCC.Locale.from.cn,                   // 中國大陸 => OpenCC 標準
+  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 臺灣+自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -107,9 +107,9 @@ const customDict = [
   ['’', '』'],
 ];
 const converter = OpenCC.ConverterFactory(
-  OpenCC.Locale.from.cn, //中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw,   //OpenCC 標準 => 臺灣
-  [customDict]           //臺灣 => 自訂
+  OpenCC.Locale.from.cn, // 中國大陸 => OpenCC 標準
+  OpenCC.Locale.to.tw,   // OpenCC 標準 => 臺灣
+  [customDict]           // 臺灣 => 自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -117,7 +117,7 @@ console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞
 
 **DOM 操作**
 
-HTML 屬性 `lang='*'` 定義了目標。 
+HTML 屬性 `lang='*'` 定義了目標。
 
 ```html
 <span lang="zh-HK">漢語</span>
@@ -130,7 +130,7 @@ const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 const rootNode = document.documentElement;
 // 將所有 zh-HK 標籤轉為 zh-CN 標籤
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
-HTMLConvertHandler.convert(); // 開始轉換  -> 汉语 
+HTMLConvertHandler.convert(); // 開始轉換  -> 汉语
 HTMLConvertHandler.restore(); // 復原      -> 漢語
 ```
 
@@ -141,8 +141,8 @@ class list 包含 `ignore-opencc` 的標籤不會被轉換（包括該標籤的�
 如果使用 rollup 等工具打包程式碼，以下方式能讓打包工具自動移除用不到的部分，減少檔案大小。
 
 ```javascript
-import * as OpenCC from 'opencc-js/core'; //核心程式碼
-import * as Locale from 'opencc-js/preset'; //字典資料
+import * as OpenCC from 'opencc-js/core'; // 核心程式碼
+import * as Locale from 'opencc-js/preset'; // 字典資料
 
 const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
 console.log(converter('漢語'));

@@ -104,14 +104,14 @@
           v = v_curr;
         }
       }
-      if (k > 0) { //有替代
+      if (k > 0) { // 有替代
         if (orig_i !== null) {
           arr.push(s.slice(orig_i, i));
           orig_i = null;
         }
         arr.push(v);
         i = k;
-      } else { //無替代
+      } else { // 無替代
         if (orig_i === null) {
           orig_i = i;
         }
@@ -151,7 +151,7 @@ export function ConverterFactory(...dictGroups) {
 
 /**
  * Build Converter function with locale data
- * @param {LocalePreset} localePreset 
+ * @param {LocalePreset} localePreset
  * @returns Converter function
  */
 export function ConverterBuilder(localePreset) {
