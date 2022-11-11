@@ -1,5 +1,8 @@
-const chai = require('chai');
-const OpenCC = require('../../bundle-node');
+import chai from 'chai';
+import * as OpenCC from 'opencc-js/core';
+import * as loc from 'opencc-js/preset';
+
+const Converter = OpenCC.ConverterBuilder(loc);
 
 chai.should();
 
@@ -24,17 +27,17 @@ chai.should();
 }());
 
 (function test3() {
-  const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
+  const converter = Converter({ from: 'hk', to: 'cn' });
   converter('政府初步傾向試驗為綠色專線小巴設充電裝置').should.equal('政府初步倾向试验为绿色专线小巴设充电装置');
 }());
 
 (function test4() {
-  const converter = OpenCC.Converter({ from: 't', to: 'cn' });
+  const converter = Converter({ from: 't', to: 'cn' });
   converter('漢語').should.equal('汉语');
 }());
 
 (function test5() {
-  const converter = OpenCC.Converter({ from: 'cn', to: 'twp' });
+  const converter = Converter({ from: 'cn', to: 'twp' });
   converter('方便面').should.equal('泡麵');
 }());
 

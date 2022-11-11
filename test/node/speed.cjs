@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const OpenCC = require('../../bundle-node');
+const OpenCC = require('opencc-js');
 
 const text = fs.readFileSync(path.join(__dirname, '..', '神雕侠侣.txt'), { encoding: 'utf8' })
   + fs.readFileSync(path.join(__dirname, '..', '天龙八部.txt'), { encoding: 'utf8' });
