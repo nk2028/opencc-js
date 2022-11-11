@@ -11,10 +11,19 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Import in HTML pages:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.min.js"></script>          <!-- Required -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.cn2t.min.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/data.t2cn.min.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/bundle-browser.min.js"></script><!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/full.js"></script>     <!-- Full version -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+```
+
+ES6 import
+
+```html
+<script type="module">
+  import * as OpenCC from './dist/esm/full.js'; // Full version
+  import * as OpenCC from './dist/esm/cn2t.js'; // For Simplified to Traditional
+  import * as OpenCC from './dist/esm/t2cn.js'; // For Traditional Chinese to Simplified Chinese
+</script>
 ```
 
 **Import opencc-js in Node.js script**
@@ -23,8 +32,16 @@ Import in HTML pages:
 npm install opencc-js
 ```
 
+CommonJS
+
 ```javascript
 const OpenCC = require('opencc-js');
+```
+
+ES Modules
+
+```javascript
+import * as OpenCC from 'opencc-js';
 ```
 
 ## Usage
@@ -46,6 +63,51 @@ const converter = OpenCC.CustomConverter([
   ['梨', 'pear'],
 ]);
 console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
+```
+
+Or using space and vertical bar as delimiter.
+
+```javascript
+const converter = OpenCC.CustomConverter('香蕉 banana|蘋果 apple|梨 pear');
+console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
+```
+
+**Add words**
+
+* Use low-level function `ConverterFactory` to create converter.
+* Get dictionary from the property `Locale`.
+
+```javascript
+const customDict = [
+  ['“', '「'],
+  ['”', '」'],
+  ['‘', '『'],
+  ['’', '』'],
+];
+const converter = OpenCC.ConverterFactory(
+  OpenCC.Locale.from.cn,                   // Simplified Chinese (Mainland China) => OpenCC standard
+  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC standard => Traditional Chinese (Taiwan) with custom words
+);
+console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
+// output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
+```
+
+This will get the same result with an extra convertion.
+
+```javascript
+const customDict = [
+  ['“', '「'],
+  ['”', '」'],
+  ['‘', '『'],
+  ['’', '』'],
+];
+const converter = OpenCC.ConverterFactory(
+  OpenCC.Locale.from.cn, //Simplified Chinese (Mainland China) => OpenCC standard
+  OpenCC.Locale.to.tw,   //OpenCC standard => Traditional Chinese (Taiwan)
+  [customDict]           //Traditional Chinese (Taiwan) => custom words
+);
+console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
+// output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
 ```
 
 **DOM operations**
@@ -85,3 +147,16 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 * `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`). 
   * syntax convention: [IETF languages codes](https://www.w3.org/International/articles/bcp47/#macro), mainly `zh-TW`, `zh-HK`, `zh-CN`, `zh-SG`,…
 * `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted. 
+
+## Bundle optimization
+
+* Tree Shaking (ES Modules Only) may result less size of bundle file.
+* Using `ConverterFactory` instead of `Converter`.
+
+```javascript
+import * as OpenCC from 'opencc-js/core'; //primary code
+import * as Locale from 'opencc-js/preset'; //dictionary
+
+const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
+console.log(converter('漢語'));
+```
