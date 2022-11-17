@@ -11,9 +11,9 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Import in HTML pages:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/full.js"></script>     <!-- Full version -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.4/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>     <!-- Full version -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
 ```
 
 ES6 import
