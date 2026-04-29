@@ -1,17 +1,20 @@
+// The outer array represents conversion-chain stages. The inner array is a
+// dictionary group used within one stage; dictionaries earlier in the group
+// have higher priority when their entries overlap.
 export const variants2standard = {
-  cn: ['STCharacters', 'STPhrases'],
-  hk: ['HKVariantsRev', 'HKVariantsRevPhrases'],
-  tw: ['TWVariantsRev', 'TWVariantsRevPhrases'],
-  twp: ['TWVariantsRev', 'TWVariantsRevPhrases', 'TWPhrasesRev'],
-  jp: ['JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases'],
+  cn: [['STPhrases', 'STCharacters']],
+  hk: [['HKVariantsRevPhrases', 'HKVariantsRev']],
+  tw: [['TWVariantsRevPhrases', 'TWVariantsRev']],
+  twp: [['TWPhrasesRev', 'TWVariantsRevPhrases', 'TWVariantsRev']],
+  jp: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters', 'JPVariantsRev']],
 };
 
 export const standard2variants = {
-  cn: ['TSCharacters', 'TSPhrases'],
-  hk: ['HKVariants'],
-  tw: ['TWVariants'],
-  twp: ['TWVariants', 'TWPhrasesIT', 'TWPhrasesName', 'TWPhrasesOther'],
-  jp: ['JPVariants'],
+  cn: [['TSPhrases', 'TSCharacters']],
+  hk: [['HKVariants']],
+  tw: [['TWVariants']],
+  twp: [['TWPhrases'], ['TWVariants']],
+  jp: [['JPVariants']],
 };
 
 export const presets = [

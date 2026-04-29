@@ -7,15 +7,62 @@ function getAbsPath(relativePath) {
 }
 
 const fileContentCache = {};
+const sourceDictDir = getAbsPath('./data/dictionary');
+
+function flattenDictNames(dictGroups) {
+  return dictGroups.flatMap(group => Array.isArray(group) ? group : [group]);
+}
+
+function getDictPath(fileName) {
+  return `${sourceDictDir}/${fileName}.txt`;
+}
+
+function ensureReverseFile(fileName) {
+  if (!fileName.endsWith('Rev')) {
+    return;
+  }
+
+  const outputFile = getDictPath(fileName);
+  if (fs.existsSync(outputFile)) {
+    return;
+  }
+
+  const inputFile = getDictPath(fileName.slice(0, -3));
+  const reversed = new Map();
+  fs.readFileSync(inputFile, { encoding: 'utf-8' })
+    .split('\n')
+    .forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) {
+        return;
+      }
+
+      const [key, values] = line.replace(/\r$/, '').split('\t');
+      values.split(' ').forEach(value => {
+        if (!reversed.has(value)) {
+          reversed.set(value, []);
+        }
+        reversed.get(value).push(key);
+      });
+    });
+
+  const output = Array.from(reversed.keys())
+    .sort()
+    .map(key => `${key}\t${reversed.get(key).join(' ')}`)
+    .join('\n');
+  fs.writeFileSync(outputFile, `${output}\n`);
+}
 
 function loadFile(fileName) {
   if (!fileContentCache[fileName]) {
+    ensureReverseFile(fileName);
     fileContentCache[fileName] = fs
-      .readFileSync(`node_modules/opencc-data/data/${fileName}.txt`, {
+      .readFileSync(getDictPath(fileName), {
         encoding: 'utf-8'
       })
-      .trimEnd()
       .split('\n')
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#'))
       .map((line) => {
         const [k, vs] = line.split('\t');
         const v = vs.split(' ')[0]; // only select the first candidate, the subsequent candidates are ignored
@@ -25,11 +72,17 @@ function loadFile(fileName) {
       .map(([k, v]) => k + ' ' + v)
       .join('|');
     const outputFile = getAbsPath(`./dist/esm-lib/dict/${fileName}.js`);
-    const outputCode = `export default "${fileContentCache[fileName]}";\n`;
+    const outputCode = `export default ${JSON.stringify(fileContentCache[fileName])};\n`;
     fs.writeFileSync(outputFile, outputCode);
   }
   return fileContentCache[fileName];
 }
+
+function getDictGroupsCode(dictGroups) {
+  return `[${dictGroups.map(group => `[${group.join(', ')}]`).join(', ')}]`;
+}
+
+fs.rmSync(getAbsPath('./dist'), { recursive: true, force: true });
 
 function getPresetCode(cfg) {
   const code = { import: [], from: [], to: [] };
@@ -66,11 +119,11 @@ export {fromDicts as from, toDicts as to};`;
   for (const locale in localeCollection) {
     const outputFile = getAbsPath(`./dist/esm-lib/${type}/${locale}.js`);
     const outputCode = [];
-    localeCollection[locale].forEach(dictName => {
+    flattenDictNames(localeCollection[locale]).forEach(dictName => {
       outputCode.push(`import ${dictName} from '../dict/${dictName}.js';`);
       loadFile(dictName);
     });
-    outputCode.push(`\nexport default [${localeCollection[locale].join(', ')}];`);
+    outputCode.push(`\nexport default ${getDictGroupsCode(localeCollection[locale])};`);
     fs.writeFileSync(outputFile, outputCode.join('\n'));
   }
 });

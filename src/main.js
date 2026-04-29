@@ -73,7 +73,7 @@
    * @param {DictLike[]} arr 字典
    */
   loadDictGroup(arr) {
-    arr.forEach(d => {
+    arr.slice().reverse().forEach(d => {
       this.loadDict(d);
     });
   }
@@ -155,6 +155,13 @@ export function ConverterFactory(...dictGroups) {
  * @returns Converter function
  */
 export function ConverterBuilder(localePreset) {
+  function normalizeDictGroups(dictGroup) {
+    if (Array.isArray(dictGroup) && Array.isArray(dictGroup[0])) {
+      return dictGroup;
+    }
+    return [dictGroup];
+  }
+
   return function Converter(options) {
     let dictGroups = [];
     ['from', 'to'].forEach(type => {
@@ -162,7 +169,7 @@ export function ConverterBuilder(localePreset) {
         throw new Error('Please provide the `' + type + '` option');
       }
       if (options[type] !== 't') {
-        dictGroups.push(localePreset[type][options[type]]);
+        dictGroups.push(...normalizeDictGroups(localePreset[type][options[type]]));
       }
     });
     return ConverterFactory.apply(null, dictGroups);
