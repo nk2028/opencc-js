@@ -44,6 +44,7 @@
   },
   "homepage": "https://github.com/nk2028/opencc-js#readme",
   "devDependencies": {
+    "@rollup/plugin-terser": "^1.0.0",
     "chai": "~4.3.4",
     "rollup-plugin-generate-package-json": "^3.2.0"
   }

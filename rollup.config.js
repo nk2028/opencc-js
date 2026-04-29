@@ -1,4 +1,7 @@
 import generatePackageJson from 'rollup-plugin-generate-package-json';
+import terser from '@rollup/plugin-terser';
+
+const minify = terser();
 
 export default [
     {
@@ -13,12 +16,14 @@ export default [
                         baseContents: {
                             type: "commonjs"
                         }
-                    })
+                    }),
+                    minify
                 ]
             },
             {
                 file: 'dist/esm/full.js',
                 format: 'es',
+                plugins: [minify]
             }
         ]
     },
@@ -28,11 +33,13 @@ export default [
             {
                 file: 'dist/umd/cn2t.js',
                 format: 'umd',
-                name: 'OpenCC'
+                name: 'OpenCC',
+                plugins: [minify]
             },
             {
                 file: 'dist/esm/cn2t.js',
                 format: 'es',
+                plugins: [minify]
             }
         ]
     },
@@ -42,11 +49,13 @@ export default [
             {
                 file: 'dist/umd/t2cn.js',
                 format: 'umd',
-                name: 'OpenCC'
+                name: 'OpenCC',
+                plugins: [minify]
             },
             {
                 file: 'dist/esm/t2cn.js',
                 format: 'es',
+                plugins: [minify]
             }
         ]
     }
