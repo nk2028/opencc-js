@@ -237,6 +237,22 @@ export function HTMLConverter(converter, rootNode, fromLangTag, toLangTag) {
           }
           currentNode.value = converter(currentNode.originalValue);
         }
+
+        /* 處理 placeholder 和 aria-label 屬性 */
+        if (currentNode.nodeType === Node.ELEMENT_NODE) {
+          if (currentNode.hasAttribute('placeholder')) {
+            if (currentNode.originalPlaceholder == null) {
+              currentNode.originalPlaceholder = currentNode.getAttribute('placeholder');
+            }
+            currentNode.setAttribute('placeholder', converter(currentNode.originalPlaceholder));
+          }
+          if (currentNode.hasAttribute('aria-label')) {
+            if (currentNode.originalAriaLabel == null) {
+              currentNode.originalAriaLabel = currentNode.getAttribute('aria-label');
+            }
+            currentNode.setAttribute('aria-label', converter(currentNode.originalAriaLabel));
+          }
+        }
       }
 
       for (const node of currentNode.childNodes) {
@@ -286,6 +302,14 @@ export function HTMLConverter(converter, rootNode, fromLangTag, toLangTag) {
         if (currentNode.originalValue !== undefined) {
           currentNode.value = currentNode.originalValue;
         }
+      }
+
+      /* 恢復 placeholder 和 aria-label 屬性 */
+      if (currentNode.originalPlaceholder !== undefined) {
+        currentNode.setAttribute('placeholder', currentNode.originalPlaceholder);
+      }
+      if (currentNode.originalAriaLabel !== undefined) {
+        currentNode.setAttribute('aria-label', currentNode.originalAriaLabel);
       }
 
       for (const node of currentNode.childNodes) {
