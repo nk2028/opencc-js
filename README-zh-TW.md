@@ -2,6 +2,8 @@
 
 開放中文轉換 JavaScript 版
 
+字典資料會在建置時從 `opencc-data` 產生，並打包進發布檔案。瀏覽器執行時不會額外下載字典 txt 檔案。
+
 ## 載入
 
 **在 HTML 中載入**
@@ -9,9 +11,9 @@
 載入以下 `script` 標籤（擇一即可）：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>     <!-- 完全版 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/cn2t.js"></script>     <!-- 只需要簡轉繁時 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/t2cn.js"></script>     <!-- 只需要繁轉簡時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/full.js"></script>     <!-- 完全版 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/cn2t.js"></script>     <!-- 只需要簡轉繁時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/t2cn.js"></script>     <!-- 只需要繁轉簡時 -->
 ```
 
 自行託管的話，除了使用原先的 umd，也可以使用 es module
@@ -28,6 +30,8 @@
 
 ```sh
 npm install opencc-js
+# 或安裝目前 beta 版本：
+npm install opencc-js@beta
 ```
 
 CommonJS
@@ -136,9 +140,13 @@ HTMLConvertHandler.restore(); // 復原      -> 漢語
 
 class list 包含 `ignore-opencc` 的標籤不會被轉換（包括該標籤的所有子節點）。
 
+`HTMLConverter` 也會轉換 `placeholder` 和 `aria-label` 屬性。
+
 ## 打包優化
 
 如果使用 rollup 等工具打包程式碼，以下方式能讓打包工具自動移除用不到的部分，減少檔案大小。
+
+如果只需要單一轉換方向，也可以直接引入 `opencc-js/cn2t` 或 `opencc-js/t2cn`。
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // 核心程式碼

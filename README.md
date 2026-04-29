@@ -4,6 +4,8 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 
 [繁體版](README-zh-TW.md) - [简体版](README-zh-CN.md)
 
+Dictionary data is generated from `opencc-data` at build time and bundled in the published package. Browser usage does not fetch extra dictionary text files at runtime.
+
 ## Import
 
 **Import opencc-js in HTML page**
@@ -11,9 +13,9 @@ The JavaScript version of Open Chinese Convert (OpenCC)
 Import in HTML pages:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>     <!-- Full version -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/full.js"></script>     <!-- Full version -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
 ```
 
 ES6 import
@@ -30,6 +32,8 @@ ES6 import
 
 ```sh
 npm install opencc-js
+# or, for the current beta:
+npm install opencc-js@beta
 ```
 
 CommonJS
@@ -143,7 +147,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 * `.CustomConverter([])` : defines custom dictionary.
   * default: `[]`
   * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
-* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to converts all HTML elements text content from a starting root node and down, into the target local. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values.
+* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to converts all HTML elements text content from a starting root node and down, into the target local. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values, and converts `placeholder` and `aria-label` attributes.
 * `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`).
   * syntax convention: [IETF languages codes](https://www.w3.org/International/articles/bcp47/#macro), mainly `zh-TW`, `zh-HK`, `zh-CN`, `zh-SG`,…
 * `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted.
@@ -152,6 +156,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 
 * Tree Shaking (ES Modules Only) may result less size of bundle file.
 * Using `ConverterFactory` instead of `Converter`.
+* Import `opencc-js/cn2t` or `opencc-js/t2cn` when only one conversion direction is needed.
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // primary code
