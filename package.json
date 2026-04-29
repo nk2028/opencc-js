@@ -16,8 +16,10 @@
   },
   "scripts": {
     "build": "node build.js && rollup -c",
-    "test": "node test/node/basic.mjs && node test/node/basic.cjs",
-    "test:opencc": "node test/node/opencc-testcases.mjs"
+    "test": "npm run build && node test/node/basic.mjs && node test/node/basic.cjs && npm run test:opencc",
+    "test:opencc": "node test/node/opencc-testcases.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "repository": {
     "type": "git",

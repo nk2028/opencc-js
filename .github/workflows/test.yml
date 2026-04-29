@@ -23,4 +23,4 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build & Test
-      run: ./buildAndTest.sh
+      run: npm test
