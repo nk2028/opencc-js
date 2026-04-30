@@ -55,7 +55,7 @@ console.log(converter('漢語')); // output: 汉语
 ```
 
 - `cn`: 簡體中文（中國大陸）
-- `tw`: 繁體中文（台灣）
+- `tw`: 繁體中文（臺灣）
     - `twp`: 且轉換詞彙（例如：自行車 -> 腳踏車）
 - `hk`: 繁體中文（香港）
 - `jp`: 日本新字體
@@ -93,7 +93,7 @@ const customDict = [
 ];
 const converter = OpenCC.ConverterFactory(
   OpenCC.Locale.from.cn,                   // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 台灣+自訂
+  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 臺灣+自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -110,8 +110,8 @@ const customDict = [
 ];
 const converter = OpenCC.ConverterFactory(
   OpenCC.Locale.from.cn, // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw,   // OpenCC 標準 => 台灣
-  [customDict]           // 台灣 => 自訂
+  OpenCC.Locale.to.tw,   // OpenCC 標準 => 臺灣
+  [customDict]           // 臺灣 => 自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
