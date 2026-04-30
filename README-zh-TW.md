@@ -11,9 +11,9 @@
 載入以下 `script` 標籤（擇一即可）：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/full.js"></script>     <!-- 完全版 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/cn2t.js"></script>     <!-- 只需要簡轉繁時 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/t2cn.js"></script>     <!-- 只需要繁轉簡時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/full.js"></script>     <!-- 完全版 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/cn2t.js"></script>     <!-- 只需要簡轉繁時 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/t2cn.js"></script>     <!-- 只需要繁轉簡時 -->
 ```
 
 自行託管的話，除了使用原先的 umd，也可以使用 es module
@@ -30,8 +30,6 @@
 
 ```sh
 npm install opencc-js
-# 或安裝目前 beta 版本：
-npm install opencc-js@beta
 ```
 
 CommonJS

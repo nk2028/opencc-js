@@ -13,9 +13,9 @@ Dictionary data is generated from `opencc-data` at build time and bundled in the
 Import in HTML pages:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/full.js"></script>     <!-- Full version -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0-beta.1/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/full.js"></script>     <!-- Full version -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
 ```
 
 ES6 import
@@ -32,8 +32,6 @@ ES6 import
 
 ```sh
 npm install opencc-js
-# or, for the current beta:
-npm install opencc-js@beta
 ```
 
 CommonJS

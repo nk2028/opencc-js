@@ -1,6 +1,6 @@
 {
   "name": "opencc-js",
-  "version": "1.3.0-beta.1",
+  "version": "1.3.0",
   "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
   "main": "./dist/umd/full.js",
   "type": "module",
