@@ -7,17 +7,16 @@ on:
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: 20.x
+        node-version: 24
         registry-url: https://registry.npmjs.org/
     - name: Install dependencies
       run: npm ci
     - name: Publish
-      run: |
-        NPM_TAG=$(node -p "const version = require('./package.json').version; const prerelease = version.split('-')[1]; prerelease ? prerelease.split('.')[0] : 'latest'")
-        npm publish --tag "$NPM_TAG"
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      run: npm publish
