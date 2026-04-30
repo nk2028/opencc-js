@@ -141,7 +141,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
     * `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
   * `hk`: Traditional Chinese (Hong Kong)
   * `jp`: Japanese Shinjitai
-  * `t`: Traditional Chinese (OpenCC standard. Do not use unless you know what you are doing)
+  * `t`: Traditional Chinese ([OpenCC standard](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md). For most use cases, prefer a regional locale such as `tw` or `hk`)
 * `.CustomConverter([])` : defines custom dictionary.
   * default: `[]`
   * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
@@ -163,3 +163,13 @@ import * as Locale from 'opencc-js/preset'; // dictionary
 const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
 console.log(converter('漢語'));
 ```
+
+## Difference from the `opencc` npm package
+
+The `opencc` npm package is the Node.js native binding for the official OpenCC C++ project. It is intended for Node.js, depends on native or prebuilt binaries, and follows the official OpenCC engine.
+
+The `opencc-js` npm package is a pure JavaScript implementation for browsers and Node.js. It bundles dictionary data generated from `opencc-data`, so it does not require native binaries and does not fetch dictionary text files at runtime.
+
+`opencc-js` is not a complete port of the official C++ OpenCC algorithm. It uses a JavaScript trie and dictionary pipeline, and is tested against upstream OpenCC test cases, but it should not be treated as bit-for-bit equivalent for every possible input.
+
+The `opencc-wasm` npm package is another browser-capable implementation. It uses WebAssembly and keeps its configuration and conversion logic aligned with the official `opencc` package.

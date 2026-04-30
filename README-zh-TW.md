@@ -55,11 +55,11 @@ console.log(converter('漢語')); // output: 汉语
 ```
 
 - `cn`: 簡體中文（中國大陸）
-- `tw`: 繁體中文（臺灣）
+- `tw`: 繁體中文（台灣）
     - `twp`: 且轉換詞彙（例如：自行車 -> 腳踏車）
 - `hk`: 繁體中文（香港）
 - `jp`: 日本新字體
-- `t`: 繁體中文（OpenCC 標準。除非你知道自己在做什麼，否則請勿使用）
+- `t`: 繁體中文（[OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)。多數場景建議優先使用 `tw` 或 `hk` 等地區 locale）
 
 **自訂轉換器**
 
@@ -93,7 +93,7 @@ const customDict = [
 ];
 const converter = OpenCC.ConverterFactory(
   OpenCC.Locale.from.cn,                   // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 臺灣+自訂
+  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 台灣+自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -110,8 +110,8 @@ const customDict = [
 ];
 const converter = OpenCC.ConverterFactory(
   OpenCC.Locale.from.cn, // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw,   // OpenCC 標準 => 臺灣
-  [customDict]           // 臺灣 => 自訂
+  OpenCC.Locale.to.tw,   // OpenCC 標準 => 台灣
+  [customDict]           // 台灣 => 自訂
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -158,3 +158,13 @@ console.log(converter('漢語'));
 
 * 由於這是利用 Tree Shaking，所以必須使用 ES Modules
 * 在這個模式之下，沒有 `Converter` 函式，必須直接使用 `ConverterFactory`
+
+## 與 `opencc` npm package 的區別
+
+`opencc` npm package 是官方 OpenCC C++ 專案的 Node.js native binding，主要用於 Node.js，依賴 native 或 prebuilt binary，並跟隨官方 OpenCC 引擎。
+
+`opencc-js` npm package 是面向瀏覽器和 Node.js 的純 JavaScript 實作。它打包了從 `opencc-data` 產生的字典資料，因此不需要 native binary，也不會在執行時下載字典 txt 檔案。
+
+`opencc-js` 不是官方 C++ OpenCC 演算法的完整移植。它使用 JavaScript trie 和字典 pipeline，並通過 upstream OpenCC test cases 驗證，但不應視為對所有輸入都與官方 OpenCC bit-for-bit 等價。
+
+`opencc-wasm` npm package 是另一個能在瀏覽器中使用的實作。它使用 WebAssembly，配置和轉換邏輯與官方 `opencc` package 對齊。
