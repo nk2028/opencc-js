@@ -14,17 +14,13 @@ Import in HTML pages:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/full.js"></script>     <!-- Full version -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/cn2t.js"></script>     <!-- For Simplified to Traditional -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/t2cn.js"></script>     <!-- For Traditional Chinese to Simplified Chinese -->
 ```
 
 ES6 import
 
 ```html
 <script type="module">
-  import * as OpenCC from './dist/esm/full.js'; // Full version
-  import * as OpenCC from './dist/esm/cn2t.js'; // For Simplified to Traditional
-  import * as OpenCC from './dist/esm/t2cn.js'; // For Traditional Chinese to Simplified Chinese
+  import OpenCC from './dist/esm/full.js'; // Full version
 </script>
 ```
 
@@ -43,7 +39,7 @@ const OpenCC = require('opencc-js');
 ES Modules
 
 ```javascript
-import * as OpenCC from 'opencc-js';
+import OpenCC from 'opencc-js';
 ```
 
 ## Usage
@@ -154,7 +150,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 
 * Tree Shaking (ES Modules Only) may result less size of bundle file.
 * Using `ConverterFactory` instead of `Converter`.
-* Import `opencc-js/cn2t` or `opencc-js/t2cn` when only one conversion direction is needed.
+* Prefer explicit locale dictionaries such as `tw`, `hk`, or `cn` over the generic OpenCC standard `t` preset.
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // primary code

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import OpenCCDefault from 'opencc-js';
 import * as OpenCC from 'opencc-js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,10 @@ const configToOptions = {
 };
 
 const converters = new Map();
+
+if (OpenCCDefault.Converter({ from: 'cn', to: 'tw' })('汉语') !== '漢語') {
+  throw new Error('Default ESM import failed');
+}
 
 function getConverter(config) {
   if (!converters.has(config)) {

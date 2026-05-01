@@ -11,6 +11,7 @@ export default [
                 file: 'dist/umd/full.js',
                 format: 'umd',
                 name: 'OpenCC',
+                exports: 'named',
                 plugins: [
                     generatePackageJson({
                         baseContents: {
@@ -34,6 +35,7 @@ export default [
                 file: 'dist/umd/cn2t.js',
                 format: 'umd',
                 name: 'OpenCC',
+                exports: 'named',
                 plugins: [minify]
             },
             {
@@ -50,6 +52,7 @@ export default [
                 file: 'dist/umd/t2cn.js',
                 format: 'umd',
                 name: 'OpenCC',
+                exports: 'named',
                 plugins: [minify]
             },
             {
