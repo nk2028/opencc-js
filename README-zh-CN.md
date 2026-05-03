@@ -157,10 +157,12 @@ console.log(converter('漢語'));
 
 ## 与 [`opencc`](https://www.npmjs.com/package/opencc) npm package 的区别
 
-[`opencc`](https://www.npmjs.com/package/opencc) npm package 是官方 OpenCC C++ 项目的 Node.js native binding，主要用于 Node.js，依赖 native 或 prebuilt binary，并跟随官方 OpenCC 引擎。
-
 [`opencc-js`](https://www.npmjs.com/package/opencc-js) npm package 是面向浏览器和 Node.js 的纯 JavaScript 实现。它打包了从 `opencc-data` 生成的字典数据，因此不需要 native binary，也不会在运行时下载字典 txt 文件。
 
-[`opencc-js`](https://www.npmjs.com/package/opencc-js) 不是官方 C++ OpenCC 算法的完整移植。它使用 JavaScript trie 和字典 pipeline，并通过 upstream OpenCC test cases 验证，但不应视为对所有输入都与官方 OpenCC bit-for-bit 等价。
+[`opencc-js`](https://www.npmjs.com/package/opencc-js) 的转换流程已向官方 OpenCC 实现对齐，包括内置转换器的词组分词，并通过 upstream OpenCC test cases 和 golden outputs 验证。但它仍不保证对所有输入都与官方 OpenCC 产生 100% 相同的结果。
 
-[`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package 是另一个能在浏览器中使用的实现。它使用 WebAssembly，配置和转换逻辑与官方 [`opencc`](https://www.npmjs.com/package/opencc) package 对齐。
+`opencc-js` 目前支持内置转换器使用的 OpenCC mmseg 风格分词，但不支持 jieba 等扩展分词算法。
+
+[`opencc`](https://www.npmjs.com/package/opencc) npm package 是官方 OpenCC C++ 项目的 Node.js native binding，主要用于 Node.js，依赖 native 或 prebuilt binary，并跟随官方 OpenCC 引擎。在官方 OpenCC 配置和运行环境支持时，它可以使用 jieba 等扩展分词算法。
+
+[`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package 是另一个能在浏览器中使用的实现。它使用 WebAssembly，配置和转换逻辑与官方 [`opencc`](https://www.npmjs.com/package/opencc) package 对齐，并可通过官方 OpenCC runtime 支持 jieba 分词。

@@ -2,16 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 1.3.1-next.1 - 2026-05-03
 
 ### Added
 
-- Add `THIRD_PARTY_LICENSES.md` documenting the use of `opencc-data` (Apache 2.0) and include it in the published package.
 - Add OpenCC-style mmseg segmentation for built-in converters so multi-stage conversions preserve official phrase boundaries.
-- Add default ESM exports for the bundled package entry points.
-- Add TypeScript declaration files for the public package entry points.
 - Add explicit package exports for `opencc-js/core`, `opencc-js/preset`, `opencc-js/preset/cn2t`, and `opencc-js/preset/t2cn`.
 - Add CommonJS conditional exports for `opencc-js/cn2t` and `opencc-js/t2cn`.
+- Add default ESM exports for the bundled package entry points.
+- Add TypeScript declaration files for the public package entry points.
+- Add `THIRD_PARTY_LICENSES.md` documenting the use of `opencc-data` (Apache 2.0) and include it in the published package.
 
 ### Changed
 

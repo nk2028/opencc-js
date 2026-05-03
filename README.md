@@ -8,38 +8,52 @@ Dictionary data is generated from `opencc-data` at build time and bundled in the
 
 ## Import
 
-**Import opencc-js in HTML page**
-
-Import in HTML pages:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/full.js"></script>     <!-- Full version -->
-```
-
-ES6 import
-
-```html
-<script type="module">
-  import OpenCC from './dist/esm/full.js'; // Full version
-</script>
-```
-
-**Import opencc-js in Node.js script**
+**Install opencc-js for Node.js or a bundler**
 
 ```sh
 npm install opencc-js
 ```
 
-CommonJS
+ES modules:
+
+```javascript
+import OpenCC from 'opencc-js';
+```
+
+CommonJS:
 
 ```javascript
 const OpenCC = require('opencc-js');
 ```
 
-ES Modules
+**Use opencc-js in a browser**
 
-```javascript
-import OpenCC from 'opencc-js';
+Self-hosted ES module:
+
+```html
+<script type="module">
+  import OpenCC from './dist/esm/full.js';
+
+  const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+  console.log(converter('汉语'));
+</script>
+```
+
+CDN ES module:
+
+```html
+<script type="module">
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.1-next.1/dist/esm/full.js';
+
+  const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+  console.log(converter('汉语'));
+</script>
+```
+
+UMD build for plain script tags:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1-next.1/dist/umd/full.js"></script>
 ```
 
 ## Usage
@@ -128,10 +142,10 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 ```
 
 ## API
-* `.Converter({})`: declare the converter's direction via locals.
+* `.Converter({})`: declare the converter's direction via locales.
   * default: `{ from: 'tw', to: 'cn' }`
-  * syntax : `{ from: local1, to: local2 }`
-* locals: letter codes defining a writing local tradition, occasionally its idiomatic habits.
+  * syntax : `{ from: locale1, to: locale2 }`
+* locales: letter codes defining a writing locale and, occasionally, its idiomatic habits.
   * `cn`: Simplified Chinese (Mainland China)
   * `tw`: Traditional Chinese (Taiwan)
     * `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
@@ -141,7 +155,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 * `.CustomConverter([])` : defines custom dictionary.
   * default: `[]`
   * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
-* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to converts all HTML elements text content from a starting root node and down, into the target local. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values, and converts `placeholder` and `aria-label` attributes.
+* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )` : uses previously defined converter() to convert all HTML elements text content from a starting root node and down, into the target locale. Also converts all attributes `lang` from existing `langAttrInitial` to `langAttrNew` values, and converts `placeholder` and `aria-label` attributes.
 * `lang` attributes : html attribute defines the languages of the text content to the browser, at start (`langAttrInitial`) and after conversion (`langAttrNew`).
   * syntax convention: [IETF languages codes](https://www.w3.org/International/articles/bcp47/#macro), mainly `zh-TW`, `zh-HK`, `zh-CN`, `zh-SG`,…
 * `ignore-opencc` : html class signaling an element and its sub-nodes will not be converted.
@@ -162,10 +176,12 @@ console.log(converter('漢語'));
 
 ## Difference from the [`opencc`](https://www.npmjs.com/package/opencc) npm package
 
-The [`opencc`](https://www.npmjs.com/package/opencc) npm package is the Node.js native binding for the official OpenCC C++ project. It is intended for Node.js, depends on native or prebuilt binaries, and follows the official OpenCC engine.
-
 The [`opencc-js`](https://www.npmjs.com/package/opencc-js) npm package is a pure JavaScript implementation for browsers and Node.js. It bundles dictionary data generated from `opencc-data`, so it does not require native binaries and does not fetch dictionary text files at runtime.
 
-[`opencc-js`](https://www.npmjs.com/package/opencc-js) is not a complete port of the official C++ OpenCC algorithm. It uses a JavaScript trie and dictionary pipeline, and is tested against upstream OpenCC test cases, but it should not be treated as bit-for-bit equivalent for every possible input.
+[`opencc-js`](https://www.npmjs.com/package/opencc-js) has aligned its conversion flow with the official OpenCC implementation, including phrase segmentation for built-in converters, and is tested against upstream OpenCC test cases and golden outputs. It still should not be treated as guaranteed to produce 100% identical results for every possible input.
 
-The [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package is another browser-capable implementation. It uses WebAssembly and keeps its configuration and conversion logic aligned with the official [`opencc`](https://www.npmjs.com/package/opencc) package.
+`opencc-js` currently supports the built-in OpenCC mmseg-style segmentation used by its bundled converters, but it does not support extended segmentation algorithms such as Jieba.
+
+The [`opencc`](https://www.npmjs.com/package/opencc) npm package is the Node.js native binding for the official OpenCC C++ project. It is intended for Node.js, depends on native or prebuilt binaries, and follows the official OpenCC engine. It can use extended segmentation algorithms such as Jieba when supported by the official OpenCC configuration and runtime.
+
+The [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package is another browser-capable implementation. It uses WebAssembly, keeps its configuration and conversion logic aligned with the official [`opencc`](https://www.npmjs.com/package/opencc) package, and can support Jieba segmentation through the official OpenCC runtime.
