@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Add `THIRD_PARTY_LICENSES.md` documenting the use of `opencc-data` (Apache 2.0) and include it in the published package.
 - Add default ESM exports for the bundled package entry points.
 - Add TypeScript declaration files for the public package entry points.
 - Add explicit package exports for `opencc-js/core`, `opencc-js/preset`, `opencc-js/preset/cn2t`, and `opencc-js/preset/t2cn`.

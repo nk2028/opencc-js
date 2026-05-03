@@ -12,7 +12,8 @@
     "README-zh-CN.md",
     "README-zh-TW.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "sideEffects": false,
   "exports": {
