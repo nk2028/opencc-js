@@ -5,6 +5,10 @@ export type ConverterFunction = (text: string) => string;
 export interface LocalePreset {
   from: Record<string, readonly DictGroup[]>;
   to: Record<string, readonly DictGroup[]>;
+  configs?: Record<string, {
+    segmentation: DictLike;
+    conversionChain: readonly DictGroup[];
+  }>;
 }
 
 export interface ConverterOptions {
@@ -17,6 +21,8 @@ export class Trie {
   addWord(source: string, replacement: string): void;
   loadDict(dict: DictLike): void;
   loadDictGroup(dictGroup: DictGroup): void;
+  matchPrefix(text: string, offset: number): { end: number; value: string } | null;
+  segment(text: string): string[];
   convert(text: string): string;
 }
 

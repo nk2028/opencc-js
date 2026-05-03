@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { variants2standard, standard2variants, presets } from './src/data-config.js';
+import { conversionConfigs, generatedReverseDicts, variants2standard, standard2variants, presets } from './src/data-config.js';
 import { fileURLToPath } from 'url';
 
 function getAbsPath(relativePath) {
@@ -7,6 +7,7 @@ function getAbsPath(relativePath) {
 }
 
 const fileContentCache = {};
+const parsedFileCache = {};
 const sourceDictDir = getAbsPath('./node_modules/opencc-data/data');
 
 function flattenDictNames(dictGroups) {
@@ -17,9 +18,9 @@ function getDictPath(fileName) {
   return `${sourceDictDir}/${fileName}.txt`;
 }
 
-function loadFile(fileName) {
-  if (!fileContentCache[fileName]) {
-    fileContentCache[fileName] = fs
+function parseSourceFile(fileName) {
+  if (!parsedFileCache[fileName]) {
+    parsedFileCache[fileName] = fs
       .readFileSync(getDictPath(fileName), {
         encoding: 'utf-8'
       })
@@ -28,9 +29,38 @@ function loadFile(fileName) {
       .filter(line => line && !line.startsWith('#'))
       .map((line) => {
         const [k, vs] = line.split('\t');
-        const v = vs.split(' ')[0]; // only select the first candidate, the subsequent candidates are ignored
-        return [k, v];
-      })
+        return [k, vs.split(' ')];
+      });
+  }
+  return parsedFileCache[fileName];
+}
+
+function reverseEntries(entries) {
+  const reversed = new Map();
+  entries.forEach(([key, values]) => {
+    values.forEach(value => {
+      if (!reversed.has(value)) {
+        reversed.set(value, []);
+      }
+      reversed.get(value).push(key);
+    });
+  });
+  return Array.from(reversed.entries())
+    .sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)
+    .map(([key, values]) => [key, values]);
+}
+
+function getEntries(fileName) {
+  if (generatedReverseDicts[fileName]) {
+    return reverseEntries(parseSourceFile(generatedReverseDicts[fileName]));
+  }
+  return parseSourceFile(fileName);
+}
+
+function loadFile(fileName) {
+  if (!fileContentCache[fileName]) {
+    fileContentCache[fileName] = getEntries(fileName)
+      .map(([k, values]) => [k, values[0]]) // only select the first candidate, the subsequent candidates are ignored
       .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
       .map(([k, v]) => k + ' ' + v)
       .join('|');
@@ -45,17 +75,51 @@ function getDictGroupsCode(dictGroups) {
   return `[${dictGroups.map(group => `[${group.join(', ')}]`).join(', ')}]`;
 }
 
+function getDictGroupsCodeWithPrefix(dictGroups, prefix) {
+  return `[${dictGroups.map(group => `[${group.map(dictName => `${prefix}${dictName}`).join(', ')}]`).join(', ')}]`;
+}
+
 fs.rmSync(getAbsPath('./dist'), { recursive: true, force: true });
 
 function getPresetCode(cfg) {
-  const code = { import: [], from: [], to: [] };
+  const code = { import: [], dictImport: [], from: [], to: [], configs: [] };
   ['from', 'to'].forEach(type => {
     cfg[type].forEach(loc => {
       code.import.push(`import ${type}_${loc} from "../${type}/${loc}.js";`);
       code[type].push(`${loc}: ${type}_${loc}`);
     });
   });
+
+  function presetIncludesConfig(config) {
+    if (cfg.filename === 'full') {
+      return true;
+    }
+    if (cfg.filename === 'cn2t') {
+      return config.from === 'cn' && (config.to === 't' || cfg.to.includes(config.to));
+    }
+    if (cfg.filename === 't2cn') {
+      return config.to === 'cn' && (config.from === 't' || cfg.from.includes(config.from));
+    }
+    return cfg.from.includes(config.from) && cfg.to.includes(config.to);
+  }
+
+  const presetConfigs = Object.entries(conversionConfigs)
+    .filter(([, config]) => presetIncludesConfig(config));
+  const configDictNames = new Set();
+  presetConfigs.forEach(([, config]) => {
+    configDictNames.add(config.segmentation);
+    config.chain.flat().forEach(dictName => configDictNames.add(dictName));
+  });
+  Array.from(configDictNames).sort().forEach(dictName => {
+    code.dictImport.push(`import dict_${dictName} from "../dict/${dictName}.js";`);
+    loadFile(dictName);
+  });
+  presetConfigs.forEach(([name, config]) => {
+    code.configs.push(`${name}: { segmentation: dict_${config.segmentation}, conversionChain: ${getDictGroupsCodeWithPrefix(config.chain, 'dict_')} }`);
+  });
+
   return `${code.import.join('\n')}
+${code.dictImport.join('\n')}
 
 const fromDicts = {
     ${code.from.join(',\n    ')}
@@ -65,7 +129,11 @@ const toDicts = {
     ${code.to.join(',\n    ')}
 };
 
-export {fromDicts as from, toDicts as to};`;
+const configs = {
+    ${code.configs.join(',\n    ')}
+};
+
+export {fromDicts as from, toDicts as to, configs};`;
 }
 
 // create directories if not exists.

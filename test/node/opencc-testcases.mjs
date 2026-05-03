@@ -5,7 +5,7 @@ import OpenCCDefault from 'opencc-js';
 import * as OpenCC from 'opencc-js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const testcasesPath = path.join(__dirname, '..', 'opencc', 'testcases.json');
+const testcasesPath = path.join(__dirname, '..', '..', 'node_modules', 'opencc-data', 'test-data', 'testcases.json');
 const testcases = JSON.parse(fs.readFileSync(testcasesPath, 'utf8'));
 
 const configToOptions = {

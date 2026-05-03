@@ -13,6 +13,7 @@
  * @typedef {object} LocalePreset
  * @property {object.<string, DictGroup>} from
  * @property {object.<string, DictGroup>} to
+ * @property {object.<string, {segmentation: DictLike, conversionChain: DictGroup[]}>} [configs]
  */
 
 /**
@@ -78,39 +79,72 @@
     });
   }
 
+  matchPrefix(s, i) {
+    const n = s.length;
+    let t_curr = this.map, k = 0, v;
+    for (let j = i; j < n;) {
+      const x = s.codePointAt(j);
+      j += x > 0xffff ? 2 : 1;
+
+      const t_next = t_curr.get(x);
+      if (typeof t_next === 'undefined') {
+        break;
+      }
+      t_curr = t_next;
+
+      const v_curr = t_curr.trie_val;
+      if (typeof v_curr !== 'undefined') {
+        k = j;
+        v = v_curr;
+      }
+    }
+    if (k > 0) {
+      return { end: k, value: v };
+    }
+    return null;
+  }
+
+  segment(s) {
+    const n = s.length, segments = [];
+    let orig_i = null;
+    for (let i = 0; i < n;) {
+      const matched = this.matchPrefix(s, i);
+      if (matched) {
+        if (orig_i !== null) {
+          segments.push(s.slice(orig_i, i));
+          orig_i = null;
+        }
+        segments.push(s.slice(i, matched.end));
+        i = matched.end;
+      } else {
+        if (orig_i === null) {
+          orig_i = i;
+        }
+        i += s.codePointAt(i) > 0xffff ? 2 : 1;
+      }
+    }
+    if (orig_i !== null) {
+      segments.push(s.slice(orig_i, n));
+    }
+    return segments;
+  }
+
   /**
    * 根據字典樹中的資料轉換字串。
    * @param {string} s 要轉換的字串
    */
   convert(s) {
-    const t = this.map;
     const n = s.length, arr = [];
-    let orig_i;
+    let orig_i = null;
     for (let i = 0; i < n;) {
-      let t_curr = t, k = 0, v;
-      for (let j = i; j < n;) {
-        const x = s.codePointAt(j);
-        j += x > 0xffff ? 2 : 1;
-
-        const t_next = t_curr.get(x);
-        if (typeof t_next === 'undefined') {
-          break;
-        }
-        t_curr = t_next;
-
-        const v_curr = t_curr.trie_val;
-        if (typeof v_curr !== 'undefined') {
-          k = j;
-          v = v_curr;
-        }
-      }
-      if (k > 0) { // 有替代
+      const matched = this.matchPrefix(s, i);
+      if (matched) { // 有替代
         if (orig_i !== null) {
           arr.push(s.slice(orig_i, i));
           orig_i = null;
         }
-        arr.push(v);
-        i = k;
+        arr.push(matched.value);
+        i = matched.end;
       } else { // 無替代
         if (orig_i === null) {
           orig_i = i;
@@ -149,12 +183,37 @@ export function ConverterFactory(...dictGroups) {
   return convert;
 }
 
+function ConverterFactoryWithSegmentation(segmentationDict, ...dictGroups) {
+  const segmentation = new Trie();
+  segmentation.loadDict(segmentationDict);
+  const trieArr = dictGroups.map(grp => {
+    const t = new Trie();
+    t.loadDictGroup(grp);
+    return t;
+  });
+  return function convert(s) {
+    return trieArr
+      .reduce((segments, t) => segments.map(segment => t.convert(segment)), segmentation.segment(s))
+      .join('');
+  };
+}
+
 /**
  * Build Converter function with locale data
  * @param {LocalePreset} localePreset
  * @returns Converter function
  */
 export function ConverterBuilder(localePreset) {
+  function getConfigName(from, to) {
+    if (from === 'cn') {
+      return `s2${to}`;
+    }
+    if (to === 'cn') {
+      return from === 'twp' ? 'tw2sp' : `${from}2s`;
+    }
+    return `${from}2${to}`;
+  }
+
   function normalizeDictGroups(dictGroup) {
     if (Array.isArray(dictGroup) && Array.isArray(dictGroup[0])) {
       return dictGroup;
@@ -163,6 +222,13 @@ export function ConverterBuilder(localePreset) {
   }
 
   return function Converter(options) {
+    if (localePreset.configs) {
+      const config = localePreset.configs[getConfigName(options.from, options.to)];
+      if (config) {
+        return ConverterFactoryWithSegmentation(config.segmentation, ...config.conversionChain);
+      }
+    }
+
     let dictGroups = [];
     ['from', 'to'].forEach(type => {
       if (typeof options[type] !== 'string') {
