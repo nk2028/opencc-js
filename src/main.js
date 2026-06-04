@@ -11,8 +11,8 @@
 /**
  * 地區設定資料
  * @typedef {object} LocalePreset
- * @property {object.<string, DictGroup>} from
- * @property {object.<string, DictGroup>} to
+ * @property {object.<string, DictGroup[]>} from
+ * @property {object.<string, DictGroup[]>} to
  * @property {object.<string, {segmentation: DictLike, conversionChain: DictGroup[]}>} [configs]
  */
 
@@ -59,10 +59,20 @@
       d = d.split('|');
       for (const line of d) {
         const [l, r] = line.split(' ');
+        if (typeof r !== 'string') {
+          throw new TypeError('Invalid dictionary entry: expected string entries to use "source replacement" format.');
+        }
         this.addWord(l, r);
       }
     } else {
-      for (let arr of d) {
+      for (const arr of d) {
+        if (!Array.isArray(arr) || typeof arr[0] !== 'string' || typeof arr[1] !== 'string') {
+          throw new TypeError(
+            'Invalid dictionary entry: expected [source, replacement] pairs. ' +
+            'If you are passing locale dictionaries to ConverterFactory, spread them, for example: ' +
+            'ConverterFactory(...Locale.from.cn, ...Locale.to.hk).'
+          );
+        }
         const [l, r] = arr;
         this.addWord(l, r);
       }
@@ -161,11 +171,11 @@
 
 /**
  * Create a OpenCC converter
- * @param  {...DictGroup} dictGroup
+ * @param  {...(DictLike|DictGroup|DictGroup[])} dictGroup
  * @returns The converter that performs the conversion.
  */
 export function ConverterFactory(...dictGroups) {
-  const trieArr = dictGroups.map(grp => {
+  const trieArr = normalizeConverterFactoryDictGroups(dictGroups).map(grp => {
     const t = new Trie();
     t.loadDictGroup(grp);
     return t;
@@ -181,6 +191,55 @@ export function ConverterFactory(...dictGroups) {
     }, s);
   }
   return convert;
+}
+
+function isDictPair(entry) {
+  return Array.isArray(entry) && typeof entry[0] === 'string' && typeof entry[1] === 'string';
+}
+
+function isSerializedDict(dict) {
+  return typeof dict === 'string' && (dict === '' || dict.includes(' '));
+}
+
+function isDictLike(dict) {
+  return typeof dict === 'string' || (Array.isArray(dict) && dict.every(isDictPair));
+}
+
+function isDictGroup(dictGroup) {
+  return Array.isArray(dictGroup) && dictGroup.every(dict => {
+    return isSerializedDict(dict) || (Array.isArray(dict) && dict.every(isDictPair));
+  });
+}
+
+function isDictGroupCollection(dictGroups) {
+  return Array.isArray(dictGroups) && dictGroups.every(isDictGroup);
+}
+
+function normalizeConverterFactoryDictGroups(dictGroups) {
+  return dictGroups.flatMap(dictGroup => {
+    if (isDictGroupCollection(dictGroup)) {
+      return dictGroup;
+    }
+    if (isDictGroup(dictGroup)) {
+      return [dictGroup];
+    }
+    if (!Array.isArray(dictGroup)) {
+      throw new TypeError('Invalid ConverterFactory argument: expected a dictionary group or locale dictionary collection.');
+    }
+
+    const groups = [];
+    let i = 0;
+    while (i < dictGroup.length && isDictGroup(dictGroup[i])) {
+      groups.push(dictGroup[i].slice());
+      i += 1;
+    }
+    const appendedDicts = dictGroup.slice(i);
+    if (groups.length > 0 && appendedDicts.length > 0 && appendedDicts.every(isDictLike)) {
+      groups[groups.length - 1].push(...appendedDicts);
+      return groups;
+    }
+    return [dictGroup];
+  });
 }
 
 function ConverterFactoryWithSegmentation(segmentationDict, ...dictGroups) {
@@ -222,6 +281,15 @@ export function ConverterBuilder(localePreset) {
   }
 
   return function Converter(options) {
+    ['from', 'to'].forEach(type => {
+      if (!options || typeof options[type] !== 'string') {
+        throw new Error('Please provide the `' + type + '` option');
+      }
+      if (options[type] !== 't' && !localePreset[type][options[type]]) {
+        throw new Error('Unknown `' + type + '` locale: ' + options[type]);
+      }
+    });
+
     if (localePreset.configs) {
       const config = localePreset.configs[getConfigName(options.from, options.to)];
       if (config) {
@@ -231,9 +299,6 @@ export function ConverterBuilder(localePreset) {
 
     let dictGroups = [];
     ['from', 'to'].forEach(type => {
-      if (typeof options[type] !== 'string') {
-        throw new Error('Please provide the `' + type + '` option');
-      }
       if (options[type] !== 't') {
         dictGroups.push(...normalizeDictGroups(localePreset[type][options[type]]));
       }

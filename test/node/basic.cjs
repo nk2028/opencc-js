@@ -46,3 +46,33 @@ chai.should();
   ]);
   converter('香蕉蘋果梨').should.equal('🍌️🍎️🍐️');
 })();
+
+(function test7() {
+  const documentedConverter = OpenCC.ConverterFactory(OpenCC.Locale.from.cn, OpenCC.Locale.to.hk);
+  documentedConverter('SKU').should.equal('SKU');
+  documentedConverter('纽西兰 Southern Stations 和牛').should.equal('紐西蘭 Southern Stations 和牛');
+
+  const expandedConverter = OpenCC.ConverterFactory(...OpenCC.Locale.from.cn, ...OpenCC.Locale.to.hk);
+  expandedConverter('SKU').should.equal('SKU');
+  expandedConverter('纽西兰 Southern Stations 和牛').should.equal('紐西蘭 Southern Stations 和牛');
+})();
+
+(function test8() {
+  const customDict = [['“', '「'], ['”', '」']];
+  const converter = OpenCC.ConverterFactory(OpenCC.Locale.from.cn, OpenCC.Locale.to.tw.concat([customDict]));
+  converter('悟空道：“师父又来了。”').should.equal('悟空道：「師父又來了。」');
+})();
+
+(function test9() {
+  OpenCC.ConverterFactory([[['a', 'b']]])('a').should.equal('b');
+  OpenCC.ConverterFactory(['a b|c d'])('ac').should.equal('bd');
+  (() => OpenCC.ConverterFactory([['a', 'b']])('a')).should.throw(TypeError, /dictionary entry/);
+  (() => OpenCC.ConverterFactory('a b')('a')).should.throw(TypeError, /ConverterFactory argument/);
+  (() => OpenCC.ConverterFactory(['a'])('a')).should.throw(TypeError, /source replacement/);
+})();
+
+(function test10() {
+  (() => OpenCC.Converter({ from: 'unknown', to: 'hk' })).should.throw(Error, /Unknown `from` locale/);
+  (() => OpenCC.Converter({ from: 'cn', to: 'unknown' })).should.throw(Error, /Unknown `to` locale/);
+  (() => OpenCC.Converter({ from: 'cn' })).should.throw(Error, /`to` option/);
+})();

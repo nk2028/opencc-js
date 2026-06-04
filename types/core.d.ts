@@ -1,5 +1,6 @@
 export type DictLike = string | readonly (readonly [string, string])[];
 export type DictGroup = readonly DictLike[];
+export type ConverterFactoryArgument = DictGroup | readonly DictGroup[];
 export type ConverterFunction = (text: string) => string;
 
 export interface LocalePreset {
@@ -26,7 +27,7 @@ export class Trie {
   convert(text: string): string;
 }
 
-export function ConverterFactory(...dictGroups: DictGroup[]): ConverterFunction;
+export function ConverterFactory(...dictGroups: ConverterFactoryArgument[]): ConverterFunction;
 export function ConverterBuilder(localePreset: LocalePreset): (options: ConverterOptions) => ConverterFunction;
 export function CustomConverter(dict: DictLike): ConverterFunction;
 

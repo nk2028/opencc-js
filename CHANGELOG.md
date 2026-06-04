@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.3.1-next.1 - 2026-05-03
+## 1.3.2 - TBD
+
+### Fixed
+
+- Support the documented `ConverterFactory(Locale.from.cn, Locale.to.hk)`-style locale dictionary collection arguments without silently treating bundled dictionary strings as custom dictionary entries.
+- Throw clearer errors for malformed dictionary entries, invalid `ConverterFactory` dictionary arguments, and unknown converter locales.
+
+## 1.3.1 - 2026-05-09
 
 ### Added
 
