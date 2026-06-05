@@ -43,7 +43,7 @@ CDN ES module:
 
 ```html
 <script type="module">
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.1-next.1/dist/esm/full.js';
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语'));
@@ -53,7 +53,7 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1-next.1/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>
 ```
 
 ## Usage
@@ -181,6 +181,8 @@ The [`opencc-js`](https://www.npmjs.com/package/opencc-js) npm package is a pure
 [`opencc-js`](https://www.npmjs.com/package/opencc-js) has aligned its conversion flow with the official OpenCC implementation, including phrase segmentation for built-in converters, and is tested against upstream OpenCC test cases and golden outputs. It still should not be treated as guaranteed to produce 100% identical results for every possible input.
 
 `opencc-js` currently supports the built-in OpenCC mmseg-style segmentation used by its bundled converters, but it does not support extended segmentation algorithms such as Jieba.
+
+To avoid producing tofu boxes for glyphs that are often missing from browser and system fonts, `opencc-js` does not bundle OpenCC's `TSCharactersExt` tofu-risk mappings. A small number of rare Traditional-to-Simplified extension-character conversions may therefore intentionally differ from the upstream OpenCC test data.
 
 The [`opencc`](https://www.npmjs.com/package/opencc) npm package is the Node.js native binding for the official OpenCC C++ project. It is intended for Node.js, depends on native or prebuilt binaries, and follows the official OpenCC engine. It can use extended segmentation algorithms such as Jieba when supported by the official OpenCC configuration and runtime.
 

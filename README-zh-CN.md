@@ -11,7 +11,7 @@
 加载以下 `script` 标签：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.0/dist/umd/full.js"></script>     <!-- 完全版 -->
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>     <!-- 完全版 -->
 ```
 
 自行托管的话，除了使用原先的 umd，也可以使用 es module
@@ -162,6 +162,8 @@ console.log(converter('漢語'));
 [`opencc-js`](https://www.npmjs.com/package/opencc-js) 的转换流程已向官方 OpenCC 实现对齐，包括内置转换器的词组分词，并通过 upstream OpenCC test cases 和 golden outputs 验证。但它仍不保证对所有输入都与官方 OpenCC 产生 100% 相同的结果。
 
 `opencc-js` 目前支持内置转换器使用的 OpenCC mmseg 风格分词，但不支持 jieba 等扩展分词算法。
+
+为了避免在浏览器和系统字体中较常缺字的字符显示成豆腐块，`opencc-js` 不打包 OpenCC 的 `TSCharactersExt` tofu-risk 映射。因此，少数繁转简扩展字符转换会有意与 upstream OpenCC test data 不同。
 
 [`opencc`](https://www.npmjs.com/package/opencc) npm package 是官方 OpenCC C++ 项目的 Node.js native binding，主要用于 Node.js，依赖 native 或 prebuilt binary，并跟随官方 OpenCC 引擎。在官方 OpenCC 配置和运行环境支持时，它可以使用 jieba 等扩展分词算法。
 

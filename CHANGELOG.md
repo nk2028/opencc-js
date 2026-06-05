@@ -2,10 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.3.2 - TBD
+## 1.3.2-next.0 - TBD
 
 ### Fixed
 
+- Sync generated dictionary data with `opencc-data` 1.3.2-next.0 and use the reverse dictionaries provided by the data package.
+- Continue to omit `TSCharactersExt` tofu-risk mappings to avoid producing glyphs that are often missing from browser and system fonts.
 - Support the documented `ConverterFactory(Locale.from.cn, Locale.to.hk)`-style locale dictionary collection arguments without silently treating bundled dictionary strings as custom dictionary entries.
 - Throw clearer errors for malformed dictionary entries, invalid `ConverterFactory` dictionary arguments, and unknown converter locales.
 

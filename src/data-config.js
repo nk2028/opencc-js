@@ -11,30 +11,26 @@ export const variants2standard = {
 
 export const standard2variants = {
   cn: [['TSPhrases', 'TSCharacters']],
-  hk: [['HKVariants']],
-  tw: [['TWVariants']],
-  twp: [['TWPhrases'], ['TWVariants']],
+  hk: [['HKVariantsPhrases', 'HKVariants']],
+  tw: [['TWVariantsPhrases', 'TWVariants']],
+  twp: [['TWPhrases'], ['TWVariantsPhrases', 'TWVariants']],
   jp: [['JPVariants']],
 };
 
-export const generatedReverseDicts = {
-  HKVariantsRev: 'HKVariants',
-  JPVariantsRev: 'JPVariants',
-  TWVariantsRev: 'TWVariants',
-};
+export const generatedReverseDicts = {};
 
 export const conversionConfigs = {
   hk2s: { from: 'hk', to: 'cn', segmentation: 'TSPhrases', chain: [['HKVariantsRevPhrases', 'HKVariantsRev'], ['TSPhrases', 'TSCharacters']] },
   hk2t: { from: 'hk', to: 't', segmentation: 'HKVariantsRevPhrases', chain: [['HKVariantsRevPhrases', 'HKVariantsRev']] },
   jp2t: { from: 'jp', to: 't', segmentation: 'JPShinjitaiPhrases', chain: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters', 'JPVariantsRev']] },
-  s2hk: { from: 'cn', to: 'hk', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['HKVariants']] },
+  s2hk: { from: 'cn', to: 'hk', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['HKVariantsPhrases', 'HKVariants']] },
   s2t: { from: 'cn', to: 't', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters']] },
-  s2tw: { from: 'cn', to: 'tw', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWVariants']] },
-  s2twp: { from: 'cn', to: 'twp', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWPhrases'], ['TWVariants']] },
-  t2hk: { from: 't', to: 'hk', segmentation: 'HKVariants', chain: [['HKVariants']] },
+  s2tw: { from: 'cn', to: 'tw', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWVariantsPhrases', 'TWVariants']] },
+  s2twp: { from: 'cn', to: 'twp', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWPhrases'], ['TWVariantsPhrases', 'TWVariants']] },
+  t2hk: { from: 't', to: 'hk', segmentation: ['HKVariantsPhrases', 'HKVariants'], chain: [['HKVariantsPhrases', 'HKVariants']] },
   t2jp: { from: 't', to: 'jp', segmentation: 'JPVariants', chain: [['JPVariants']] },
   t2s: { from: 't', to: 'cn', segmentation: 'TSPhrases', chain: [['TSPhrases', 'TSCharacters']] },
-  t2tw: { from: 't', to: 'tw', segmentation: 'TWVariants', chain: [['TWVariants']] },
+  t2tw: { from: 't', to: 'tw', segmentation: ['TWVariantsPhrases', 'TWVariants'], chain: [['TWVariantsPhrases', 'TWVariants']] },
   tw2s: { from: 'tw', to: 'cn', segmentation: 'TSPhrases', chain: [['TWVariantsRevPhrases', 'TWVariantsRev'], ['TSPhrases', 'TSCharacters']] },
   tw2sp: { from: 'twp', to: 'cn', segmentation: 'TSPhrases', chain: [['TWPhrasesRev', 'TWVariantsRevPhrases', 'TWVariantsRev'], ['TSPhrases', 'TSCharacters']] },
   tw2t: { from: 'tw', to: 't', segmentation: 'TWVariantsRevPhrases', chain: [['TWVariantsRevPhrases', 'TWVariantsRev']] },

@@ -79,6 +79,13 @@ function getDictGroupsCodeWithPrefix(dictGroups, prefix) {
   return `[${dictGroups.map(group => `[${group.map(dictName => `${prefix}${dictName}`).join(', ')}]`).join(', ')}]`;
 }
 
+function getDictLikeCodeWithPrefix(dictLike, prefix) {
+  if (Array.isArray(dictLike)) {
+    return `[${dictLike.map(dictName => `${prefix}${dictName}`).join(', ')}]`;
+  }
+  return `${prefix}${dictLike}`;
+}
+
 fs.rmSync(getAbsPath('./dist'), { recursive: true, force: true });
 
 function getPresetCode(cfg) {
@@ -107,7 +114,7 @@ function getPresetCode(cfg) {
     .filter(([, config]) => presetIncludesConfig(config));
   const configDictNames = new Set();
   presetConfigs.forEach(([, config]) => {
-    configDictNames.add(config.segmentation);
+    flattenDictNames([config.segmentation]).forEach(dictName => configDictNames.add(dictName));
     config.chain.flat().forEach(dictName => configDictNames.add(dictName));
   });
   Array.from(configDictNames).sort().forEach(dictName => {
@@ -115,7 +122,7 @@ function getPresetCode(cfg) {
     loadFile(dictName);
   });
   presetConfigs.forEach(([name, config]) => {
-    code.configs.push(`${name}: { segmentation: dict_${config.segmentation}, conversionChain: ${getDictGroupsCodeWithPrefix(config.chain, 'dict_')} }`);
+    code.configs.push(`${name}: { segmentation: ${getDictLikeCodeWithPrefix(config.segmentation, 'dict_')}, conversionChain: ${getDictGroupsCodeWithPrefix(config.chain, 'dict_')} }`);
   });
 
   return `${code.import.join('\n')}

@@ -13,7 +13,7 @@
  * @typedef {object} LocalePreset
  * @property {object.<string, DictGroup[]>} from
  * @property {object.<string, DictGroup[]>} to
- * @property {object.<string, {segmentation: DictLike, conversionChain: DictGroup[]}>} [configs]
+ * @property {object.<string, {segmentation: DictLike|DictGroup, conversionChain: DictGroup[]}>} [configs]
  */
 
 /**
@@ -244,7 +244,11 @@ function normalizeConverterFactoryDictGroups(dictGroups) {
 
 function ConverterFactoryWithSegmentation(segmentationDict, ...dictGroups) {
   const segmentation = new Trie();
-  segmentation.loadDict(segmentationDict);
+  if (Array.isArray(segmentationDict) && segmentationDict.every(dict => typeof dict === 'string')) {
+    segmentation.loadDictGroup(segmentationDict);
+  } else {
+    segmentation.loadDict(segmentationDict);
+  }
   const trieArr = dictGroups.map(grp => {
     const t = new Trie();
     t.loadDictGroup(grp);

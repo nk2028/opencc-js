@@ -7,7 +7,7 @@ export interface LocalePreset {
   from: Record<string, readonly DictGroup[]>;
   to: Record<string, readonly DictGroup[]>;
   configs?: Record<string, {
-    segmentation: DictLike;
+    segmentation: DictLike | DictGroup;
     conversionChain: readonly DictGroup[];
   }>;
 }
