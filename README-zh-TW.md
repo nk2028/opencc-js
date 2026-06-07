@@ -1,46 +1,83 @@
-# opencc-js [![](https://badge.fury.io/js/opencc-js.svg)](https://www.npmjs.com/package/opencc-js) [![](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+# opencc-js
+[![npm package badge](https://badge.fury.io/js/opencc-js.svg)](https://www.npmjs.com/package/opencc-js)
+[![GitHub Testing Badge](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest)
+[![jsDelivr Monthly Downloads Badge](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+[![Socket.dev Supply Chain Security Badge](https://badge.socket.dev/npm/package/opencc-js)](https://badge.socket.dev/npm/package/opencc-js)
 
-開放中文轉換 JavaScript 版
+[English](README.md) - [简体版](README-zh-CN.md)
 
-字典資料會在建置時從 `opencc-data` 產生，並打包進發布檔案。瀏覽器執行時不會額外下載字典 txt 檔案。
+**開放中文轉換（OpenCC）的純 JavaScript 版本**
 
-## 載入
+`opencc-js` 是面向瀏覽器和 Node.js 的 [OpenCC](https://github.com/BYVoid/OpenCC) 純 JavaScript 實作。它會在建置時打包從 [`opencc-data`](https://github.com/nk2028/opencc-data) 產生的字典資料，不需要 native binary。
 
-**在 HTML 中載入**
+轉換流程已向官方 OpenCC 實作對齊，包括內建轉換器的詞組分詞，並通過 upstream OpenCC test cases 和 golden outputs 驗證。但它仍不保證對所有輸入都與官方 OpenCC 產生完全相同的結果。
 
-載入以下 `script` 標籤：
+`opencc-js` 支援內建轉換器使用的 OpenCC mmseg 風格分詞，但不支援 jieba 等擴充分詞演算法。
 
-```html
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>     <!-- 完全版 -->
-```
+> 注意：如需了解與 [`opencc`](https://www.npmjs.com/package/opencc) 和 [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) package 的比較，請見下文。
 
-自行託管的話，除了使用原先的 umd，也可以使用 es module
+## 資料
 
-```html
-<script type="module">
-  import OpenCC from './dist/esm/full.js'; // 完全版
-</script>
-```
+字典資料會在建置時從 [`opencc-data`](https://www.npmjs.com/package/opencc-data) 產生，並打包進發布 package。瀏覽器執行時不會額外下載字典文字檔案。
 
-**在 Node.js 中載入**
+為了避免在瀏覽器和系統字型中較常缺字的字元顯示成豆腐塊，`opencc-js` 不打包 OpenCC 的 `TSCharactersExt` tofu-risk 映射。因此，少數繁轉簡擴充字元轉換會有意與 upstream OpenCC test data 不同。
+
+## 使用
+
+請選擇適合目前環境的安裝或載入方式。
+
+> **重要：** 版本 `1.3.2-next.0` 包含一個關鍵 bugfix。如果你正在使用 CDN 或自行託管的建置檔案，請在下一個 stable release 發布前使用這個 prerelease。
+
+**為 Node.js 或 bundler 安裝 opencc-js**
 
 ```sh
 npm install opencc-js
 ```
 
-CommonJS
-
-```javascript
-const OpenCC = require('opencc-js');
-```
-
-ES Modules
+ES modules:
 
 ```javascript
 import OpenCC from 'opencc-js';
 ```
 
-## 使用
+CommonJS:
+
+```javascript
+const OpenCC = require('opencc-js');
+```
+
+**在瀏覽器中使用 opencc-js**
+
+自行託管的 ES module:
+
+```html
+<script type="module">
+  import OpenCC from './dist/esm/full.js';
+
+  const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+  console.log(converter('汉语'));
+</script>
+```
+
+CDN ES module:
+
+```html
+<script type="module">
+  // 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或使用 1.3.2-next.0 取得最新 bugfix
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/esm/full.js';
+
+  const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+  console.log(converter('汉语'));
+</script>
+```
+
+用於普通 script 標籤的 UMD build:
+
+```html
+<!-- 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或使用 1.3.2-next.0 取得最新 bugfix -->
+
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>
+```
 
 **基本用法**
 
@@ -49,13 +86,6 @@ import OpenCC from 'opencc-js';
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 console.log(converter('漢語')); // output: 汉语
 ```
-
-- `cn`: 簡體中文（中國大陸）
-- `tw`: 繁體中文（臺灣）
-    - `twp`: 且轉換詞彙（例如：自行車 -> 腳踏車）
-- `hk`: 繁體中文（香港）
-- `jp`: 日本新字體
-- `t`: 繁體中文（[OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)。多數場景建議優先使用 `tw` 或 `hk` 等地區 locale）
 
 **自訂轉換器**
 
@@ -68,7 +98,7 @@ const converter = OpenCC.CustomConverter([
 console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 ```
 
-或以「空白」及「|」當作分隔符號
+或使用空格和直線作為分隔符。
 
 ```javascript
 const converter = OpenCC.CustomConverter('香蕉 banana|蘋果 apple|梨 pear');
@@ -77,8 +107,8 @@ console.log(converter('香蕉 蘋果 梨')); // output: banana apple pear
 
 **添加字詞**
 
-* `ConverterFactory` 是比較底層的函數，`Converter` 及 `CustomConverter` 都是這個函數的再包裝。
-* 透過 `Locale` 屬性可以得到原本的字典，進而添加字詞。
+* 使用較底層的 `ConverterFactory` 函數建立轉換器。
+* 透過 `Locale` 屬性取得字典。
 
 ```javascript
 const customDict = [
@@ -88,14 +118,14 @@ const customDict = [
   ['’', '』'],
 ];
 const converter = OpenCC.ConverterFactory(
-  OpenCC.Locale.from.cn,                   // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 臺灣+自訂
+  OpenCC.Locale.from.cn,                   // 簡體中文（中國大陸）=> OpenCC 標準
+  OpenCC.Locale.to.tw.concat([customDict]) // OpenCC 標準 => 繁體中文（臺灣）+ 自訂字詞
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
 ```
 
-下面的寫法也會得到相同的結果，只是內部會多做一次轉換
+下面的寫法也會得到相同的結果，只是會多做一次轉換。
 
 ```javascript
 const customDict = [
@@ -105,9 +135,9 @@ const customDict = [
   ['’', '』'],
 ];
 const converter = OpenCC.ConverterFactory(
-  OpenCC.Locale.from.cn, // 中國大陸 => OpenCC 標準
-  OpenCC.Locale.to.tw,   // OpenCC 標準 => 臺灣
-  [customDict]           // 臺灣 => 自訂
+  OpenCC.Locale.from.cn, // 簡體中文（中國大陸）=> OpenCC 標準
+  OpenCC.Locale.to.tw,   // OpenCC 標準 => 繁體中文（臺灣）
+  [customDict]           // 繁體中文（臺灣）=> 自訂字詞
 );
 console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞月’？”'));
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
@@ -126,45 +156,63 @@ HTML 屬性 `lang='*'` 定義了目標。
 const converter = OpenCC.Converter({ from: 'hk', to: 'cn' });
 // 設定轉換起點為根節點，即轉換整個頁面
 const rootNode = document.documentElement;
-// 將所有 zh-HK 標籤轉為 zh-CN 標籤
+// 將所有 lang='zh-HK' 的元素轉為 lang='zh-CN'
 const HTMLConvertHandler = OpenCC.HTMLConverter(converter, rootNode, 'zh-HK', 'zh-CN');
 HTMLConvertHandler.convert(); // 開始轉換  -> 汉语
 HTMLConvertHandler.restore(); // 復原      -> 漢語
 ```
 
-class list 包含 `ignore-opencc` 的標籤不會被轉換（包括該標籤的所有子節點）。
+## API
 
-`HTMLConverter` 也會轉換 `placeholder` 和 `aria-label` 屬性。
+* `.Converter({})`：透過 locale 宣告轉換方向。
+  * 預設值：`{ from: 'tw', to: 'cn' }`
+  * 語法：`{ from: locale1, to: locale2 }`
+* locales：用字母代碼定義書寫地區，有時也包含該地區的慣用詞彙。
+  * `cn`：簡體中文（中國大陸）
+  * `tw`：繁體中文（臺灣）
+    * `twp`：且轉換詞彙（例如：自行車 -> 腳踏車）
+  * `hk`：繁體中文（香港）
+  * `jp`：日本新字體
+  * `t`：繁體中文（[OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)。多數場景建議優先使用 `tw` 或 `hk` 等地區 locale）
+* `.CustomConverter([])`：定義自訂字典。
+  * 預設值：`[]`
+  * 語法：`[  ['item1','replacement1'], ['item2','replacement2'], ... ]`
+* `.HTMLConverter(converter, rootNode, langAttrInitial, langAttrNew )`：使用先前定義的 converter()，從起始 root node 向下轉換所有 HTML 元素的文字內容為目標 locale。也會把所有現有 `langAttrInitial` 的 `lang` 屬性轉換為 `langAttrNew`，並轉換 `placeholder` 和 `aria-label` 屬性。
+* `lang` 屬性：HTML 屬性，用於在開始時（`langAttrInitial`）以及轉換後（`langAttrNew`）向瀏覽器定義文字內容的語言。
+  * 語法約定：[IETF language codes](https://www.w3.org/International/articles/bcp47/#macro)，主要是 `zh-TW`、`zh-HK`、`zh-CN`、`zh-SG` 等。
+* `ignore-opencc`：HTML class，表示該元素及其所有子節點不會被轉換。
 
 ## 打包優化
 
-如果使用 rollup 等工具打包程式碼，以下方式能讓打包工具自動移除用不到的部分，減少檔案大小。
-
-建議明確選擇 `tw`、`hk` 或 `cn` 等地區字典；通用的 OpenCC 標準 `t` 模式通常不是面向使用者顯示時最合適的繁體。
+* Tree Shaking（僅 ES Modules）可以減小 bundle 檔案大小。
+* 使用 `ConverterFactory` 取代 `Converter`。
+* 建議明確選擇 `tw`、`hk` 或 `cn` 等地區字典，而不是通用的 OpenCC 標準 `t` preset。
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // 核心程式碼
-import * as Locale from 'opencc-js/preset'; // 字典資料
+import * as Locale from 'opencc-js/preset'; // 字典
 
 const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
 console.log(converter('漢語'));
 ```
 
-備註：
+## 不同 [`opencc`](https://www.npmjs.com/package/opencc) npm package 的區別
 
-* 由於這是利用 Tree Shaking，所以必須使用 ES Modules
-* 在這個模式之下，沒有 `Converter` 函式，必須直接使用 `ConverterFactory`
+OpenCC 轉換相關的 npm package 主要有三個。它們在執行環境、實作方式和分詞支援上有所不同。
 
-## 與 [`opencc`](https://www.npmjs.com/package/opencc) npm package 的區別
+[`opencc-js`](https://www.npmjs.com/package/opencc-js) 是面向瀏覽器和 Node.js 的純 JavaScript 實作。它會在建置時打包從 `opencc-data` 產生的字典資料，不需要 native binary，也不會在執行時下載字典檔案。它的轉換流程已向官方 OpenCC 實作對齊，包括內建轉換器的 mmseg 風格詞組分詞，並通過 upstream OpenCC test cases 和 golden outputs 驗證。但它仍不保證對所有輸入都與官方 OpenCC 產生完全相同的結果。不支援 Jieba 等擴充分詞演算法。
 
-[`opencc-js`](https://www.npmjs.com/package/opencc-js) npm package 是面向瀏覽器和 Node.js 的純 JavaScript 實作。它打包了從 `opencc-data` 產生的字典資料，因此不需要 native binary，也不會在執行時下載字典 txt 檔案。
+[`opencc`](https://www.npmjs.com/package/opencc) 是官方 OpenCC C++ 專案的 Node.js native binding。它依賴 native 或 prebuilt binary，並跟隨官方 OpenCC 引擎。在官方 OpenCC 設定和執行環境支援時，它可以使用 Jieba 等擴充分詞演算法。
 
-[`opencc-js`](https://www.npmjs.com/package/opencc-js) 的轉換流程已向官方 OpenCC 實作對齊，包括內建轉換器的詞組分詞，並通過 upstream OpenCC test cases 和 golden outputs 驗證。但它仍不保證對所有輸入都與官方 OpenCC 產生 100% 相同的結果。
+[`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) 是另一個可在瀏覽器中使用的 WebAssembly 實作。它的設定和轉換邏輯與官方 `opencc` package 對齊，並可透過官方 OpenCC runtime 支援 Jieba 分詞。
 
-`opencc-js` 目前支援內建轉換器使用的 OpenCC mmseg 風格分詞，但不支援 jieba 等擴充分詞演算法。
-
-為了避免在瀏覽器和系統字型中較常缺字的字元顯示成豆腐塊，`opencc-js` 不打包 OpenCC 的 `TSCharactersExt` tofu-risk 映射。因此，少數繁轉簡擴充字元轉換會有意與 upstream OpenCC test data 不同。
-
-[`opencc`](https://www.npmjs.com/package/opencc) npm package 是官方 OpenCC C++ 專案的 Node.js native binding，主要用於 Node.js，依賴 native 或 prebuilt binary，並跟隨官方 OpenCC 引擎。在官方 OpenCC 設定和執行環境支援時，它可以使用 jieba 等擴充分詞演算法。
-
-[`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package 是另一個能在瀏覽器中使用的實作。它使用 WebAssembly，配置和轉換邏輯與官方 [`opencc`](https://www.npmjs.com/package/opencc) package 對齊，並可透過官方 OpenCC runtime 支援 jieba 分詞。
+| | [`opencc-js`](https://www.npmjs.com/package/opencc-js) | [`opencc`](https://www.npmjs.com/package/opencc) | [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) |
+|---|---|---|---|
+| 瀏覽器 | ✅ | ❌ | ✅ |
+| Node.js | ✅ | ✅ | ✅ |
+| 實作方式 | 純 JavaScript | Native C++ binding | WebAssembly |
+| 需要 native binary | ❌ | ✅ | ❌ |
+| 字典來源 | 建置時打包 | 執行時載入 | 執行時載入 |
+| 與官方 OpenCC 對齊 | 近似 | ✅ | ✅ |
+| mmseg 分詞 | ✅ | ✅ | ✅ |
+| 可使用 Jieba 分詞 | ❌ | ✅ | ✅ |

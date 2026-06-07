@@ -1,12 +1,32 @@
-# opencc-js [![](https://badge.fury.io/js/opencc-js.svg)](https://www.npmjs.com/package/opencc-js) [![](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest) [![](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
-
-The JavaScript version of Open Chinese Convert (OpenCC)
+# opencc-js
+[![npm package badge](https://badge.fury.io/js/opencc-js.svg)](https://www.npmjs.com/package/opencc-js)
+[![GitHub Testing Badge](https://github.com/nk2028/opencc-js/workflows/Test/badge.svg)](https://github.com/nk2028/opencc-js/actions?query=workflow%3ATest)
+[![jsDelivr Monthly Downloads Badge](https://data.jsdelivr.com/v1/package/npm/opencc-js/badge)](https://www.jsdelivr.com/package/npm/opencc-js)
+[![Socket.dev Supply Chain Security Badge](https://badge.socket.dev/npm/package/opencc-js)](https://badge.socket.dev/npm/package/opencc-js)
 
 [繁體版](README-zh-TW.md) - [简体版](README-zh-CN.md)
 
-Dictionary data is generated from `opencc-data` at build time and bundled in the published package. Browser usage does not fetch extra dictionary text files at runtime.
+**The Pure JavaScript version of Open Chinese Convert (OpenCC)**
 
-## Import
+`opencc-js` is a pure JavaScript implementation of [OpenCC](https://github.com/BYVoid/OpenCC) for both browsers and Node.js. It bundles dictionary data generated from [`opencc-data`](https://github.com/nk2028/opencc-data) at build time, and no native binary is required.
+
+The conversion pipeline aligns with the official OpenCC implementation, including phrase-level segmentation for the built-in converters, verified against upstream OpenCC test cases and golden outputs. Exact parity with the official OpenCC output is not guaranteed for all inputs.
+
+`opencc-js` supports the OpenCC mmseg-style segmentation used by the built-in converters, but does not support extended segmenters such as jieba.
+
+> Note: For a comparison with the [`opencc`](https://www.npmjs.com/package/opencc) and [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) packages, see below.
+
+## Data
+
+Dictionary data is generated from [`opencc-data`](https://www.npmjs.com/package/opencc-data) at build time and bundled in the published package. Browser usage does not fetch extra dictionary text files at runtime.
+
+To avoid producing tofu boxes for glyphs that are often missing from browser and system fonts, `opencc-js` does not bundle OpenCC's `TSCharactersExt` tofu-risk mappings. A small number of rare Traditional-to-Simplified extension-character conversions may therefore intentionally differ from the upstream OpenCC test data.
+
+## Usage
+
+Choose the installation method that matches your environment.
+
+> **Important:** Version `1.3.2-next.0` contains a critical bugfix. If you are using a CDN or self-hosted build, use this prerelease until the next stable release is published.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -43,6 +63,7 @@ CDN ES module:
 
 ```html
 <script type="module">
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.0 for the latest bugfix
   import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
@@ -53,10 +74,10 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.0 for the latest bugfix -->
+
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>
 ```
-
-## Usage
 
 **Basic usage**
 
@@ -104,7 +125,7 @@ console.log(converter('悟空道：“师父又来了。怎么叫做‘水中捞
 // output: 悟空道：「師父又來了。怎麼叫做『水中撈月』？」
 ```
 
-This will get the same result with an extra convertion.
+This will get the same result with an extra conversion.
 
 ```javascript
 const customDict = [
@@ -174,16 +195,23 @@ const converter = OpenCC.ConverterFactory(Locale.from.hk, Locale.to.cn);
 console.log(converter('漢語'));
 ```
 
-## Difference from the [`opencc`](https://www.npmjs.com/package/opencc) npm package
+## Differences between various [`opencc`](https://www.npmjs.com/package/opencc) npm packages
 
-The [`opencc-js`](https://www.npmjs.com/package/opencc-js) npm package is a pure JavaScript implementation for browsers and Node.js. It bundles dictionary data generated from `opencc-data`, so it does not require native binaries and does not fetch dictionary text files at runtime.
+There are three related npm packages for OpenCC conversion. They differ in runtime environment, implementation approach, and segmentation support.
 
-[`opencc-js`](https://www.npmjs.com/package/opencc-js) has aligned its conversion flow with the official OpenCC implementation, including phrase segmentation for built-in converters, and is tested against upstream OpenCC test cases and golden outputs. It still should not be treated as guaranteed to produce 100% identical results for every possible input.
+[`opencc-js`](https://www.npmjs.com/package/opencc-js) is a pure JavaScript implementation for browsers and Node.js. It bundles dictionary data generated from `opencc-data` at build time, requiring no native binaries and no runtime file fetching. Its conversion pipeline aligns with the official OpenCC implementation, including mmseg-style phrase segmentation for built-in converters, verified against upstream OpenCC test cases and golden outputs. Exact parity with the official OpenCC output is not guaranteed for all inputs. Extended segmenters such as Jieba are not supported.
 
-`opencc-js` currently supports the built-in OpenCC mmseg-style segmentation used by its bundled converters, but it does not support extended segmentation algorithms such as Jieba.
+[`opencc`](https://www.npmjs.com/package/opencc) is the official Node.js native binding for the OpenCC C++ project. It depends on native or prebuilt binaries and follows the official OpenCC engine. Extended segmentation algorithms such as Jieba are supported when the official OpenCC configuration and runtime allow it.
 
-To avoid producing tofu boxes for glyphs that are often missing from browser and system fonts, `opencc-js` does not bundle OpenCC's `TSCharactersExt` tofu-risk mappings. A small number of rare Traditional-to-Simplified extension-character conversions may therefore intentionally differ from the upstream OpenCC test data.
+[`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) is another browser-capable implementation using WebAssembly. Its configuration and conversion logic stay aligned with the official `opencc` package, and it can support Jieba segmentation through the official OpenCC runtime.
 
-The [`opencc`](https://www.npmjs.com/package/opencc) npm package is the Node.js native binding for the official OpenCC C++ project. It is intended for Node.js, depends on native or prebuilt binaries, and follows the official OpenCC engine. It can use extended segmentation algorithms such as Jieba when supported by the official OpenCC configuration and runtime.
-
-The [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) npm package is another browser-capable implementation. It uses WebAssembly, keeps its configuration and conversion logic aligned with the official [`opencc`](https://www.npmjs.com/package/opencc) package, and can support Jieba segmentation through the official OpenCC runtime.
+| | [`opencc-js`](https://www.npmjs.com/package/opencc-js) | [`opencc`](https://www.npmjs.com/package/opencc) | [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) |
+|---|---|---|---|
+| Browser | ✅ | ❌ | ✅ |
+| Node.js | ✅ | ✅ | ✅ |
+| Implementation | Pure JavaScript | Native C++ binding | WebAssembly |
+| Native binary required | ❌ | ✅ | ❌ |
+| Dictionary source | Bundled at build time | Loaded at runtime | Loaded at runtime |
+| Aligned with official OpenCC | Approximately | ✅ | ✅ |
+| mmseg segmentation | ✅ | ✅ | ✅ |
+| Jieba segmentation available | ❌ | ✅ | ✅ |
