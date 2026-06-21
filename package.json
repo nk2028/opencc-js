@@ -13,6 +13,7 @@
     "README-zh-TW.md",
     "CHANGELOG.md",
     "LICENSE",
+    "LICENSES/Apache-2.0.txt",
     "THIRD_PARTY_LICENSES.md"
   ],
   "sideEffects": false,
@@ -75,7 +76,7 @@
     "traditional-chinese",
     "simplified-chinese"
   ],
-  "license": "MIT",
+  "license": "MIT AND Apache-2.0",
   "bugs": {
     "url": "https://github.com/nk2028/opencc-js/issues"
   },

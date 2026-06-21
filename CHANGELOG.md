@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## 1.3.2-next.0 - TBD
 
+### Changed
+
+- Clarify published license metadata and add a standalone Apache 2.0 license file so npm and GitHub license scanners more accurately detect the existing licensing of bundled `opencc-data` derivatives.
+
 ### Fixed
 
 - Sync generated dictionary data with `opencc-data` 1.3.2-next.0 and use the reverse dictionaries provided by the data package.
