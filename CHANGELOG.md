@@ -2,15 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.3.2-next.0 - TBD
+## 1.3.2-next.20260628 - 2026-06-28
 
 ### Changed
 
+- Align the package version and generated dictionary source with `opencc-data` 1.3.2-next.20260628.
+- Generate built-in conversion presets from upstream `opencc-data` config JSON instead of maintaining parallel conversion-chain definitions in `src/data-config.js`.
+- Apply upstream pre-segmentation normalization data, including `CJK_Compatibility_Ideographs` mappings.
+- Preserve the existing `{ from, to }` converter option API, including mappings such as `{ from: 'cn', to: 'twp' }` and `{ from: 'twp', to: 'cn' }`, while sourcing the underlying chains from upstream config files.
+- Add OpenCC golden-file conversion tests for supported Simplified-to-Traditional configs without including the golden fixtures in the published npm package.
+- Allow manually dispatched npm publishes for prerelease package versions while validating that manual publishes cannot use a stable semver version.
 - Clarify published license metadata and add a standalone Apache 2.0 license file so npm and GitHub license scanners more accurately detect the existing licensing of bundled `opencc-data` derivatives.
 
 ### Fixed
 
-- Sync generated dictionary data with `opencc-data` 1.3.2-next.0 and use the reverse dictionaries provided by the data package.
+- Support upstream config normalization steps that run before segmentation.
+- Support upstream configs without a segmentation section, such as `t2jp`.
+- Preserve unmatched ideographic description sequences as whole units during segmentation and conversion.
+- Keep excluding `may_output_tofu` conversion dictionaries by default, and document the resulting intentional upstream test-case skips in the OpenCC testcase runner.
+- Sync generated dictionary data with the upstream `opencc-data` package layout and dictionary names.
 - Continue to omit `TSCharactersExt` tofu-risk mappings to avoid producing glyphs that are often missing from browser and system fonts.
 - Support the documented `ConverterFactory(Locale.from.cn, Locale.to.hk)`-style locale dictionary collection arguments without silently treating bundled dictionary strings as custom dictionary entries.
 - Throw clearer errors for malformed dictionary entries, invalid `ConverterFactory` dictionary arguments, and unknown converter locales.

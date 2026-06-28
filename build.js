@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { conversionConfigs, generatedReverseDicts, variants2standard, standard2variants, presets } from './src/data-config.js';
+import { generatedReverseDicts, variants2standard, standard2variants, presets } from './src/data-config.js';
 import { fileURLToPath } from 'url';
 
 function getAbsPath(relativePath) {
@@ -9,10 +9,73 @@ function getAbsPath(relativePath) {
 const fileContentCache = {};
 const parsedFileCache = {};
 const sourceDictDir = getAbsPath('./node_modules/opencc-data/data');
+const sourceConfigDir = `${sourceDictDir}/config`;
+
+const configLocales = {
+  hk2s: { from: 'hk', to: 'cn' },
+  hk2t: { from: 'hk', to: 't' },
+  jp2t: { from: 'jp', to: 't' },
+  s2hk: { from: 'cn', to: 'hk' },
+  s2t: { from: 'cn', to: 't' },
+  s2tw: { from: 'cn', to: 'tw' },
+  s2twp: { from: 'cn', to: 'twp' },
+  t2hk: { from: 't', to: 'hk' },
+  t2jp: { from: 't', to: 'jp' },
+  t2s: { from: 't', to: 'cn' },
+  t2tw: { from: 't', to: 'tw' },
+  tw2s: { from: 'tw', to: 'cn' },
+  tw2sp: { from: 'twp', to: 'cn' },
+  tw2t: { from: 'tw', to: 't' },
+};
 
 function flattenDictNames(dictGroups) {
   return dictGroups.flatMap(group => Array.isArray(group) ? group : [group]);
 }
+
+function dictFileToName(fileName) {
+  return fileName.replace(/\.txt$/, '');
+}
+
+function flattenConfigDict(dict, options = {}) {
+  const { includeTofuRisk = false } = options;
+  if (dict.may_output_tofu && !includeTofuRisk) {
+    return [];
+  }
+  if (dict.type === 'text') {
+    return [dictFileToName(dict.file)];
+  }
+  if (dict.type === 'group') {
+    return dict.dicts.flatMap(child => flattenConfigDict(child, options));
+  }
+  throw new TypeError(`Unsupported dictionary type in opencc-data config: ${dict.type}`);
+}
+
+function parseConfigStage(stage, options) {
+  return flattenConfigDict(stage.dict, options);
+}
+
+function loadConversionConfigs() {
+  return Object.fromEntries(Object.entries(configLocales).map(([name, locales]) => {
+    const config = JSON.parse(fs.readFileSync(`${sourceConfigDir}/${name}.json`, 'utf-8'));
+    const normalizationChain = (config.normalization || [])
+      .map(stage => parseConfigStage(stage, { includeTofuRisk: false }))
+      .filter(group => group.length > 0);
+    const conversionChain = config.conversion_chain
+      .map(stage => parseConfigStage(stage, { includeTofuRisk: false }))
+      .filter(group => group.length > 0);
+    const segmentation = config.segmentation
+      ? flattenConfigDict(config.segmentation.dict, { includeTofuRisk: true })
+      : null;
+    return [name, {
+      ...locales,
+      normalizationChain,
+      segmentation,
+      chain: conversionChain,
+    }];
+  }));
+}
+
+const conversionConfigs = loadConversionConfigs();
 
 function getDictPath(fileName) {
   return `${sourceDictDir}/${fileName}.txt`;
@@ -114,7 +177,10 @@ function getPresetCode(cfg) {
     .filter(([, config]) => presetIncludesConfig(config));
   const configDictNames = new Set();
   presetConfigs.forEach(([, config]) => {
-    flattenDictNames([config.segmentation]).forEach(dictName => configDictNames.add(dictName));
+    config.normalizationChain.flat().forEach(dictName => configDictNames.add(dictName));
+    if (config.segmentation) {
+      flattenDictNames([config.segmentation]).forEach(dictName => configDictNames.add(dictName));
+    }
     config.chain.flat().forEach(dictName => configDictNames.add(dictName));
   });
   Array.from(configDictNames).sort().forEach(dictName => {
@@ -122,7 +188,15 @@ function getPresetCode(cfg) {
     loadFile(dictName);
   });
   presetConfigs.forEach(([name, config]) => {
-    code.configs.push(`${name}: { segmentation: ${getDictLikeCodeWithPrefix(config.segmentation, 'dict_')}, conversionChain: ${getDictGroupsCodeWithPrefix(config.chain, 'dict_')} }`);
+    const configProperties = [];
+    if (config.normalizationChain.length > 0) {
+      configProperties.push(`normalizationChain: ${getDictGroupsCodeWithPrefix(config.normalizationChain, 'dict_')}`);
+    }
+    if (config.segmentation) {
+      configProperties.push(`segmentation: ${getDictLikeCodeWithPrefix(config.segmentation, 'dict_')}`);
+    }
+    configProperties.push(`conversionChain: ${getDictGroupsCodeWithPrefix(config.chain, 'dict_')}`);
+    code.configs.push(`${name}: { ${configProperties.join(', ')} }`);
   });
 
   return `${code.import.join('\n')}

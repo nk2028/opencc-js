@@ -76,3 +76,28 @@ chai.should();
   (() => OpenCC.Converter({ from: 'cn', to: 'unknown' })).should.throw(Error, /Unknown `to` locale/);
   (() => OpenCC.Converter({ from: 'cn' })).should.throw(Error, /`to` option/);
 })();
+
+(function test11() {
+  const legacyOptions = [
+    { from: 'cn', to: 't' },
+    { from: 'cn', to: 'hk' },
+    { from: 'cn', to: 'tw' },
+    { from: 'cn', to: 'twp' },
+    { from: 'cn', to: 'jp' },
+    { from: 't', to: 'cn' },
+    { from: 't', to: 'hk' },
+    { from: 't', to: 'tw' },
+    { from: 't', to: 'jp' },
+    { from: 'hk', to: 'cn' },
+    { from: 'hk', to: 't' },
+    { from: 'tw', to: 'cn' },
+    { from: 'tw', to: 't' },
+    { from: 'twp', to: 'cn' },
+    { from: 'jp', to: 't' },
+    { from: 'jp', to: 'cn' },
+  ];
+
+  for (const options of legacyOptions) {
+    OpenCC.Converter(options)('汉語').should.be.a('string');
+  }
+})();

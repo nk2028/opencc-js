@@ -130,7 +130,7 @@
         if (orig_i === null) {
           orig_i = i;
         }
-        i += s.codePointAt(i) > 0xffff ? 2 : 1;
+        i += getUnmatchedLength(s, i);
       }
     }
     if (orig_i !== null) {
@@ -159,7 +159,7 @@
         if (orig_i === null) {
           orig_i = i;
         }
-        i += s.codePointAt(i) > 0xffff ? 2 : 1;
+        i += getUnmatchedLength(s, i);
       }
     }
     if (orig_i !== null) {
@@ -167,6 +167,43 @@
     }
     return arr.join('');
   }
+}
+
+function getCodePointLength(s, i) {
+  return s.codePointAt(i) > 0xffff ? 2 : 1;
+}
+
+function getIdeographicDescriptionArity(cp) {
+  if (cp >= 0x2ff0 && cp <= 0x2ff1) return 2;
+  if (cp >= 0x2ff2 && cp <= 0x2ff3) return 3;
+  if (cp >= 0x2ff4 && cp <= 0x2fff) return 2;
+  return 0;
+}
+
+function getIdeographicDescriptionSequenceEnd(s, i) {
+  const cp = s.codePointAt(i);
+  const arity = getIdeographicDescriptionArity(cp);
+  if (arity === 0) {
+    return 0;
+  }
+
+  let end = i + getCodePointLength(s, i);
+  for (let n = 0; n < arity; n += 1) {
+    if (end >= s.length) {
+      return 0;
+    }
+    const childEnd = getIdeographicDescriptionSequenceEnd(s, end);
+    end = childEnd || end + getCodePointLength(s, end);
+  }
+  return end;
+}
+
+function getUnmatchedLength(s, i) {
+  const idsEnd = getIdeographicDescriptionSequenceEnd(s, i);
+  if (idsEnd > i) {
+    return idsEnd - i;
+  }
+  return getCodePointLength(s, i);
 }
 
 /**
@@ -243,11 +280,14 @@ function normalizeConverterFactoryDictGroups(dictGroups) {
 }
 
 function ConverterFactoryWithSegmentation(segmentationDict, ...dictGroups) {
-  const segmentation = new Trie();
-  if (Array.isArray(segmentationDict) && segmentationDict.every(dict => typeof dict === 'string')) {
-    segmentation.loadDictGroup(segmentationDict);
-  } else {
-    segmentation.loadDict(segmentationDict);
+  let segmentation = null;
+  if (segmentationDict) {
+    segmentation = new Trie();
+    if (Array.isArray(segmentationDict) && segmentationDict.every(dict => typeof dict === 'string')) {
+      segmentation.loadDictGroup(segmentationDict);
+    } else {
+      segmentation.loadDict(segmentationDict);
+    }
   }
   const trieArr = dictGroups.map(grp => {
     const t = new Trie();
@@ -255,8 +295,9 @@ function ConverterFactoryWithSegmentation(segmentationDict, ...dictGroups) {
     return t;
   });
   return function convert(s) {
+    const segments = segmentation ? segmentation.segment(s) : [s];
     return trieArr
-      .reduce((segments, t) => segments.map(segment => t.convert(segment)), segmentation.segment(s))
+      .reduce((segments, t) => segments.map(segment => t.convert(segment)), segments)
       .join('');
   };
 }
@@ -297,7 +338,14 @@ export function ConverterBuilder(localePreset) {
     if (localePreset.configs) {
       const config = localePreset.configs[getConfigName(options.from, options.to)];
       if (config) {
-        return ConverterFactoryWithSegmentation(config.segmentation, ...config.conversionChain);
+        const converter = ConverterFactoryWithSegmentation(config.segmentation, ...config.conversionChain);
+        if (!config.normalizationChain) {
+          return converter;
+        }
+        const normalize = ConverterFactory(...config.normalizationChain);
+        return function convert(s) {
+          return converter(normalize(s));
+        };
       }
     }
 

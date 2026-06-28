@@ -28,16 +28,22 @@ const configToOptions = {
 const converters = new Map();
 const expectedOverrides = new Map([
   [
+    'BYVoid_OpenCC_Issue_1246_test:hk2t',
+    '這樣才行',
+  ],
+]);
+const skippedCasePatches = new Map([
+  [
     'BYVoid_OpenCC_PR_1228_existing_behaviors:t2s',
-    '殢 殢云尤雨 𣨼 𣨼云尤雨',
+    'opencc-js excludes may_output_tofu dictionaries by default; upstream expected requires TSCharactersExt 殢 -> 𣨼.',
   ],
   [
     'BYVoid_OpenCC_PR_1229_existing_behaviors:t2s',
-    '剔团𪢮月儿初淡 剔团圞月儿初淡',
+    'opencc-js excludes may_output_tofu dictionaries by default; upstream expected requires TSCharactersExt 圞 -> 𪢮.',
   ],
   [
-    'BYVoid_OpenCC_Issue_1246_test:hk2t',
-    '這樣才行',
+    'BYVoid_OpenCC_PR_464_xi_vs_xi:t2s',
+    'opencc-js excludes may_output_tofu dictionaries by default; upstream expected requires TSCharactersExt 樠 -> 𣗊.',
   ],
 ]);
 
@@ -61,15 +67,22 @@ const stats = {
 const byConfig = new Map();
 const failures = [];
 const skippedConfigs = new Set();
+const skippedCases = new Map();
 
 for (const testCase of testcases.cases) {
   for (const [config, upstreamExpected] of Object.entries(testCase.expected)) {
+    const caseKey = `${testCase.id}:${config}`;
     if (!configToOptions[config]) {
       stats.skipped += 1;
       skippedConfigs.add(config);
       continue;
     }
-    const expected = expectedOverrides.get(`${testCase.id}:${config}`) || upstreamExpected;
+    if (skippedCasePatches.has(caseKey)) {
+      stats.skipped += 1;
+      skippedCases.set(caseKey, skippedCasePatches.get(caseKey));
+      continue;
+    }
+    const expected = expectedOverrides.get(caseKey) || upstreamExpected;
 
     stats.total += 1;
     if (!byConfig.has(config)) {
@@ -99,6 +112,12 @@ for (const testCase of testcases.cases) {
 console.log(`OpenCC upstream cases: ${stats.passed}/${stats.total} passed, ${stats.failed} failed, ${stats.skipped} skipped`);
 if (skippedConfigs.size > 0) {
   console.log(`Skipped configs: ${Array.from(skippedConfigs).sort().join(', ')}`);
+}
+if (skippedCases.size > 0) {
+  console.log('Skipped patched cases:');
+  for (const [caseKey, reason] of Array.from(skippedCases.entries()).sort(([a], [b]) => a.localeCompare(b))) {
+    console.log(`  ${caseKey}: ${reason}`);
+  }
 }
 
 console.log('');

@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
     inputs:
       package_version:
-        description: Version to write to package.json before publishing, for example 1.3.1-next.1 or 1.3.1-beta.0
-        required: false
+        description: Prerelease version to write to package.json before publishing, for example 1.3.2-next.20260628 or 1.3.2-beta.0
+        required: true
         type: string
       dry_run:
         description: Run npm publish with --dry-run
@@ -27,8 +27,22 @@ jobs:
       with:
         node-version: 24
         registry-url: https://registry.npmjs.org/
+    - name: Validate manual prerelease version
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      shell: bash
+      env:
+        PACKAGE_VERSION: ${{ inputs.package_version }}
+      run: |
+        node -e "
+          const version = process.env.PACKAGE_VERSION;
+          const prereleaseSemver = /^\\d+\\.\\d+\\.\\d+-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*$/;
+          if (!prereleaseSemver.test(version)) {
+            console.error('Manual npm publish requires a prerelease semver package_version, for example 1.3.2-next.20260628.');
+            process.exit(1);
+          }
+        "
     - name: Prepare package version
-      if: ${{ github.event_name == 'workflow_dispatch' && inputs.package_version != '' }}
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       shell: bash
       env:
         PACKAGE_VERSION: ${{ inputs.package_version }}

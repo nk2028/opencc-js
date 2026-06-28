@@ -6,7 +6,7 @@ export const variants2standard = {
   hk: [['HKVariantsRevPhrases', 'HKVariantsRev']],
   tw: [['TWVariantsRevPhrases', 'TWVariantsRev']],
   twp: [['TWPhrasesRev', 'TWVariantsRevPhrases', 'TWVariantsRev']],
-  jp: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters', 'JPVariantsRev']],
+  jp: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters']],
 };
 
 export const standard2variants = {
@@ -14,7 +14,7 @@ export const standard2variants = {
   hk: [['HKVariantsPhrases', 'HKVariants']],
   tw: [['TWVariantsPhrases', 'TWVariants']],
   twp: [['TWPhrases'], ['TWVariantsPhrases', 'TWVariants']],
-  jp: [['JPVariants']],
+  jp: [['JPShinjitaiCharactersRev']],
 };
 
 export const generatedReverseDicts = {};

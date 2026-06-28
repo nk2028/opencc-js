@@ -26,7 +26,7 @@ To avoid producing tofu boxes for glyphs that are often missing from browser and
 
 Choose the installation method that matches your environment.
 
-> **Important:** Version `1.3.2-next.0` contains a critical bugfix. If you are using a CDN or self-hosted build, use this prerelease until the next stable release is published.
+> **Important:** Version `1.3.2-next.20260628` is the prerelease that syncs with `opencc-data` 1.3.2-next.20260628. It includes the new upstream config layout, pre-segmentation normalization, and CJK Compatibility Ideographs mappings. If you are using a CDN or self-hosted build and need the latest OpenCC data behavior, use this prerelease until the next stable release is published.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.0 for the latest bugfix
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/esm/full.js';
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.20260628 for the latest OpenCC data sync
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.20260628/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语'));
@@ -74,9 +74,9 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
-<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.0 for the latest bugfix -->
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or 1.3.2-next.20260628 for the latest OpenCC data sync -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.20260628/dist/umd/full.js"></script>
 ```
 
 **Basic usage**
