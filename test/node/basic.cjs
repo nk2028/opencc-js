@@ -39,6 +39,16 @@ chai.should();
 }());
 
 (function test6() {
+  const converter = OpenCC.Converter({ from: 'cn', to: 'hkp' });
+  converter('鼠标 光标 硬盘').should.equal('滑鼠 游標 硬碟');
+}());
+
+(function test7() {
+  const converter = OpenCC.Converter({ from: 'hkp', to: 'cn' });
+  converter('滑鼠 游標 硬碟').should.equal('鼠标 光标 硬盘');
+}());
+
+(function test8() {
   const converter = OpenCC.CustomConverter([
     ['香蕉', '🍌️'],
     ['蘋果', '🍎️'],
@@ -47,7 +57,7 @@ chai.should();
   converter('香蕉蘋果梨').should.equal('🍌️🍎️🍐️');
 })();
 
-(function test7() {
+(function test9() {
   const documentedConverter = OpenCC.ConverterFactory(OpenCC.Locale.from.cn, OpenCC.Locale.to.hk);
   documentedConverter('SKU').should.equal('SKU');
   documentedConverter('纽西兰 Southern Stations 和牛').should.equal('紐西蘭 Southern Stations 和牛');
@@ -57,13 +67,13 @@ chai.should();
   expandedConverter('纽西兰 Southern Stations 和牛').should.equal('紐西蘭 Southern Stations 和牛');
 })();
 
-(function test8() {
+(function test10() {
   const customDict = [['“', '「'], ['”', '」']];
   const converter = OpenCC.ConverterFactory(OpenCC.Locale.from.cn, OpenCC.Locale.to.tw.concat([customDict]));
   converter('悟空道：“师父又来了。”').should.equal('悟空道：「師父又來了。」');
 })();
 
-(function test9() {
+(function test11() {
   OpenCC.ConverterFactory([[['a', 'b']]])('a').should.equal('b');
   OpenCC.ConverterFactory(['a b|c d'])('ac').should.equal('bd');
   (() => OpenCC.ConverterFactory([['a', 'b']])('a')).should.throw(TypeError, /dictionary entry/);
@@ -71,16 +81,17 @@ chai.should();
   (() => OpenCC.ConverterFactory(['a'])('a')).should.throw(TypeError, /source replacement/);
 })();
 
-(function test10() {
+(function test12() {
   (() => OpenCC.Converter({ from: 'unknown', to: 'hk' })).should.throw(Error, /Unknown `from` locale/);
   (() => OpenCC.Converter({ from: 'cn', to: 'unknown' })).should.throw(Error, /Unknown `to` locale/);
   (() => OpenCC.Converter({ from: 'cn' })).should.throw(Error, /`to` option/);
 })();
 
-(function test11() {
+(function test13() {
   const legacyOptions = [
     { from: 'cn', to: 't' },
     { from: 'cn', to: 'hk' },
+    { from: 'cn', to: 'hkp' },
     { from: 'cn', to: 'tw' },
     { from: 'cn', to: 'twp' },
     { from: 'cn', to: 'jp' },
@@ -95,6 +106,7 @@ chai.should();
     { from: 'twp', to: 'cn' },
     { from: 'jp', to: 't' },
     { from: 'jp', to: 'cn' },
+    { from: 'hkp', to: 'cn' },
   ];
 
   for (const options of legacyOptions) {

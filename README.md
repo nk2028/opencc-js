@@ -171,6 +171,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
   * `tw`: Traditional Chinese (Taiwan)
     * `twp`: with phrase conversion (ex: 自行車 -> 腳踏車）
   * `hk`: Traditional Chinese (Hong Kong)
+    * `hkp`: with Hong Kong phrase conversion (ex: 鼠標 -> 滑鼠)
   * `jp`: Japanese Shinjitai
   * `t`: Traditional Chinese ([OpenCC standard](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md). For most use cases, prefer a regional locale such as `tw` or `hk`)
 * `.CustomConverter([])` : defines custom dictionary.

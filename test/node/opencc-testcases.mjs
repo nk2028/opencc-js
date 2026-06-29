@@ -10,9 +10,11 @@ const testcases = JSON.parse(fs.readFileSync(testcasesPath, 'utf8'));
 
 const configToOptions = {
   hk2s: { from: 'hk', to: 'cn' },
+  hk2sp: { from: 'hkp', to: 'cn' },
   hk2t: { from: 'hk', to: 't' },
   jp2t: { from: 'jp', to: 't' },
   s2hk: { from: 'cn', to: 'hk' },
+  s2hkp: { from: 'cn', to: 'hkp' },
   s2t: { from: 'cn', to: 't' },
   s2tw: { from: 'cn', to: 'tw' },
   s2twp: { from: 'cn', to: 'twp' },

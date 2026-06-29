@@ -313,6 +313,9 @@ export function ConverterBuilder(localePreset) {
       return `s2${to}`;
     }
     if (to === 'cn') {
+      if (from === 'hkp') {
+        return 'hk2sp';
+      }
       return from === 'twp' ? 'tw2sp' : `${from}2s`;
     }
     return `${from}2${to}`;

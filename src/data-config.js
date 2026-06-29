@@ -4,6 +4,7 @@
 export const variants2standard = {
   cn: [['STPhrases', 'STCharacters']],
   hk: [['HKVariantsRevPhrases', 'HKVariantsRev']],
+  hkp: [['HKPhrasesRev', 'HKVariantsRevPhrases', 'HKVariantsRev']],
   tw: [['TWVariantsRevPhrases', 'TWVariantsRev']],
   twp: [['TWPhrasesRev', 'TWVariantsRevPhrases', 'TWVariantsRev']],
   jp: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters']],
@@ -12,6 +13,7 @@ export const variants2standard = {
 export const standard2variants = {
   cn: [['TSPhrases', 'TSCharacters']],
   hk: [['HKVariantsPhrases', 'HKVariants']],
+  hkp: [['HKPhrases', 'HKVariantsPhrases', 'HKVariants']],
   tw: [['TWVariantsPhrases', 'TWVariants']],
   twp: [['TWPhrases'], ['TWVariantsPhrases', 'TWVariants']],
   jp: [['JPShinjitaiCharactersRev']],
@@ -21,9 +23,11 @@ export const generatedReverseDicts = {};
 
 export const conversionConfigs = {
   hk2s: { from: 'hk', to: 'cn', segmentation: 'TSPhrases', chain: [['HKVariantsRevPhrases', 'HKVariantsRev'], ['TSPhrases', 'TSCharacters']] },
+  hk2sp: { from: 'hkp', to: 'cn', segmentation: 'TSPhrases', chain: [['HKPhrasesRev', 'HKVariantsRevPhrases', 'HKVariantsRev'], ['TSPhrases', 'TSCharacters']] },
   hk2t: { from: 'hk', to: 't', segmentation: 'HKVariantsRevPhrases', chain: [['HKVariantsRevPhrases', 'HKVariantsRev']] },
   jp2t: { from: 'jp', to: 't', segmentation: 'JPShinjitaiPhrases', chain: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters', 'JPVariantsRev']] },
   s2hk: { from: 'cn', to: 'hk', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['HKVariantsPhrases', 'HKVariants']] },
+  s2hkp: { from: 'cn', to: 'hkp', segmentation: ['STPhrases', 'STPhrases_GeneratedFromRegionalPhrases'], chain: [['STPhrases', 'STPhrases_GeneratedFromRegionalPhrases', 'STCharacters'], ['HKPhrases', 'HKVariantsPhrases', 'HKVariants']] },
   s2t: { from: 'cn', to: 't', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters']] },
   s2tw: { from: 'cn', to: 'tw', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWVariantsPhrases', 'TWVariants']] },
   s2twp: { from: 'cn', to: 'twp', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWPhrases'], ['TWVariantsPhrases', 'TWVariants']] },
@@ -45,11 +49,11 @@ export const presets = [
   {
     filename: 'cn2t',
     from: ['cn'],
-    to: ['hk', 'tw', 'twp', 'jp']
+    to: ['hk', 'hkp', 'tw', 'twp', 'jp']
   },
   {
     filename: 't2cn',
-    from: ['hk', 'tw', 'twp', 'jp'],
+    from: ['hk', 'hkp', 'tw', 'twp', 'jp'],
     to: ['cn']
   }
 ];

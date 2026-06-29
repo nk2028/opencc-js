@@ -172,6 +172,7 @@ HTMLConvertHandler.restore(); // 复原      -> 漢語
   * `tw`：繁体中文（台湾）
     * `twp`：且转换词汇（例如：自行車 -> 腳踏車）
   * `hk`：繁体中文（香港）
+    * `hkp`：且转换香港词汇（例如：鼠标 -> 滑鼠）
   * `jp`：日本新字体
   * `t`：繁体中文（[OpenCC 标准繁体](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)。多数场景建议优先使用 `tw` 或 `hk` 等地区 locale）
 * `.CustomConverter([])`：定义自定义字典。

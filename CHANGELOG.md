@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Align the package version and generated dictionary source with `opencc-data` 1.3.2.
 - Generate built-in conversion presets from upstream `opencc-data` config JSON instead of maintaining parallel conversion-chain definitions in `src/data-config.js`.
 - Apply upstream pre-segmentation normalization data, including `CJK_Compatibility_Ideographs` mappings.
+- Add the `hkp` locale for Hong Kong phrase conversion, covering upstream `s2hkp` and `hk2sp` configs and bundling the corresponding `HKPhrases` and `HKPhrasesRev` dictionaries.
 - Preserve the existing `{ from, to }` converter option API, including mappings such as `{ from: 'cn', to: 'twp' }` and `{ from: 'twp', to: 'cn' }`, while sourcing the underlying chains from upstream config files.
 - Add OpenCC golden-file conversion tests for supported Simplified-to-Traditional configs without including the golden fixtures in the published npm package.
 - Allow manually dispatched npm publishes for prerelease package versions while validating that manual publishes cannot use a stable semver version.
