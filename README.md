@@ -173,7 +173,29 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
   * `hk`: Traditional Chinese (Hong Kong)
     * `hkp`: with Hong Kong phrase conversion (ex: 鼠標 -> 滑鼠)
   * `jp`: Japanese Shinjitai
-  * `t`: Traditional Chinese ([OpenCC standard](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md). For most use cases, prefer a regional locale such as `tw` or `hk`)
+  * `t`: Traditional Chinese ([OpenCC standard](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)), mainly useful as an intermediate form
+
+Unless you specifically need the [OpenCC standard Traditional Chinese](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md) intermediate form, prefer regional output such as `tw`, `twp`, `hk`, or `hkp` instead of `to: 't'`.
+
+| opencc-js options | OpenCC config | Notes |
+|---|---|---|
+| `{ from: 'cn', to: 'tw' }` | `s2tw` | Recommended for Simplified Chinese to Traditional Chinese (Taiwan). |
+| `{ from: 'cn', to: 'twp' }` | `s2twp` | Recommended for Simplified Chinese to Traditional Chinese (Taiwan) with phrase conversion. |
+| `{ from: 'cn', to: 'hk' }` | `s2hk` | Recommended for Simplified Chinese to Traditional Chinese (Hong Kong). |
+| `{ from: 'cn', to: 'hkp' }` | `s2hkp` | Simplified Chinese to Traditional Chinese (Hong Kong) with phrase conversion. The phrase dictionary is still developing and currently small; use with care. |
+| `{ from: 't', to: 'cn' }` | `t2s` | Recommended for generic Traditional Chinese to Simplified Chinese. |
+| `{ from: 'tw', to: 'cn' }` | `tw2s` | Recommended for Traditional Chinese (Taiwan) to Simplified Chinese. |
+| `{ from: 'twp', to: 'cn' }` | `tw2sp` | Recommended for Traditional Chinese (Taiwan, with phrases) to Simplified Chinese. |
+| `{ from: 'hk', to: 'cn' }` | `hk2s` | Recommended for Traditional Chinese (Hong Kong) to Simplified Chinese. |
+| `{ from: 'hkp', to: 'cn' }` | `hk2sp` | Traditional Chinese (Hong Kong, with phrases) to Simplified Chinese. The phrase dictionary is still developing and currently small; use with care. |
+| `{ from: 'cn', to: 't' }` | `s2t` | Advanced: Simplified Chinese to OpenCC standard Traditional Chinese. Usually not the best end-user display locale. |
+| `{ from: 't', to: 'tw' }` | `t2tw` | Advanced: OpenCC standard Traditional Chinese to Traditional Chinese (Taiwan). |
+| `{ from: 't', to: 'hk' }` | `t2hk` | Advanced: OpenCC standard Traditional Chinese to Traditional Chinese (Hong Kong). |
+| `{ from: 'tw', to: 't' }` | `tw2t` | Advanced: Traditional Chinese (Taiwan) to OpenCC standard Traditional Chinese. |
+| `{ from: 'hk', to: 't' }` | `hk2t` | Advanced: Traditional Chinese (Hong Kong) to OpenCC standard Traditional Chinese. |
+| `{ from: 'jp', to: 't' }` | `jp2t` | Experimental: Japanese Shinjitai to OpenCC standard Traditional Chinese. Not recommended for production use. |
+| `{ from: 't', to: 'jp' }` | `t2jp` | Experimental: OpenCC standard Traditional Chinese to Japanese Shinjitai. Not recommended for production use. |
+
 * `.CustomConverter([])` : defines custom dictionary.
   * default: `[]`
   * syntax : `[  ['item1','replacement1'], ['item2','replacement2'], … ]`
@@ -186,7 +208,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
 
 * Tree Shaking (ES Modules Only) may result less size of bundle file.
 * Using `ConverterFactory` instead of `Converter`.
-* Prefer explicit locale dictionaries such as `tw`, `hk`, or `cn` over the generic OpenCC standard `t` preset.
+* Prefer regional output dictionaries such as `tw` or `hk` over `to: 't'` unless you specifically need OpenCC standard Traditional Chinese.
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // primary code

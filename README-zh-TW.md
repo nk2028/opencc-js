@@ -174,7 +174,29 @@ HTMLConvertHandler.restore(); // 復原      -> 漢語
   * `hk`：繁體中文（香港）
     * `hkp`：且轉換香港詞彙（例如：鼠标 -> 滑鼠）
   * `jp`：日本新字體
-  * `t`：繁體中文（[OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)。多數場景建議優先使用 `tw` 或 `hk` 等地區 locale）
+  * `t`：繁體中文（[OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)），主要適合作為中間形態
+
+除非明確需要 [OpenCC 標準繁體](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md) 作為中間形態，否則不建議把 `to: 't'` 作為面向使用者展示的目標。多數場景應優先使用 `tw`、`twp`、`hk` 或 `hkp` 等地區輸出。
+
+| opencc-js options | OpenCC config | 說明 |
+|---|---|---|
+| `{ from: 'cn', to: 'tw' }` | `s2tw` | 推薦：簡體中文到臺灣繁體。 |
+| `{ from: 'cn', to: 'twp' }` | `s2twp` | 推薦：簡體中文到臺灣繁體，並轉換臺灣常用詞。 |
+| `{ from: 'cn', to: 'hk' }` | `s2hk` | 推薦：簡體中文到香港繁體。 |
+| `{ from: 'cn', to: 'hkp' }` | `s2hkp` | 簡體中文到香港繁體，並轉換香港常用詞。該短語字典仍在開發中，目前詞組不多，請謹慎使用。 |
+| `{ from: 't', to: 'cn' }` | `t2s` | 推薦：通用繁體中文到簡體中文。 |
+| `{ from: 'tw', to: 'cn' }` | `tw2s` | 推薦：臺灣繁體到簡體中文。 |
+| `{ from: 'twp', to: 'cn' }` | `tw2sp` | 推薦：臺灣繁體詞彙到簡體中文。 |
+| `{ from: 'hk', to: 'cn' }` | `hk2s` | 推薦：香港繁體到簡體中文。 |
+| `{ from: 'hkp', to: 'cn' }` | `hk2sp` | 香港繁體詞彙到簡體中文。該短語字典仍在開發中，目前詞組不多，請謹慎使用。 |
+| `{ from: 'cn', to: 't' }` | `s2t` | 進階用法：簡體中文到 OpenCC 標準繁體，通常不是最佳的使用者展示 locale。 |
+| `{ from: 't', to: 'tw' }` | `t2tw` | 進階用法：OpenCC 標準繁體到臺灣繁體。 |
+| `{ from: 't', to: 'hk' }` | `t2hk` | 進階用法：OpenCC 標準繁體到香港繁體。 |
+| `{ from: 'tw', to: 't' }` | `tw2t` | 進階用法：臺灣繁體到 OpenCC 標準繁體。 |
+| `{ from: 'hk', to: 't' }` | `hk2t` | 進階用法：香港繁體到 OpenCC 標準繁體。 |
+| `{ from: 'jp', to: 't' }` | `jp2t` | 試驗性功能：日本新字體到 OpenCC 標準繁體，不建議用於生產環境。 |
+| `{ from: 't', to: 'jp' }` | `t2jp` | 試驗性功能：OpenCC 標準繁體到日本新字體，不建議用於生產環境。 |
+
 * `.CustomConverter([])`：定義自訂字典。
   * 預設值：`[]`
   * 語法：`[  ['item1','replacement1'], ['item2','replacement2'], ... ]`
@@ -187,7 +209,7 @@ HTMLConvertHandler.restore(); // 復原      -> 漢語
 
 * Tree Shaking（僅 ES Modules）可以減小 bundle 檔案大小。
 * 使用 `ConverterFactory` 取代 `Converter`。
-* 建議明確選擇 `tw`、`hk` 或 `cn` 等地區字典，而不是通用的 OpenCC 標準 `t` preset。
+* 除非明確需要 OpenCC 標準繁體，否則建議優先輸出到 `tw` 或 `hk` 等地區字典，而不是 `to: 't'`。
 
 ```javascript
 import * as OpenCC from 'opencc-js/core'; // 核心程式碼
