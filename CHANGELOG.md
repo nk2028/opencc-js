@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.3.2-next.20260628 - 2026-06-28
+## 1.3.2 - 2026-06-28
 
 ### Changed
 
-- Align the package version and generated dictionary source with `opencc-data` 1.3.2-next.20260628.
+- Align the package version and generated dictionary source with `opencc-data` 1.3.2.
 - Generate built-in conversion presets from upstream `opencc-data` config JSON instead of maintaining parallel conversion-chain definitions in `src/data-config.js`.
 - Apply upstream pre-segmentation normalization data, including `CJK_Compatibility_Ideographs` mappings.
 - Preserve the existing `{ from, to }` converter option API, including mappings such as `{ from: 'cn', to: 'twp' }` and `{ from: 'twp', to: 'cn' }`, while sourcing the underlying chains from upstream config files.
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 - Keep excluding `may_output_tofu` conversion dictionaries by default, and document the resulting intentional upstream test-case skips in the OpenCC testcase runner.
 - Sync generated dictionary data with the upstream `opencc-data` package layout and dictionary names.
 - Continue to omit `TSCharactersExt` tofu-risk mappings to avoid producing glyphs that are often missing from browser and system fonts.
-- Support the documented `ConverterFactory(Locale.from.cn, Locale.to.hk)`-style locale dictionary collection arguments without silently treating bundled dictionary strings as custom dictionary entries.
+- Fix `ConverterFactory(Locale.from.cn, Locale.to.hk)`-style locale dictionary collection arguments being silently treated as custom dictionary entries instead of bundled locale dictionaries.
 - Throw clearer errors for malformed dictionary entries, invalid `ConverterFactory` dictionary arguments, and unknown converter locales.
 
 ## 1.3.1 - 2026-05-09
