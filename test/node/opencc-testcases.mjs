@@ -1,12 +1,28 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { parse, printParseErrorCode } from 'jsonc-parser';
 import OpenCCDefault from 'opencc-js';
 import * as OpenCC from 'opencc-js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const testcasesPath = path.join(__dirname, '..', '..', 'node_modules', 'opencc-data', 'test-data', 'testcases.json');
-const testcases = JSON.parse(fs.readFileSync(testcasesPath, 'utf8'));
+const testcasesPath = process.env.OPENCC_TESTCASES_PATH
+  || path.join(__dirname, '..', '..', 'node_modules', 'opencc-data', 'test-data', 'testcases.json');
+const testcases = parseTestcases(fs.readFileSync(testcasesPath, 'utf8'), testcasesPath);
+
+function parseTestcases(source, filename) {
+  const errors = [];
+  const parsed = parse(source, errors, { allowTrailingComma: true });
+
+  if (errors.length > 0) {
+    const message = errors
+      .map((error) => `${printParseErrorCode(error.error)} at offset ${error.offset}`)
+      .join(', ');
+    throw new SyntaxError(`Failed to parse OpenCC testcases from ${filename}: ${message}`);
+  }
+
+  return parsed;
+}
 
 const configToOptions = {
   hk2s: { from: 'hk', to: 'cn' },

@@ -25,6 +25,7 @@ When preparing a new release that syncs with a new `opencc-data` version:
 
 - Update the package version in `package.json` and `package-lock.json` to the release version.
 - Update the `opencc-data` dev dependency to the exact upstream version, without a semver range such as `^`.
+- After changing dependency versions, run `npm ci` before final verification so local tests use the same clean dependency tree as CI.
 - Run `npm run build` to regenerate dictionary modules and Rollup bundles; never hand-edit generated `dist` files.
 - Update `CHANGELOG.md` with a release entry. For dictionary-only upstream syncs, note that the release aligns with the upstream `opencc-data` version and refreshes generated dictionary data.
 - Update all README files (`README.md`, `README-zh-CN.md`, and `README-zh-TW.md`) so version callouts, CDN URLs, pinned-version comments, and sample outputs match the new release.
