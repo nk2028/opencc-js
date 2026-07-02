@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.0 - 2026-07-02
+
+### Changed
+
+- Align with upstream `opencc-data` 1.4.0 and refresh the generated dictionary data.
+
 ## 1.3.2 - 2026-06-28
 
 ### Changed

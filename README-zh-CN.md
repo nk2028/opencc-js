@@ -26,7 +26,7 @@
 
 请选择适合当前环境的安装或加载方式。
 
-> **重要：** 版本 `1.3.2` 同步 `opencc-data` 1.3.2，包含新的上游 config 布局、segmentation 前 normalization，以及 CJK Compatibility Ideographs 映射。
+> **重要：** 版本 `1.4.0` 同步 `opencc-data` 1.4.0，并刷新生成的字典数据。
 
 **为 Node.js 或 bundler 安装 opencc-js**
 
@@ -55,7 +55,7 @@ const OpenCC = require('opencc-js');
   import OpenCC from './dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-  console.log(converter('汉语'));
+  console.log(converter('汉语')); // 漢語
 </script>
 ```
 
@@ -63,20 +63,20 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.3.2
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2/dist/esm/full.js';
+  // 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.4.0
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-  console.log(converter('汉语'));
+  console.log(converter('汉语')); // 漢語
 </script>
 ```
 
 用于普通 script 标签的 UMD build:
 
 ```html
-<!-- 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.3.2 -->
+<!-- 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.4.0 -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/umd/full.js"></script>
 ```
 
 **基本用法**

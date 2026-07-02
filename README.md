@@ -26,7 +26,7 @@ To avoid producing tofu boxes for glyphs that are often missing from browser and
 
 Choose the installation method that matches your environment.
 
-> **Important:** Version `1.3.2` syncs with `opencc-data` 1.3.2. It includes the new upstream config layout, pre-segmentation normalization, and CJK Compatibility Ideographs mappings.
+> **Important:** Version `1.4.0` syncs with `opencc-data` 1.4.0 and refreshes the generated dictionary data.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -55,7 +55,7 @@ Self-hosted ES module:
   import OpenCC from './dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-  console.log(converter('汉语'));
+  console.log(converter('汉语')); // 漢語
 </script>
 ```
 
@@ -63,20 +63,20 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.3.2 explicitly
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.3.2/dist/esm/full.js';
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.0 explicitly
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-  console.log(converter('汉语'));
+  console.log(converter('汉语')); // 漢語
 </script>
 ```
 
 UMD build for plain script tags:
 
 ```html
-<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.3.2 explicitly -->
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.0 explicitly -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/umd/full.js"></script>
 ```
 
 **Basic usage**
