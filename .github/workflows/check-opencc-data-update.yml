@@ -1,0 +1,61 @@
+name: Check opencc-data update
+
+on:
+  workflow_dispatch: {}
+  # schedule:
+  #   - cron: '0 6 * * 1'
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+    - name: Determine current and latest opencc-data versions
+      id: versions
+      shell: bash
+      run: |
+        current="$(node -p "require('./package.json').devDependencies['opencc-data']")"
+        latest="$(npm view opencc-data version)"
+        echo "current=$current" >> "$GITHUB_OUTPUT"
+        echo "latest=$latest" >> "$GITHUB_OUTPUT"
+        echo "Current pinned opencc-data: $current"
+        echo "Latest published opencc-data: $latest"
+    - name: Bump opencc-data, build, and test
+      if: ${{ steps.versions.outputs.current != steps.versions.outputs.latest }}
+      shell: bash
+      env:
+        LATEST: ${{ steps.versions.outputs.latest }}
+      run: |
+        npm pkg set "devDependencies.opencc-data=$LATEST"
+        npm install
+        npm ci
+        npm test
+        npm pack --dry-run
+    - name: Open pull request
+      if: ${{ steps.versions.outputs.current != steps.versions.outputs.latest }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CURRENT: ${{ steps.versions.outputs.current }}
+        LATEST: ${{ steps.versions.outputs.latest }}
+      run: |
+        branch="bump-opencc-data-$LATEST"
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b "$branch"
+        git add package.json package-lock.json
+        git commit -m "Bump opencc-data to $LATEST"
+        git push origin "$branch" --force
+        body=$(printf 'Upstream `opencc-data` released %s (previously pinned at %s). This bumps the dependency, regenerates `dist`, and runs the full test suite (including upstream OpenCC test cases).\n\nBefore merging and releasing, per AGENTS.md:\n- Review what changed upstream between %s and %s (dictionary data, config schema) and confirm it'\''s data-only, not an incompatible change requiring source changes.\n- Update the package version in `package.json`/`package-lock.json`, `CHANGELOG.md`, and the README files (version callouts, CDN pins) as part of the release, not this PR.\n- Re-run `npm test` and `npm pack --dry-run` after any further changes.' "$LATEST" "$CURRENT" "$CURRENT" "$LATEST")
+        if ! gh pr view "$branch" --json state >/dev/null 2>&1; then
+          gh pr create \
+            --title "Bump opencc-data to $LATEST" \
+            --base main \
+            --head "$branch" \
+            --body "$body"
+        fi
