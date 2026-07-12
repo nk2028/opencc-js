@@ -26,7 +26,7 @@
 
 請選擇適合目前環境的安裝或載入方式。
 
-> **重要：** 版本 `1.4.0` 同步 `opencc-data` 1.4.0，並刷新產生的字典資料。
+> **重要：** 版本 `1.4.1` 同步 `opencc-data` 1.4.1，並刷新產生的字典資料。
 
 **為 Node.js 或 bundler 安裝 opencc-js**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.0
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/esm/full.js';
+  // 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.1
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 用於普通 script 標籤的 UMD build:
 
 ```html
-<!-- 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.0 -->
+<!-- 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.1 -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/umd/full.js"></script>
 ```
 
 **基本用法**
@@ -226,6 +226,8 @@ OpenCC 轉換相關的 npm package 主要有三個。它們在執行環境、實
 [`opencc-js`](https://www.npmjs.com/package/opencc-js) 是面向瀏覽器和 Node.js 的純 JavaScript 實作。它會在建置時打包從 `opencc-data` 產生的字典資料，不需要 native binary，也不會在執行時下載字典檔案。它的轉換流程已向官方 OpenCC 實作對齊，包括內建轉換器的 mmseg 風格詞組分詞，並通過 upstream OpenCC test cases 和 golden outputs 驗證。但它仍不保證對所有輸入都與官方 OpenCC 產生完全相同的結果。不支援 Jieba 等擴充分詞演算法。
 
 [`opencc`](https://www.npmjs.com/package/opencc) 是官方 OpenCC C++ 專案的 Node.js native binding。它依賴 native 或 prebuilt binary，並跟隨官方 OpenCC 引擎。在官方 OpenCC 設定和執行環境支援時，它可以使用 Jieba 等擴充分詞演算法。
+
+`opencc-js` 與 `opencc` 的 API 形態也不同：`opencc-js` 使用工廠函式（`OpenCC.Converter({ from, to })`、`ConverterFactory`、`Locale`）回傳一個普通的轉換函式，而 `opencc` 提供一個 class（`new OpenCC(config, options)`），並帶有 `convertSync`/`convert`/`convertPromise` 方法。這個差異從 `opencc-js` 早於 `opencc` 目前 API 存在時就已如此，`opencc-js` 不會跟隨它變化。特別是 `opencc` 新增的 `OpenCC.fromConfig()`（從 inline OpenCC 設定物件建立轉換器）是 native `opencc` 專屬能力；`opencc-js` 用自己的 `ConverterFactory`/`CustomConverter` API 涵蓋同樣的自訂轉換需求。
 
 [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) 是另一個可在瀏覽器中使用的 WebAssembly 實作。它的設定和轉換邏輯與官方 `opencc` package 對齊，並可透過官方 OpenCC runtime 支援 Jieba 分詞。
 

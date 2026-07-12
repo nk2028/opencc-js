@@ -1,6 +1,6 @@
 {
   "name": "opencc-js",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
   "main": "./dist/umd/full.js",
   "types": "./types/full.d.ts",
@@ -86,7 +86,7 @@
     "@rollup/plugin-terser": "^1.0.0",
     "chai": "~4.3.4",
     "jsonc-parser": "^3.3.1",
-    "opencc-data": "1.4.0",
+    "opencc-data": "1.4.1",
     "rollup-plugin-generate-package-json": "^3.2.0"
   }
 }

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.1 - 2026-07-12
+
+### Changed
+
+- Align with upstream `opencc-data` 1.4.1 and refresh the generated dictionary data, including corrections to 黄粱/黄粱美梦, 托/託, 牴/抵, 復/複/覆, 遶/绕, and Taiwan regional 樑/梁 mappings.
+
 ## 1.4.0 - 2026-07-02
 
 ### Changed

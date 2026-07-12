@@ -26,7 +26,7 @@ To avoid producing tofu boxes for glyphs that are often missing from browser and
 
 Choose the installation method that matches your environment.
 
-> **Important:** Version `1.4.0` syncs with `opencc-data` 1.4.0 and refreshes the generated dictionary data.
+> **Important:** Version `1.4.1` syncs with `opencc-data` 1.4.1 and refreshes the generated dictionary data.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.0 explicitly
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/esm/full.js';
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.1 explicitly
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
-<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.0 explicitly -->
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.1 explicitly -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.0/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/umd/full.js"></script>
 ```
 
 **Basic usage**
@@ -225,6 +225,8 @@ There are three related npm packages for OpenCC conversion. They differ in runti
 [`opencc-js`](https://www.npmjs.com/package/opencc-js) is a pure JavaScript implementation for browsers and Node.js. It bundles dictionary data generated from `opencc-data` at build time, requiring no native binaries and no runtime file fetching. Its conversion pipeline aligns with the official OpenCC implementation, including mmseg-style phrase segmentation for built-in converters, verified against upstream OpenCC test cases and golden outputs. Exact parity with the official OpenCC output is not guaranteed for all inputs. Extended segmenters such as Jieba are not supported.
 
 [`opencc`](https://www.npmjs.com/package/opencc) is the official Node.js native binding for the OpenCC C++ project. It depends on native or prebuilt binaries and follows the official OpenCC engine. Extended segmentation algorithms such as Jieba are supported when the official OpenCC configuration and runtime allow it.
+
+`opencc-js` and `opencc` also expose different API shapes: `opencc-js` uses factory functions (`OpenCC.Converter({ from, to })`, `ConverterFactory`, `Locale`) that return a plain converter function, while `opencc` exposes a class (`new OpenCC(config, options)`) with `convertSync`/`convert`/`convertPromise` methods. This has been true since `opencc-js` predates `opencc`'s current API, and `opencc-js` does not track it. In particular, `opencc`'s `OpenCC.fromConfig()` entry point for building a converter from an inline OpenCC configuration object is native-`opencc`-specific; `opencc-js` covers the same custom-conversion use case with its own `ConverterFactory`/`CustomConverter` API instead.
 
 [`opencc-wasm`](https://www.npmjs.com/package/opencc-wasm) is another browser-capable implementation using WebAssembly. Its configuration and conversion logic stay aligned with the official `opencc` package, and it can support Jieba segmentation through the official OpenCC runtime.
 
