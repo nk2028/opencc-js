@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.2 - 2026-08-22
+
+### Changed
+
+- Align with upstream `opencc-data` 1.4.2 and refresh the generated dictionary data, including Taiwan 樑/梁 personal-name entries, 么/麼 and 雇/僱 variant mappings, 乾/干 phrase corrections, and additional regional phrases. See the upstream [OpenCC 1.4.2 release notes](https://github.com/BYVoid/OpenCC/blob/master/NEWS.md#version-142) for the detailed dictionary changes.
+
 ## 1.4.1 - 2026-07-12
 
 ### Changed
