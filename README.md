@@ -26,7 +26,7 @@ To avoid producing tofu boxes for glyphs that are often missing from browser and
 
 Choose the installation method that matches your environment.
 
-> **Important:** Version `1.4.1` syncs with `opencc-data` 1.4.1 and refreshes the generated dictionary data.
+> **Important:** Version `1.4.2` syncs with `opencc-data` 1.4.2 and refreshes the generated dictionary data.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.1 explicitly
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/esm/full.js';
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.2 explicitly
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
-<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.1 explicitly -->
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.2 explicitly -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/full.js"></script>
 ```
 
 **Basic usage**

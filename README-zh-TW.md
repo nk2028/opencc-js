@@ -26,7 +26,7 @@
 
 請選擇適合目前環境的安裝或載入方式。
 
-> **重要：** 版本 `1.4.1` 同步 `opencc-data` 1.4.1，並刷新產生的字典資料。
+> **重要：** 版本 `1.4.2` 同步 `opencc-data` 1.4.2，並刷新產生的字典資料。
 
 **為 Node.js 或 bundler 安裝 opencc-js**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.1
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/esm/full.js';
+  // 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.2
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 用於普通 script 標籤的 UMD build:
 
 ```html
-<!-- 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.1 -->
+<!-- 請使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明確固定 1.4.2 -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.1/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/full.js"></script>
 ```
 
 **基本用法**
