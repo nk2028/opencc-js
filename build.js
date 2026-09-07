@@ -126,7 +126,7 @@ function loadFile(fileName) {
   if (!fileContentCache[fileName]) {
     fileContentCache[fileName] = getEntries(fileName)
       .map(([k, values]) => [k, values[0]]) // only select the first candidate, the subsequent candidates are ignored
-      .filter(([k, v]) => k !== v || k.length > 1) // remove “char => the same char” convertions to reduce file size
+      .filter(([k, v]) => k !== v || [...k].length > 1) // remove “char => the same char” convertions to reduce file size
       .map(([k, v]) => k + ' ' + v)
       .join('|');
     const outputFile = getAbsPath(`./dist/esm-lib/dict/${fileName}.js`);

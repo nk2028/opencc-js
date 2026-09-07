@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Fixed
+
+- Fix the dictionary build script incorrectly keeping redundant "character maps to itself" entries for characters outside the Basic Multilingual Plane (e.g. 𪙏), since `String.prototype.length` counts UTF-16 code units rather than code points. These entries are now correctly filtered out, slightly reducing dictionary size with no effect on conversion results. ([#49](https://github.com/nk2028/opencc-js/issues/49), reported by [@obxyann](https://github.com/obxyann), thanks!)
+
 ## 1.4.2 - 2026-08-22
 
 ### Changed
