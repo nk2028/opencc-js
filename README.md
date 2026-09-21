@@ -26,7 +26,7 @@ To avoid producing tofu boxes for glyphs that are often missing from browser and
 
 Choose the installation method that matches your environment.
 
-> **Important:** Version `1.4.2` syncs with `opencc-data` 1.4.2 and refreshes the generated dictionary data.
+> **Important:** Version `1.5.0-beta.0` is a prerelease that syncs with `opencc-data` 1.5.0-beta.0, refreshes the generated dictionary data, and adds the experimental Small Seal Script entry `seal.js`.
 
 **Install opencc-js for Node.js or a bundler**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.2 explicitly
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/esm/full.js';
+  // Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.5.0-beta.0 explicitly
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 UMD build for plain script tags:
 
 ```html
-<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.4.2 explicitly -->
+<!-- Use the latest stable version from https://www.npmjs.com/package/opencc-js, or pin 1.5.0-beta.0 explicitly -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/full.js"></script>
 ```
 
 **Basic usage**
@@ -162,6 +162,67 @@ HTMLConvertHandler.convert(); // Convert  -> 汉语
 HTMLConvertHandler.restore(); // Restore  -> 漢語
 ```
 
+**Small Seal Script (experimental, since 1.5.0)**
+
+Conversion to and from Small Seal Script (說文小篆, the Unicode 18.0 Seal block U+3D000–U+3FC3F) is not part of `full.js`. It ships as a separate `seal.js` entry (about 230 KB), so users who do not need it download nothing extra. Its `Converter` offers exactly three modes, matching the upstream OpenCC configs:
+
+| opencc-js options | OpenCC config | Conversion |
+|---|---|---|
+| `{ from: 'cn', to: 'seal' }` | `s2seal` | Simplified Chinese to Small Seal Script |
+| `{ from: 't', to: 'seal' }` | `t2seal` | Traditional Chinese (OpenCC standard) to Small Seal Script |
+| `{ from: 'seal', to: 't' }` | `seal2t` | Small Seal Script to Traditional Chinese (OpenCC standard) |
+
+Node.js or a bundler (ES modules or CommonJS):
+
+```javascript
+import * as OpenCCSeal from 'opencc-js/seal';
+// const OpenCCSeal = require('opencc-js/seal');
+
+const s2seal = OpenCCSeal.Converter({ from: 'cn', to: 'seal' });
+console.log(s2seal('说文解字')); // output: 𽛛𾧆𽳮𿮵
+
+const t2seal = OpenCCSeal.Converter({ from: 't', to: 'seal' });
+console.log(t2seal('天地玄黃，宇宙洪荒')); // output: 𽀃𿡚𽭝𿤶，𾒶𾓼𾿼𽉲
+
+const seal2t = OpenCCSeal.Converter({ from: 'seal', to: 't' });
+console.log(seal2t('𽛛𾧆𽳮𿮵')); // output: 說文解字
+```
+
+Characters without a seal form, punctuation, and non-Chinese text are left unchanged:
+
+```javascript
+console.log(s2seal('Hello 你们好')); // output: Hello 你們𿒛
+```
+
+Any other combination is rejected instead of being chained from other dictionaries:
+
+```javascript
+OpenCCSeal.Converter({ from: 'seal', to: 'cn' }); // throws Error: Unsupported conversion: from `seal` to `cn`
+```
+
+`seal.js` only carries the seal dictionaries and loads `full.js` for the core and the shared Simplified-to-Traditional dictionaries. As an ES module in a browser, it imports the `full.js` next to it automatically:
+
+```html
+<script type="module">
+  import * as OpenCCSeal from 'https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/esm/seal.js';
+
+  const converter = OpenCCSeal.Converter({ from: 't', to: 'seal' });
+  console.log(converter('說文解字')); // 𽛛𾧆𽳮𿮵
+</script>
+```
+
+With plain script tags, load `full.js` first and then `seal.js`, which is exposed as the `OpenCCSeal` global:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/seal.js"></script>
+<script>
+  const converter = OpenCCSeal.Converter({ from: 'seal', to: 't' });
+</script>
+```
+
+`OpenCCSeal` also exposes `CustomConverter`, `HTMLConverter`, and the other helpers, so seal converters can be used with `HTMLConverter` like any other converter. Displaying the output requires a font that covers the Unicode 18.0 Seal block.
+
 ## API
 * `.Converter({})`: declare the converter's direction via locales.
   * default: `{ from: 'tw', to: 'cn' }`
@@ -173,6 +234,7 @@ HTMLConvertHandler.restore(); // Restore  -> 漢語
   * `hk`: Traditional Chinese (Hong Kong)
     * `hkp`: with Hong Kong phrase conversion (ex: 鼠標 -> 滑鼠)
   * `jp`: Japanese Shinjitai
+  * `seal`: Small Seal Script (說文小篆), encoded with the Seal code points U+3D000–U+3FC3F; displaying it requires a font that covers this range. Only available through the standalone `seal.js` entry (see above).
   * `t`: Traditional Chinese ([OpenCC standard](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)), mainly useful as an intermediate form
 
 Unless you specifically need the [OpenCC standard Traditional Chinese](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md) intermediate form, prefer regional output such as `tw`, `twp`, `hk`, or `hkp` instead of `to: 't'`.
@@ -195,6 +257,9 @@ Unless you specifically need the [OpenCC standard Traditional Chinese](https://g
 | `{ from: 'hk', to: 't' }` | `hk2t` | Advanced: Traditional Chinese (Hong Kong) to OpenCC standard Traditional Chinese. |
 | `{ from: 'jp', to: 't' }` | `jp2t` | Experimental: Japanese Shinjitai to OpenCC standard Traditional Chinese. Not recommended for production use. |
 | `{ from: 't', to: 'jp' }` | `t2jp` | Experimental: OpenCC standard Traditional Chinese to Japanese Shinjitai. Not recommended for production use. |
+| `{ from: 'cn', to: 'seal' }` | `s2seal` | Experimental, `seal.js` only: Simplified Chinese to Small Seal Script. Characters without a seal form are left unchanged. |
+| `{ from: 't', to: 'seal' }` | `t2seal` | Experimental, `seal.js` only: OpenCC standard Traditional Chinese to Small Seal Script. |
+| `{ from: 'seal', to: 't' }` | `seal2t` | Experimental, `seal.js` only: Small Seal Script to OpenCC standard Traditional Chinese. |
 
 * `.CustomConverter([])` : defines custom dictionary.
   * default: `[]`

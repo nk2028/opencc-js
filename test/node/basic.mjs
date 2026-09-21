@@ -1,6 +1,7 @@
 import chai from 'chai';
 import * as OpenCC from 'opencc-js/core';
 import * as loc from 'opencc-js/preset';
+import * as sealLoc from 'opencc-js/preset/seal';
 
 const Converter = OpenCC.ConverterBuilder(loc);
 
@@ -115,4 +116,19 @@ chai.should();
   for (const options of legacyOptions) {
     Converter(options)('汉語').should.be.a('string');
   }
+})();
+
+(function testSeal() {
+  // the seal configs are standalone and not part of the full preset
+  (() => Converter({ from: 't', to: 'seal' })).should.throw(Error, /Unknown `to` locale/);
+
+  const SealConverter = OpenCC.ConverterBuilder(sealLoc);
+  SealConverter({ from: 't', to: 'seal' })('天地玄黃').should.equal('𽀃𿡚𽭝𿤶');
+  SealConverter({ from: 'seal', to: 't' })('𽀃𿡚𽭝𿤶').should.equal('天地玄黃');
+  SealConverter({ from: 'cn', to: 'seal' })('说文解字').should.equal('𽛛𾧆𽳮𿮵');
+
+  // only the three upstream seal configs are offered
+  (() => SealConverter({ from: 'seal', to: 'cn' })).should.throw(Error, /Unsupported conversion/);
+  (() => SealConverter({ from: 'cn', to: 't' })).should.throw(Error, /Unsupported conversion/);
+  (() => SealConverter({ from: 'tw', to: 'seal' })).should.throw(Error, /Unsupported conversion/);
 })();

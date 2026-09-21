@@ -26,7 +26,7 @@
 
 请选择适合当前环境的安装或加载方式。
 
-> **重要：** 版本 `1.4.2` 同步 `opencc-data` 1.4.2，并刷新生成的字典数据。
+> **重要：** 版本 `1.5.0-beta.0` 为预发布版，同步 `opencc-data` 1.5.0-beta.0，刷新生成的字典数据，并新增试验性的说文小篆入口 `seal.js`。
 
 **为 Node.js 或 bundler 安装 opencc-js**
 
@@ -63,8 +63,8 @@ CDN ES module:
 
 ```html
 <script type="module">
-  // 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.4.2
-  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/esm/full.js';
+  // 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.5.0-beta.0
+  import OpenCC from 'https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/esm/full.js';
 
   const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
   console.log(converter('汉语')); // 漢語
@@ -74,9 +74,9 @@ CDN ES module:
 用于普通 script 标签的 UMD build:
 
 ```html
-<!-- 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.4.2 -->
+<!-- 请使用 https://www.npmjs.com/package/opencc-js 上的最新 stable 版本，或明确固定 1.5.0-beta.0 -->
 
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/full.js"></script>
 ```
 
 **基本用法**
@@ -162,6 +162,67 @@ HTMLConvertHandler.convert(); // 开始转换  -> 汉语
 HTMLConvertHandler.restore(); // 复原      -> 漢語
 ```
 
+**说文小篆（试验性功能，自 1.5.0 起）**
+
+与说文小篆（Unicode 18.0 小篆区块 U+3D000–U+3FC3F）之间的转换不包含在 `full.js` 中，而是由独立的 `seal.js` 入口（约 230 KB）提供，不需要的用户不会多下载任何内容。它的 `Converter` 只提供三种模式，与上游 OpenCC 配置一一对应：
+
+| opencc-js options | OpenCC config | 转换 |
+|---|---|---|
+| `{ from: 'cn', to: 'seal' }` | `s2seal` | 简体中文到说文小篆 |
+| `{ from: 't', to: 'seal' }` | `t2seal` | 繁体中文（OpenCC 标准）到说文小篆 |
+| `{ from: 'seal', to: 't' }` | `seal2t` | 说文小篆到繁体中文（OpenCC 标准） |
+
+Node.js 或打包工具（ES modules 或 CommonJS）：
+
+```javascript
+import * as OpenCCSeal from 'opencc-js/seal';
+// const OpenCCSeal = require('opencc-js/seal');
+
+const s2seal = OpenCCSeal.Converter({ from: 'cn', to: 'seal' });
+console.log(s2seal('说文解字')); // output: 𽛛𾧆𽳮𿮵
+
+const t2seal = OpenCCSeal.Converter({ from: 't', to: 'seal' });
+console.log(t2seal('天地玄黃，宇宙洪荒')); // output: 𽀃𿡚𽭝𿤶，𾒶𾓼𾿼𽉲
+
+const seal2t = OpenCCSeal.Converter({ from: 'seal', to: 't' });
+console.log(seal2t('𽛛𾧆𽳮𿮵')); // output: 說文解字
+```
+
+没有对应小篆的字符、标点和非中文文本保持不变：
+
+```javascript
+console.log(s2seal('Hello 你们好')); // output: Hello 你們𿒛
+```
+
+其他组合会直接报错，而不会用其他字典串接：
+
+```javascript
+OpenCCSeal.Converter({ from: 'seal', to: 'cn' }); // 抛出 Error: Unsupported conversion: from `seal` to `cn`
+```
+
+`seal.js` 只包含小篆字典，核心代码和共用的简转繁字典从 `full.js` 加载。在浏览器中作为 ES module 使用时，它会自动导入同目录下的 `full.js`：
+
+```html
+<script type="module">
+  import * as OpenCCSeal from 'https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/esm/seal.js';
+
+  const converter = OpenCCSeal.Converter({ from: 't', to: 'seal' });
+  console.log(converter('說文解字')); // 𽛛𾧆𽳮𿮵
+</script>
+```
+
+使用 script 标签时，请先加载 `full.js`，再加载 `seal.js`，后者以全局变量 `OpenCCSeal` 提供：
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.5.0-beta.0/dist/umd/seal.js"></script>
+<script>
+  const converter = OpenCCSeal.Converter({ from: 'seal', to: 't' });
+</script>
+```
+
+`OpenCCSeal` 同样提供 `CustomConverter`、`HTMLConverter` 等函数，因此小篆转换器可以像其他转换器一样配合 `HTMLConverter` 使用。显示转换结果需要支持 Unicode 18.0 小篆区块的字体。
+
 ## API
 
 * `.Converter({})`：通过 locale 声明转换方向。
@@ -174,6 +235,7 @@ HTMLConvertHandler.restore(); // 复原      -> 漢語
   * `hk`：繁体中文（香港）
     * `hkp`：且转换香港词汇（例如：鼠标 -> 滑鼠）
   * `jp`：日本新字体
+  * `seal`：说文小篆，使用小篆码位 U+3D000–U+3FC3F 编码，需要支持该码位范围的字体才能显示。仅通过独立的 `seal.js` 入口提供（见上文）。
   * `t`：繁体中文（[OpenCC 标准繁体](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md)），主要适合作为中间形态
 
 除非明确需要 [OpenCC 标准繁体](https://github.com/BYVoid/OpenCC/blob/master/DESIGN_PRINCIPLES.md) 作为中间形态，否则不建议把 `to: 't'` 作为面向用户展示的目标。多数场景应优先使用 `tw`、`twp`、`hk` 或 `hkp` 等地区输出。
@@ -196,6 +258,9 @@ HTMLConvertHandler.restore(); // 复原      -> 漢語
 | `{ from: 'hk', to: 't' }` | `hk2t` | 高级用法：香港繁体到 OpenCC 标准繁体。 |
 | `{ from: 'jp', to: 't' }` | `jp2t` | 试验性功能：日本新字体到 OpenCC 标准繁体，不建议用于生产环境。 |
 | `{ from: 't', to: 'jp' }` | `t2jp` | 试验性功能：OpenCC 标准繁体到日本新字体，不建议用于生产环境。 |
+| `{ from: 'cn', to: 'seal' }` | `s2seal` | 试验性功能，仅 `seal.js`：简体中文到说文小篆。没有对应小篆的字符保持不变。 |
+| `{ from: 't', to: 'seal' }` | `t2seal` | 试验性功能，仅 `seal.js`：OpenCC 标准繁体到说文小篆。 |
+| `{ from: 'seal', to: 't' }` | `seal2t` | 试验性功能，仅 `seal.js`：说文小篆到 OpenCC 标准繁体。 |
 
 * `.CustomConverter([])`：定义自定义字典。
   * 默认值：`[]`

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { parse, printParseErrorCode } from 'jsonc-parser';
 import OpenCCDefault from 'opencc-js';
 import * as OpenCC from 'opencc-js';
+import * as OpenCCSeal from 'opencc-js/seal';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testcasesPath = process.env.OPENCC_TESTCASES_PATH
@@ -31,17 +32,23 @@ const configToOptions = {
   jp2t: { from: 'jp', to: 't' },
   s2hk: { from: 'cn', to: 'hk' },
   s2hkp: { from: 'cn', to: 'hkp' },
+  s2seal: { from: 'cn', to: 'seal' },
   s2t: { from: 'cn', to: 't' },
   s2tw: { from: 'cn', to: 'tw' },
   s2twp: { from: 'cn', to: 'twp' },
+  seal2t: { from: 'seal', to: 't' },
   t2hk: { from: 't', to: 'hk' },
   t2jp: { from: 't', to: 'jp' },
   t2s: { from: 't', to: 'cn' },
+  t2seal: { from: 't', to: 'seal' },
   t2tw: { from: 't', to: 'tw' },
   tw2s: { from: 'tw', to: 'cn' },
   tw2sp: { from: 'twp', to: 'cn' },
   tw2t: { from: 'tw', to: 't' },
 };
+
+// The seal configs ship in a standalone entry instead of the full build.
+const sealConfigs = new Set(['s2seal', 't2seal', 'seal2t']);
 
 const converters = new Map();
 const expectedOverrides = new Map([
@@ -71,7 +78,8 @@ if (OpenCCDefault.Converter({ from: 'cn', to: 'tw' })('汉语') !== '漢語') {
 
 function getConverter(config) {
   if (!converters.has(config)) {
-    converters.set(config, OpenCC.Converter(configToOptions[config]));
+    const { Converter } = sealConfigs.has(config) ? OpenCCSeal : OpenCC;
+    converters.set(config, Converter(configToOptions[config]));
   }
   return converters.get(config);
 }

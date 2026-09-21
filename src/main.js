@@ -14,6 +14,7 @@
  * @property {object.<string, DictGroup[]>} from
  * @property {object.<string, DictGroup[]>} to
  * @property {object.<string, {segmentation: DictLike|DictGroup, conversionChain: DictGroup[]}>} [configs]
+ * @property {boolean} [configsOnly] 若為 true，僅提供 configs 中列出的轉換，不以 from/to 字典串接其他轉換
  */
 
 /**
@@ -333,10 +334,14 @@ export function ConverterBuilder(localePreset) {
       if (!options || typeof options[type] !== 'string') {
         throw new Error('Please provide the `' + type + '` option');
       }
-      if (options[type] !== 't' && !localePreset[type][options[type]]) {
+      if (!localePreset.configsOnly && options[type] !== 't' && !localePreset[type][options[type]]) {
         throw new Error('Unknown `' + type + '` locale: ' + options[type]);
       }
     });
+
+    if (localePreset.configsOnly && !localePreset.configs[getConfigName(options.from, options.to)]) {
+      throw new Error('Unsupported conversion: from `' + options.from + '` to `' + options.to + '`');
+    }
 
     if (localePreset.configs) {
       const config = localePreset.configs[getConfigName(options.from, options.to)];

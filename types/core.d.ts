@@ -10,6 +10,7 @@ export interface LocalePreset {
     segmentation: DictLike | DictGroup;
     conversionChain: readonly DictGroup[];
   }>;
+  configsOnly?: boolean;
 }
 
 export interface ConverterOptions {

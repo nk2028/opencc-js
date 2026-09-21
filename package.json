@@ -1,6 +1,6 @@
 {
   "name": "opencc-js",
-  "version": "1.4.2",
+  "version": "1.5.0-beta.0",
   "description": "The JavaScript version of Open Chinese Convert (OpenCC)",
   "main": "./dist/umd/full.js",
   "types": "./types/full.d.ts",
@@ -33,6 +33,11 @@
       "import": "./dist/esm/t2cn.js",
       "require": "./dist/umd/t2cn.js"
     },
+    "./seal": {
+      "types": "./types/seal.d.ts",
+      "import": "./dist/esm/seal.js",
+      "require": "./dist/umd/seal.js"
+    },
     "./core": {
       "types": "./types/core.d.ts",
       "default": "./dist/esm-lib/core.js"
@@ -48,6 +53,10 @@
     "./preset/t2cn": {
       "types": "./types/preset.d.ts",
       "default": "./dist/esm-lib/preset/t2cn.js"
+    },
+    "./preset/seal": {
+      "types": "./types/preset.d.ts",
+      "default": "./dist/esm-lib/preset/seal.js"
     },
     "./*": "./dist/esm-lib/*.js"
   },
@@ -86,7 +95,7 @@
     "@rollup/plugin-terser": "^1.0.0",
     "chai": "~4.3.4",
     "jsonc-parser": "^3.3.1",
-    "opencc-data": "1.4.2",
+    "opencc-data": "1.5.0-beta.0",
     "rollup-plugin-generate-package-json": "^3.2.0"
   }
 }

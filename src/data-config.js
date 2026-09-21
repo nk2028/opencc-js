@@ -27,6 +27,8 @@ export const conversionConfigs = {
   hk2t: { from: 'hk', to: 't', segmentation: 'HKVariantsRevPhrases', chain: [['HKVariantsRevPhrases', 'HKVariantsRev']] },
   jp2t: { from: 'jp', to: 't', segmentation: 'JPShinjitaiPhrases', chain: [['JPShinjitaiPhrases', 'JPShinjitaiCharacters', 'JPVariantsRev']] },
   s2hk: { from: 'cn', to: 'hk', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['HKVariantsPhrases', 'HKVariants']] },
+  s2seal: { from: 'cn', to: 'seal', segmentation: null, chain: [['STPhrases', 'STPhrases_GeneratedFromRegionalPhrases', 'STCharacters'], ['SealVariants'], ['SealCharactersRev']] },
+  seal2t: { from: 'seal', to: 't', segmentation: null, chain: [['SealCharacters'], ['SealVariantsRev']] },
   s2hkp: { from: 'cn', to: 'hkp', segmentation: ['STPhrases', 'STPhrases_GeneratedFromRegionalPhrases'], chain: [['STPhrases', 'STPhrases_GeneratedFromRegionalPhrases', 'STCharacters'], ['HKPhrases', 'HKVariantsPhrases', 'HKVariants']] },
   s2t: { from: 'cn', to: 't', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters']] },
   s2tw: { from: 'cn', to: 'tw', segmentation: 'STPhrases', chain: [['STPhrases', 'STCharacters'], ['TWVariantsPhrases', 'TWVariants']] },
@@ -34,6 +36,7 @@ export const conversionConfigs = {
   t2hk: { from: 't', to: 'hk', segmentation: ['HKVariantsPhrases', 'HKVariants'], chain: [['HKVariantsPhrases', 'HKVariants']] },
   t2jp: { from: 't', to: 'jp', segmentation: 'JPVariants', chain: [['JPVariants']] },
   t2s: { from: 't', to: 'cn', segmentation: 'TSPhrases', chain: [['TSPhrases', 'TSCharacters']] },
+  t2seal: { from: 't', to: 'seal', segmentation: null, chain: [['SealVariants'], ['SealCharactersRev']] },
   t2tw: { from: 't', to: 'tw', segmentation: ['TWVariantsPhrases', 'TWVariants'], chain: [['TWVariantsPhrases', 'TWVariants']] },
   tw2s: { from: 'tw', to: 'cn', segmentation: 'TSPhrases', chain: [['TWVariantsRevPhrases', 'TWVariantsRev'], ['TSPhrases', 'TSCharacters']] },
   tw2sp: { from: 'twp', to: 'cn', segmentation: 'TSPhrases', chain: [['TWPhrasesRev', 'TWVariantsRevPhrases', 'TWVariantsRev'], ['TSPhrases', 'TSCharacters']] },
@@ -55,5 +58,13 @@ export const presets = [
     filename: 't2cn',
     from: ['hk', 'hkp', 'tw', 'twp', 'jp'],
     to: ['cn']
+  },
+  {
+    // Standalone preset: only the listed upstream configs are offered, without
+    // locale dictionaries that could be chained into other conversions.
+    filename: 'seal',
+    from: [],
+    to: [],
+    configs: ['s2seal', 't2seal', 'seal2t']
   }
 ];

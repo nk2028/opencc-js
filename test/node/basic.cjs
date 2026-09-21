@@ -113,3 +113,14 @@ chai.should();
     OpenCC.Converter(options)('汉語').should.be.a('string');
   }
 })();
+
+(function testSeal() {
+  // the seal configs are standalone and not part of the full build
+  (() => OpenCC.Converter({ from: 't', to: 'seal' })).should.throw(Error, /Unknown `to` locale/);
+
+  const OpenCCSeal = require('opencc-js/seal');
+  OpenCCSeal.Converter({ from: 't', to: 'seal' })('天地玄黃').should.equal('𽀃𿡚𽭝𿤶');
+  OpenCCSeal.Converter({ from: 'seal', to: 't' })('𽀃𿡚𽭝𿤶').should.equal('天地玄黃');
+  OpenCCSeal.Converter({ from: 'cn', to: 'seal' })('说文解字').should.equal('𽛛𾧆𽳮𿮵');
+  (() => OpenCCSeal.Converter({ from: 'seal', to: 'cn' })).should.throw(Error, /Unsupported conversion/);
+})();
