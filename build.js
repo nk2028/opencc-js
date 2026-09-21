@@ -18,12 +18,15 @@ const configLocales = {
   jp2t: { from: 'jp', to: 't' },
   s2hk: { from: 'cn', to: 'hk' },
   s2hkp: { from: 'cn', to: 'hkp' },
+  s2seal: { from: 'cn', to: 'seal' },
   s2t: { from: 'cn', to: 't' },
   s2tw: { from: 'cn', to: 'tw' },
   s2twp: { from: 'cn', to: 'twp' },
+  seal2t: { from: 'seal', to: 't' },
   t2hk: { from: 't', to: 'hk' },
   t2jp: { from: 't', to: 'jp' },
   t2s: { from: 't', to: 'cn' },
+  t2seal: { from: 't', to: 'seal' },
   t2tw: { from: 't', to: 'tw' },
   tw2s: { from: 'tw', to: 'cn' },
   tw2sp: { from: 'twp', to: 'cn' },
@@ -162,9 +165,9 @@ function getPresetCode(cfg) {
     });
   });
 
-  function presetIncludesConfig(config) {
-    if (cfg.filename === 'full') {
-      return true;
+  function presetIncludesConfig(name, config) {
+    if (cfg.configs) {
+      return cfg.configs.includes(name);
     }
     if (cfg.filename === 'cn2t') {
       return config.from === 'cn' && (config.to === 't' || cfg.to.includes(config.to));
@@ -172,11 +175,12 @@ function getPresetCode(cfg) {
     if (cfg.filename === 't2cn') {
       return config.to === 'cn' && (config.from === 't' || cfg.from.includes(config.from));
     }
-    return cfg.from.includes(config.from) && cfg.to.includes(config.to);
+    return (config.from === 't' || cfg.from.includes(config.from))
+      && (config.to === 't' || cfg.to.includes(config.to));
   }
 
   const presetConfigs = Object.entries(conversionConfigs)
-    .filter(([, config]) => presetIncludesConfig(config));
+    .filter(([name, config]) => presetIncludesConfig(name, config));
   const configDictNames = new Set();
   presetConfigs.forEach(([, config]) => {
     config.normalizationChain.flat().forEach(dictName => configDictNames.add(dictName));
@@ -216,7 +220,7 @@ const configs = {
     ${code.configs.join(',\n    ')}
 };
 
-export {fromDicts as from, toDicts as to, configs};`;
+export {fromDicts as from, toDicts as to, configs};${cfg.configs ? '\nexport const configsOnly = true;' : ''}`;
 }
 
 // create directories if not exists.

@@ -4,7 +4,7 @@ export {
   ConverterBuilder,
   CustomConverter,
   HTMLConverter
-} from './core';
+} from './core.js';
 
 export type {
   ConverterFunction,
@@ -13,17 +13,17 @@ export type {
   DictLike,
   HTMLConvertHandler,
   LocalePreset
-} from './core';
+} from './core.js';
 
-import type { ConverterFunction, ConverterOptions } from './core';
-import * as Locale from './preset';
+import type { ConverterFunction, ConverterOptions } from './core.js';
+import * as Locale from './preset.js';
 import {
   Trie,
   ConverterFactory,
   ConverterBuilder,
   CustomConverter,
   HTMLConverter
-} from './core';
+} from './core.js';
 
 export function Converter(options: ConverterOptions): ConverterFunction;
 export { Locale };

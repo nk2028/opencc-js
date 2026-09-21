@@ -4,8 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- Add experimental Small Seal Script (說文小篆) conversion as a standalone `seal.js` entry (`opencc-js/seal`, UMD global `OpenCCSeal`; ESM preset `opencc-js/preset/seal`). Its `Converter` offers exactly the three new upstream configs — `{ from: 'cn', to: 'seal' }` (`s2seal`), `{ from: 't', to: 'seal' }` (`t2seal`), and `{ from: 'seal', to: 't' }` (`seal2t`) — and throws for any other combination. The seal dictionaries are not bundled into `full.js`, `cn2t.js`, or `t2cn.js`, so download size is unchanged for users who do not need them. `seal.js` (about 230 KB) only carries the seal dictionaries and loads `full.js` for the core and the shared Simplified-to-Traditional dictionaries; with script tags, load `full.js` before `seal.js`.
+- Export `ConverterBuilder` from the full build, matching the published type declarations.
+- Locale presets may set `configsOnly: true` to make `ConverterBuilder` offer only their listed configs instead of chaining `from` / `to` dictionaries.
+
+### Changed
+
+- Align with the upstream `opencc-data` 1.5.0-beta.0 prerelease and refresh the generated dictionary data: Taiwan conversions no longer rewrite 祕 to 秘 (and 秘 back to 祕), 夥 in the "many" sense (甚夥, 夥多, 夥頤) is no longer simplified to 伙, and 薳 is kept as-is when converting to Simplified Chinese. The golden test outputs are synced with upstream accordingly.
+
 ### Fixed
 
+- Use explicit `.js` extensions for relative imports in the published type declarations, so they resolve under TypeScript's `node16` / `nodenext` module resolution.
 - Fix the dictionary build script incorrectly keeping redundant "character maps to itself" entries for characters outside the Basic Multilingual Plane (e.g. 𪙏), since `String.prototype.length` counts UTF-16 code units rather than code points. These entries are now correctly filtered out, slightly reducing dictionary size with no effect on conversion results. ([#49](https://github.com/nk2028/opencc-js/issues/49), reported by [@obxyann](https://github.com/obxyann), thanks!)
 
 ## 1.4.2 - 2026-08-22
